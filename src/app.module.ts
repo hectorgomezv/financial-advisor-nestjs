@@ -1,9 +1,13 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { LoggerMiddleware } from './logger.middleware';
 import { CompaniesModule } from './companies/companies.module';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
-  imports: [CompaniesModule],
+  imports: [
+    MongooseModule.forRoot('mongodb://localhost:27017/financialAdvisorDB'),
+    CompaniesModule,
+  ],
   controllers: [],
   providers: [],
 })
