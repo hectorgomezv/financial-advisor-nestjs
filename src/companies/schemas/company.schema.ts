@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export type CompanyDocument = Company & Document;
+export type CompanyDocument = CompanyModel & Document;
 
 @Schema()
-export class Company {
+export class CompanyModel {
   @Prop({ required: true })
   uuid: string;
 
@@ -15,4 +15,4 @@ export class Company {
   symbol: string;
 }
 
-export const CompanySchema = SchemaFactory.createForClass(Company);
+export const CompanySchema = SchemaFactory.createForClass(CompanyModel);

@@ -25,7 +25,7 @@ export class CompaniesController {
     return this.companiesService.findAll();
   }
 
-  @Get(':id')
+  @Get(':uuid')
   findOne(@Param('uuid') uuid: string) {
     return this.companiesService.findOne(uuid);
   }
@@ -35,8 +35,8 @@ export class CompaniesController {
     return this.companiesService.update(+id, updateCompanyDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.companiesService.remove(+id);
+  @Delete(':uuid')
+  remove(@Param('uuid') uuid: string) {
+    return this.companiesService.remove(uuid);
   }
 }
