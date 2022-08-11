@@ -19,8 +19,9 @@ export class CompaniesService {
     return this.companyModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} company`;
+  async findOne(uuid: string) {
+    const res = await this.companyModel.findOne({ uuid }).exec();
+    return res;
   }
 
   update(id: number, updateCompanyDto: UpdateCompanyDto) {

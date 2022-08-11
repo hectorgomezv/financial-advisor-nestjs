@@ -26,8 +26,8 @@ export class CompaniesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.companiesService.findOne(+id);
+  findOne(@Param('uuid') uuid: string) {
+    return this.companiesService.findOne(uuid);
   }
 
   @Patch(':id')
