@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { plainToClass } from 'class-transformer';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { Company } from './entities/company.entity';
@@ -13,11 +14,17 @@ export class CompaniesService {
     private companyModel: Model<CompanyDocument>,
   ) {}
 
-  async create(createCompanyDto: CreateCompanyDto) {
+  async create(createCompanyDto: CreateCompanyDto): Promise<Company> {
     try {
-      const company: Company = { ...createCompanyDto, uuid: 'foo' };
-      const res = await this.companyModel.create(company);
-      return res;
+      const company = await this.companyModel.create({
+        ...createCompanyDto,
+        uuid: 'foo',
+      });
+
+      const obj = company.toObject();
+
+      const transformed: Company = plainToClass(Company, obj);
+      return transformed;
     } catch (err) {
       console.error(err);
       throw err;
