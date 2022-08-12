@@ -73,5 +73,8 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  }
+  },
+  "main": "main.ts",
+  "repository": "https://github.com/hectorgomezv/financial-advisor-nestjs.git",
+  "packageManager": "yarn@3.2.2"
 }

@@ -13,11 +13,8 @@ export class CompaniesRepository {
   ) {}
 
   async create(company: Company): Promise<Company> {
-    const created = await this.companyModel.create(company);
-    const obj = created.toObject();
-    const transformed: Company = plainToClass(Company, obj);
-
-    return transformed;
+    const created = (await this.companyModel.create(company)).toObject();
+    return plainToClass(Company, created);
   }
 
   findAll() {
