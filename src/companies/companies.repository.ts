@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
 import { Company } from './entities/company.entity';
 import { CompanyDocument, CompanyModel } from './schemas/company.schema';
@@ -14,7 +14,7 @@ export class CompaniesRepository {
 
   async create(company: Company): Promise<Company> {
     const created = (await this.companyModel.create(company)).toObject();
-    return plainToClass(Company, created);
+    return plainToInstance(Company, created);
   }
 
   findAll() {
@@ -25,11 +25,11 @@ export class CompaniesRepository {
     return this.companyModel.findOne({ uuid }).exec();
   }
 
-  update(id: number, company: Company) {
+  updateOne(id: number, company: Company) {
     return `This action updates a #${id} company`;
   }
 
-  remove(uuid: string) {
+  deleteOne(uuid: string) {
     return this.companyModel.deleteOne({ uuid });
   }
 }

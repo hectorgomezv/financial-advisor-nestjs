@@ -22,18 +22,18 @@ export class CompaniesService {
   }
 
   findAll() {
-    return Error('Not implemented');
+    return this.repository.findAll();
   }
 
   findOne(uuid: string) {
-    return Error('Not implemented');
+    return this.repository.findOne(uuid);
   }
 
   update(id: number, updateCompanyDto: UpdateCompanyDto) {
-    return Error('Not implemented');
+    throw Error('Not implemented');
   }
 
   remove(uuid: string) {
-    return Error('Not implemented');
+    return this.repository.deleteOne(uuid);
   }
 }

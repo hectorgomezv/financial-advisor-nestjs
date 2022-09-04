@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 
 export type CompanyDocument = CompanyModel & Document;
 
-@Schema()
+@Schema({ collection: 'companies' })
 export class CompanyModel {
   @Prop({ required: true })
   uuid: string;
