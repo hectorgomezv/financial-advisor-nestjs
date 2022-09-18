@@ -1,16 +1,12 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { CompaniesRepository } from '../repositories/companies.repository';
 import { CompaniesService } from './companies.service';
 
 describe('CompaniesService', () => {
-  let service: CompaniesService;
-
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [CompaniesService],
-    }).compile();
-
-    service = module.get<CompaniesService>(CompaniesService);
-  });
+  const companiesRepository = {} as unknown as CompaniesRepository;
+  const mockedCompaniesRepository = jest.mocked(companiesRepository);
+  const service: CompaniesService = new CompaniesService(
+    mockedCompaniesRepository,
+  );
 
   it('should be defined', () => {
     expect(service).toBeDefined();
