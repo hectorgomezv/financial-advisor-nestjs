@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
-import { Company } from './entities/company.entity';
+import { Company } from '../domain/entities/company.entity';
 import { CompanyDocument, CompanyModel } from './schemas/company.schema';
 
 @Injectable()

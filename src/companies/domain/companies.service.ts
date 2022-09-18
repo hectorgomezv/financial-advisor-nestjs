@@ -1,9 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { CreateCompanyDto } from './dto/create-company.dto';
-import { UpdateCompanyDto } from './dto/update-company.dto';
+import { CreateCompanyDto } from '../routes/dto/create-company.dto';
+import { CompaniesRepository } from '../repositories/companies.repository';
 import { Company } from './entities/company.entity';
-import { CompaniesRepository } from './companies.repository';
 
 @Injectable()
 export class CompaniesService {
@@ -33,10 +32,6 @@ export class CompaniesService {
     }
 
     return company;
-  }
-
-  update(id: number, updateCompanyDto: UpdateCompanyDto) {
-    throw Error('Not implemented');
   }
 
   remove(uuid: string) {

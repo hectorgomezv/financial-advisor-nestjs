@@ -3,14 +3,18 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  UseInterceptors,
+  UseFilters,
 } from '@nestjs/common';
-import { CompaniesService } from './companies.service';
+import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
+import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
+import { CompaniesService } from '../domain/companies.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
-import { UpdateCompanyDto } from './dto/update-company.dto';
 
+@UseInterceptors(DataInterceptor)
+@UseFilters(MainExceptionFilter)
 @Controller('companies')
 export class CompaniesController {
   constructor(private readonly companiesService: CompaniesService) {}
@@ -28,11 +32,6 @@ export class CompaniesController {
   @Get(':uuid')
   findOne(@Param('uuid') uuid: string) {
     return this.companiesService.findOne(uuid);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCompanyDto: UpdateCompanyDto) {
-    return this.companiesService.update(+id, updateCompanyDto);
   }
 
   @Delete(':uuid')
