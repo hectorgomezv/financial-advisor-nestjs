@@ -7,14 +7,24 @@ import {
   PortfolioModel,
   PortfolioSchema,
 } from './repositories/schemas/portfolio.schema';
+import { PortfolioStatesRepository } from './repositories/portfolio-states.repository';
+import {
+  PortfolioStateModel,
+  PortfolioStateSchema,
+} from './repositories/schemas/portfolio-state.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: PortfolioModel.name, schema: PortfolioSchema },
+      { name: PortfolioStateModel.name, schema: PortfolioStateSchema },
     ]),
   ],
   controllers: [PortfoliosController],
-  providers: [PortfoliosService, PortfoliosRepository],
+  providers: [
+    PortfoliosService,
+    PortfoliosRepository,
+    PortfolioStatesRepository,
+  ],
 })
 export class PortfoliosModule {}
