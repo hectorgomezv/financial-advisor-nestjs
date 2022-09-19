@@ -6,18 +6,13 @@ import { Company } from './entities/company.entity';
 
 @Injectable()
 export class CompaniesService {
-  constructor(private repository: CompaniesRepository) {}
+  constructor(private readonly repository: CompaniesRepository) {}
 
   async create(createCompanyDto: CreateCompanyDto): Promise<Company> {
-    try {
-      return this.repository.create(<Company>{
-        ...createCompanyDto,
-        uuid: uuidv4(),
-      });
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
+    return this.repository.create(<Company>{
+      ...createCompanyDto,
+      uuid: uuidv4(),
+    });
   }
 
   findAll() {

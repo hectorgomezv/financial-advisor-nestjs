@@ -1,26 +1,36 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
+import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
-import { UpdatePortfolioDto } from './dto/update-portfolio.dto';
+import { Portfolio } from './entities/portfolio.entity';
 
 @Injectable()
 export class PortfoliosService {
+  constructor(private readonly repository: PortfoliosRepository) {}
+
   create(createPortfolioDto: CreatePortfolioDto) {
-    return 'This action adds a new portfolio';
+    return this.repository.create(<Portfolio>{
+      ...createPortfolioDto,
+      uuid: uuidv4(),
+      created: new Date(),
+    });
   }
 
   findAll() {
-    return `This action returns all portfolios`;
+    return this.repository.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} portfolio`;
+  async findOne(uuid: string) {
+    const portfolio = await this.repository.findOne(uuid);
+
+    if (!portfolio) {
+      throw new NotFoundException();
+    }
+
+    return portfolio;
   }
 
-  update(id: number, updatePortfolioDto: UpdatePortfolioDto) {
-    return `This action updates a #${id} portfolio`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} portfolio`;
+  remove(uuid: string) {
+    return this.repository.deleteOne(uuid);
   }
 }

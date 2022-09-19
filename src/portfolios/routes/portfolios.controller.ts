@@ -1,8 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  UseInterceptors,
+  UseFilters,
+} from '@nestjs/common';
+import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
+import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
 import { CreatePortfolioDto } from '../domain/dto/create-portfolio.dto';
-import { UpdatePortfolioDto } from '../domain/dto/update-portfolio.dto';
 import { PortfoliosService } from '../domain/portfolios.service';
 
+@UseInterceptors(DataInterceptor)
+@UseFilters(MainExceptionFilter)
 @Controller('portfolios')
 export class PortfoliosController {
   constructor(private readonly portfoliosService: PortfoliosService) {}
@@ -17,18 +29,13 @@ export class PortfoliosController {
     return this.portfoliosService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.portfoliosService.findOne(+id);
+  @Get(':uuid')
+  findOne(@Param('uuid') uuid: string) {
+    return this.portfoliosService.findOne(uuid);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePortfolioDto: UpdatePortfolioDto) {
-    return this.portfoliosService.update(+id, updatePortfolioDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.portfoliosService.remove(+id);
+  @Delete(':uuid')
+  remove(@Param('uuid') uuid: string) {
+    return this.portfoliosService.remove(uuid);
   }
 }
