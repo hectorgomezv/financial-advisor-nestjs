@@ -25,10 +25,6 @@ export class CompaniesRepository {
     return this.companyModel.findOne({ uuid }).exec();
   }
 
-  updateOne(id: number, company: Company) {
-    return `This action updates a #${id} company`;
-  }
-
   deleteOne(uuid: string) {
     return this.companyModel.deleteOne({ uuid });
   }
