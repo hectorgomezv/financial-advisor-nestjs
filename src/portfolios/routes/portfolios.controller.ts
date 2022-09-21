@@ -38,4 +38,9 @@ export class PortfoliosController {
   remove(@Param('uuid') uuid: string) {
     return this.portfoliosService.remove(uuid);
   }
+
+  @Get(':uuid/metrics')
+  getPortfolioMetrics(@Param('uuid') uuid: string) {
+    return this.portfoliosService.getMetrics(uuid, 'foo');
+  }
 }

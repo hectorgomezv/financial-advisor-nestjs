@@ -12,17 +12,53 @@ import {
 export class PortfolioStatesRepository {
   constructor(
     @InjectModel(PortfolioStateModel.name)
-    private portfolioStateModel: Model<PortfolioStateDocument>,
+    private collection: Model<PortfolioStateDocument>,
   ) {}
 
+  getLastByPortfolioUuid(portfolioUuid: string) {
+    return this.collection
+      .findOne({ portfolioUuid })
+      .sort({ timestamp: -1 })
+      .limit(1);
+  }
+
   async create(portfolioState: PortfolioState): Promise<PortfolioState> {
-    const created = (
-      await this.portfolioStateModel.create(portfolioState)
-    ).toObject();
+    const created = (await this.collection.create(portfolioState)).toObject();
     return plainToInstance(PortfolioState, created);
   }
 
-  async getSeriesForRange(uuid, range) {
-    return [1, 2, 3];
+  deleteByPortfolioUuid(portfolioUuid: string) {
+    return this.collection.deleteMany({ portfolioUuid });
   }
+
+  async getSeriesForRange(portfolioUuid: string, range: string) {
+    const startTime = getRangeStartTimestamp();
+    const grouping = getGroupingForRange();
+
+    const aggr = this.collection
+      .aggregate()
+      .match({
+        portfolioUuid,
+        timestamp: { $gte: startTime },
+      })
+      .addFields({ parsedDate: { $toDate: '$timestamp' } })
+      .group({
+        _id: grouping,
+        average: { $avg: '$totalValueEUR' },
+      })
+      .sort({ '_id.year': 1, '_id.day': 1, '_id.hour': 1 });
+
+    const res = await aggr.exec();
+
+    return res;
+  }
+}
+function getRangeStartTimestamp() {
+  return Date.now() - 365 * 24 * 60 * 60 * 1000;
+}
+function getGroupingForRange() {
+  return {
+    year: { $year: '$parsedDate' },
+    week: { $week: '$parsedDate' },
+  };
 }
