@@ -4,6 +4,7 @@ import { PortfolioStatesRepository } from '../repositories/portfolio-states.repo
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { Portfolio } from './entities/portfolio.entity';
+import { timeRangeFromStr } from './entities/time-range.enum';
 
 @Injectable()
 export class PortfoliosService {
@@ -38,7 +39,6 @@ export class PortfoliosService {
     return this.repository.deleteOne(uuid);
   }
 
-  // TODO: implement this
   async getMetrics(uuid: string, range: string) {
     const portfolio = await this.repository.findOne(uuid);
 
@@ -46,10 +46,9 @@ export class PortfoliosService {
       throw new NotFoundException();
     }
 
-    const series = await this.portfolioStatesRepository.getSeriesForRange(
+    return this.portfolioStatesRepository.getSeriesForRange(
       uuid,
-      range,
+      timeRangeFromStr(range),
     );
-    return series.filter((s) => s).map((s) => s);
   }
 }

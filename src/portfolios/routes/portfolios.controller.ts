@@ -7,6 +7,7 @@ import {
   Delete,
   UseInterceptors,
   UseFilters,
+  Query,
 } from '@nestjs/common';
 import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
 import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
@@ -40,7 +41,10 @@ export class PortfoliosController {
   }
 
   @Get(':uuid/metrics')
-  getPortfolioMetrics(@Param('uuid') uuid: string) {
-    return this.portfoliosService.getMetrics(uuid, 'foo');
+  getPortfolioMetrics(
+    @Param('uuid') uuid: string,
+    @Query('range') range?: string,
+  ) {
+    return this.portfoliosService.getMetrics(uuid, range);
   }
 }
