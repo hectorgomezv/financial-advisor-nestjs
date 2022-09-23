@@ -5,12 +5,14 @@ import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { Portfolio } from './entities/portfolio.entity';
 import { timeRangeFromStr } from './entities/time-range.enum';
+import { PositionsService } from './positions.service';
 
 @Injectable()
 export class PortfoliosService {
   constructor(
     private readonly repository: PortfoliosRepository,
     private readonly portfolioStatesRepository: PortfolioStatesRepository,
+    private readonly positionService: PositionsService,
   ) {}
 
   create(createPortfolioDto: CreatePortfolioDto) {
@@ -35,7 +37,16 @@ export class PortfoliosService {
     return portfolio;
   }
 
-  remove(uuid: string) {
+  async deleteOne(uuid: string) {
+    const portfolio = await this.repository.findOne(uuid);
+
+    if (!portfolio) {
+      throw new NotFoundException();
+    }
+
+    await this.positionService.deleteByPortfolioUuid(uuid);
+    await this.portfolioStatesRepository.deleteByPortfolioUuid(uuid);
+
     return this.repository.deleteOne(uuid);
   }
 

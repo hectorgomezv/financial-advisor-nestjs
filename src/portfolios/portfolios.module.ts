@@ -12,12 +12,19 @@ import {
   PortfolioStateModel,
   PortfolioStateSchema,
 } from './repositories/schemas/portfolio-state.schema';
+import { PositionsService } from './domain/positions.service';
+import {
+  PositionModel,
+  PositionSchema,
+} from './repositories/schemas/position.schema';
+import { PositionsRepository } from './repositories/positions.repository';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: PortfolioModel.name, schema: PortfolioSchema },
       { name: PortfolioStateModel.name, schema: PortfolioStateSchema },
+      { name: PositionModel.name, schema: PositionSchema },
     ]),
   ],
   controllers: [PortfoliosController],
@@ -25,6 +32,8 @@ import {
     PortfoliosService,
     PortfoliosRepository,
     PortfolioStatesRepository,
+    PositionsService,
+    PositionsRepository,
   ],
 })
 export class PortfoliosModule {}

@@ -37,7 +37,7 @@ export class PortfoliosController {
 
   @Delete(':uuid')
   remove(@Param('uuid') uuid: string) {
-    return this.portfoliosService.remove(uuid);
+    return this.portfoliosService.deleteOne(uuid);
   }
 
   @Get(':uuid/metrics')
