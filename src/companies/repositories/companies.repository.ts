@@ -21,6 +21,10 @@ export class CompaniesRepository {
     return this.companyModel.find().exec();
   }
 
+  findByUuidIn(uuid: string[]) {
+    return this.companyModel.find({ uuid: { $in: uuid } });
+  }
+
   findOne(uuid: string) {
     return this.companyModel.findOne({ uuid }).exec();
   }

@@ -24,6 +24,10 @@ export class PositionsRepository {
     return this.positionModel.findOne({ companyUuid, portfolioUuid });
   }
 
+  findByPortfolioUuid(portfolioUuid: string) {
+    return this.positionModel.find({ portfolioUuid });
+  }
+
   deleteByPortfolioUuid(portfolioUuid: string) {
     return this.positionModel.deleteMany({ portfolioUuid });
   }

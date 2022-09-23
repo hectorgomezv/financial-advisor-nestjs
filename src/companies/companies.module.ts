@@ -7,15 +7,21 @@ import {
   CompanyModel,
   CompanySchema,
 } from './repositories/schemas/company.schema';
+import { CompanyStatesRepository } from './repositories/company-states.repository';
+import {
+  CompanyStateModel,
+  CompanyStateSchema,
+} from './repositories/schemas/company-state.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: CompanyModel.name, schema: CompanySchema },
+      { name: CompanyStateModel.name, schema: CompanyStateSchema },
     ]),
   ],
   controllers: [CompaniesController],
-  providers: [CompaniesService, CompaniesRepository],
-  exports: [CompaniesRepository],
+  providers: [CompaniesService, CompaniesRepository, CompanyStatesRepository],
+  exports: [CompaniesRepository, CompanyStatesRepository],
 })
 export class CompaniesModule {}

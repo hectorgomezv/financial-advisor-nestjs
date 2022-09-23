@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { PortfolioStatesRepository } from '../repositories/portfolio-states.repository';
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
+import { PortfolioDetailDto } from './dto/portfolio-detail.dto';
 import { Portfolio } from './entities/portfolio.entity';
 import { timeRangeFromStr } from './entities/time-range.enum';
 import { PositionsService } from './positions.service';
@@ -27,14 +28,19 @@ export class PortfoliosService {
     return this.repository.findAll();
   }
 
-  async findOne(uuid: string) {
+  async findOne(uuid: string): Promise<PortfolioDetailDto> {
     const portfolio = await this.repository.findOne(uuid);
 
     if (!portfolio) {
       throw new NotFoundException();
     }
 
-    return portfolio;
+    const positions = await this.positionService.getByPortfolioUuid(uuid);
+    const state = await this.portfolioStatesRepository.getLastByPortfolioUuid(
+      uuid,
+    );
+
+    return <PortfolioDetailDto>{};
   }
 
   async deleteOne(uuid: string) {
