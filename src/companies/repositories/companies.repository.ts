@@ -25,6 +25,10 @@ export class CompaniesRepository {
     return this.companyModel.findOne({ uuid }).exec();
   }
 
+  findBySymbol(symbol: string) {
+    return this.companyModel.findOne({ symbol });
+  }
+
   deleteOne(uuid: string) {
     return this.companyModel.deleteOne({ uuid });
   }

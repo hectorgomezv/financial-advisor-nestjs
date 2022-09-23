@@ -1,1 +1,3 @@
-export class CreatePortfolioDto {}
+export class CreatePortfolioDto {
+  name: string;
+}

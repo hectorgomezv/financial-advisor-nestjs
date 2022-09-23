@@ -12,13 +12,18 @@ import {
 import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
 import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
 import { CreatePortfolioDto } from '../domain/dto/create-portfolio.dto';
+import { CreatePositionDto } from '../domain/dto/create-position.dto';
 import { PortfoliosService } from '../domain/portfolios.service';
+import { PositionsService } from '../domain/positions.service';
 
 @UseInterceptors(DataInterceptor)
 @UseFilters(MainExceptionFilter)
 @Controller('portfolios')
 export class PortfoliosController {
-  constructor(private readonly portfoliosService: PortfoliosService) {}
+  constructor(
+    private readonly portfoliosService: PortfoliosService,
+    private readonly positionsService: PositionsService,
+  ) {}
 
   @Post()
   create(@Body() createPortfolioDto: CreatePortfolioDto) {
@@ -46,5 +51,13 @@ export class PortfoliosController {
     @Query('range') range?: string,
   ) {
     return this.portfoliosService.getMetrics(uuid, range);
+  }
+
+  @Post(':uuid/positions')
+  addPosition(
+    @Param('uuid') uuid: string,
+    @Body() createPositionDto: CreatePositionDto,
+  ) {
+    return this.positionsService.createPosition(uuid, createPositionDto);
   }
 }

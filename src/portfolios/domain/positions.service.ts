@@ -1,9 +1,32 @@
 import { Injectable } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
+import { CompaniesRepository } from '../../companies/repositories/companies.repository';
 import { PositionsRepository } from '../repositories/positions.repository';
+import { CreatePositionDto } from './dto/create-position.dto';
+import { Position } from './entities/position.entity';
 
 @Injectable()
 export class PositionsService {
-  constructor(private readonly repository: PositionsRepository) {}
+  constructor(
+    private readonly repository: PositionsRepository,
+    private readonly companiesRepository: CompaniesRepository,
+  ) // private readonly companyStatesRepository: CompanyStatesRepository,
+  {}
+
+  async createPosition(
+    portfolioUuid: string,
+    createPositionDto: CreatePositionDto,
+  ): Promise<Position> {
+    const company = await this.companiesRepository.findBySymbol(
+      createPositionDto.symbol,
+    );
+    return this.repository.create(<Position>{
+      ...createPositionDto,
+      portfolioUuid,
+      uuid: uuidv4(),
+      companyUuid: company.symbol,
+    });
+  }
 
   deleteByPortfolioUuid(portfolioUuid: string) {
     return this.repository.deleteByPortfolioUuid(portfolioUuid);

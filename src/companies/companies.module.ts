@@ -16,5 +16,6 @@ import {
   ],
   controllers: [CompaniesController],
   providers: [CompaniesService, CompaniesRepository],
+  exports: [CompaniesRepository],
 })
 export class CompaniesModule {}

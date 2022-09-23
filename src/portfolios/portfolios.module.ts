@@ -18,6 +18,7 @@ import {
   PositionSchema,
 } from './repositories/schemas/position.schema';
 import { PositionsRepository } from './repositories/positions.repository';
+import { CompaniesModule } from '../companies/companies.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { PositionsRepository } from './repositories/positions.repository';
       { name: PortfolioStateModel.name, schema: PortfolioStateSchema },
       { name: PositionModel.name, schema: PositionSchema },
     ]),
+    CompaniesModule,
   ],
   controllers: [PortfoliosController],
   providers: [
