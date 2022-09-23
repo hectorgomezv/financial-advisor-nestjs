@@ -58,6 +58,6 @@ export class PortfoliosController {
     @Param('uuid') uuid: string,
     @Body() createPositionDto: CreatePositionDto,
   ) {
-    return this.positionsService.createPosition(uuid, createPositionDto);
+    return this.positionsService.create(uuid, createPositionDto);
   }
 }

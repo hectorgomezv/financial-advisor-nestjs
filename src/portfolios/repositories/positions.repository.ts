@@ -13,13 +13,15 @@ export class PositionsRepository {
   ) {}
 
   async create(position: Position): Promise<Position> {
-    try {
-      const created = (await this.positionModel.create(position)).toObject();
-      return plainToInstance(Position, created);
-    } catch (err) {
-      console.log(err);
-      throw err;
-    }
+    const created = (await this.positionModel.create(position)).toObject();
+    return plainToInstance(Position, created);
+  }
+
+  findByCompanyUuidAndPortfolioUuid(
+    companyUuid: string,
+    portfolioUuid: string,
+  ) {
+    return this.positionModel.findOne({ companyUuid, portfolioUuid });
   }
 
   deleteByPortfolioUuid(portfolioUuid: string) {

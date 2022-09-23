@@ -2645,6 +2645,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cron@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "cron@npm:2.1.0"
+  dependencies:
+    luxon: ^1.23.x
+  checksum: 9395875c091f56db7964491c249cb143d2e4ba77560d7132da783943c1b0537ef1814eb8f552c81eda5a2aa153216dd3f5b7ff63e372a68a063fcfafe8231f91
+  languageName: node
+  linkType: hard
+
 "cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.2, cross-spawn@npm:^7.0.3":
   version: 7.0.3
   resolution: "cross-spawn@npm:7.0.3"
@@ -3720,6 +3729,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"http-agent@npm:*":
+  version: 0.1.2
+  resolution: "http-agent@npm:0.1.2"
+  dependencies:
+    request: 1.9.x
+  checksum: d1bfc2b616aa2166c22ffa2dfec75266b6e3f6a3e6f091a5c7f4ab281346e75abcef8440c57788e02a2e67afea48cc9551649ca7d2d4e409a2d82bed69278c76
+  languageName: node
+  linkType: hard
+
 "http-cache-semantics@npm:^4.1.0":
   version: 4.1.0
   resolution: "http-cache-semantics@npm:4.1.0"
@@ -4771,6 +4789,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"luxon@npm:^1.23.x":
+  version: 1.28.0
+  resolution: "luxon@npm:1.28.0"
+  checksum: 5250cb9f138b6048eeb0b3a9044a4ac994d0058f680c72a0da4b6aeaec8612460385639cba2b1052ef6d5564879e9ed144d686f26d9d97b38ab920d82e18281c
+  languageName: node
+  linkType: hard
+
 "macos-release@npm:^2.5.0":
   version: 2.5.0
   resolution: "macos-release@npm:2.5.0"
@@ -5053,6 +5078,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"money@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "money@npm:0.2.0"
+  checksum: e880ccf24e85b044ad42b57f2aee661406b6dcf2e17ea7b5244704416183599a0dffb6fdc5fe75d0e621209883076c19e261d5bcd2c187953feb8711c66d2412
+  languageName: node
+  linkType: hard
+
 "mongodb-connection-string-url@npm:^2.5.2":
   version: 2.5.3
   resolution: "mongodb-connection-string-url@npm:2.5.3"
@@ -5315,6 +5347,15 @@ __metadata:
   dependencies:
     mimic-fn: ^2.1.0
   checksum: 2478859ef817fc5d4e9c2f9e5728512ddd1dbc9fb7829ad263765bb6d3b91ce699d6e2332eef6b7dff183c2f490bd3349f1666427eaba4469fba0ac38dfd0d34
+  languageName: node
+  linkType: hard
+
+"open-exchange-rates@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "open-exchange-rates@npm:0.3.0"
+  dependencies:
+    http-agent: "*"
+  checksum: f93fc24270c93769cc183cb3e59a2c19bc3cfb21c680adb3e3b9ce37704940af7669fa8be9223891ef9d021f7375c0b812f235e0c9a62fb0067db56ee95d7328
   languageName: node
   linkType: hard
 
@@ -5596,11 +5637,14 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.0.0
     "@typescript-eslint/parser": ^5.0.0
     class-transformer: ^0.5.1
+    cron: ^2.1.0
     eslint: ^8.0.1
     eslint-config-prettier: ^8.3.0
     eslint-plugin-prettier: ^4.0.0
     jest: 28.1.2
+    money: ^0.2.0
     mongoose: ^6.5.0
+    open-exchange-rates: ^0.3.0
     prettier: ^2.3.2
     prom-client: ^14.1.0
     reflect-metadata: ^0.1.13
@@ -5802,6 +5846,13 @@ __metadata:
   version: 3.2.0
   resolution: "regexpp@npm:3.2.0"
   checksum: a78dc5c7158ad9ddcfe01aa9144f46e192ddbfa7b263895a70a5c6c73edd9ce85faf7c0430e59ac38839e1734e275b9c3de5c57ee3ab6edc0e0b1bdebefccef8
+  languageName: node
+  linkType: hard
+
+"request@npm:1.9.x":
+  version: 1.9.9
+  resolution: "request@npm:1.9.9"
+  checksum: 7244b424fafaac0a1a6ed8e4c30abdcf7471857210d68997ccc8c4ddc7a416728db6d53496607fb2412c544b0e3be7c944587bfda2fec328cd665552bbe6b7fe
   languageName: node
   linkType: hard
 

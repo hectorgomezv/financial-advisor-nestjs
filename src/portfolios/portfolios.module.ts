@@ -19,6 +19,8 @@ import {
 } from './repositories/schemas/position.schema';
 import { PositionsRepository } from './repositories/positions.repository';
 import { CompaniesModule } from '../companies/companies.module';
+import { CurrencyExchangeClient } from './datasources/currency-exchange-client';
+import { PortfolioStatesService } from './domain/portfolio-states.service';
 
 @Module({
   imports: [
@@ -31,8 +33,10 @@ import { CompaniesModule } from '../companies/companies.module';
   ],
   controllers: [PortfoliosController],
   providers: [
+    CurrencyExchangeClient,
     PortfoliosService,
     PortfoliosRepository,
+    PortfolioStatesService,
     PortfolioStatesRepository,
     PositionsService,
     PositionsRepository,
