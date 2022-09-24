@@ -31,4 +31,8 @@ export class PositionsRepository {
   deleteByPortfolioUuid(portfolioUuid: string) {
     return this.positionModel.deleteMany({ portfolioUuid });
   }
+
+  deleteByUuidAndPortfolioUuid(portfolioUuid: string, uuid: string) {
+    return this.positionModel.deleteOne({ portfolioUuid, uuid });
+  }
 }

@@ -60,4 +60,15 @@ export class PortfoliosController {
   ) {
     return this.positionsService.create(uuid, createPositionDto);
   }
+
+  @Delete(':uuid/positions/:positionUuid')
+  deletePosition(
+    @Param('uuid') uuid: string,
+    @Param('positionUuid') positionUuid: string,
+  ) {
+    return this.positionsService.deleteByUuidAndPortfolioUuid(
+      uuid,
+      positionUuid,
+    );
+  }
 }

@@ -81,6 +81,10 @@ export class PositionsService {
     return this.repository.deleteByPortfolioUuid(portfolioUuid);
   }
 
+  deleteByUuidAndPortfolioUuid(portfolioUuid: string, uuid: string) {
+    return this.repository.deleteByUuidAndPortfolioUuid(portfolioUuid, uuid);
+  }
+
   private calculatePositionState(
     position,
     company,
