@@ -12,7 +12,7 @@ export class PortfolioModel {
   name: string;
 
   @Prop({ required: true })
-  created: Date;
+  created: number;
 }
 
 export const PortfolioSchema = SchemaFactory.createForClass(PortfolioModel);

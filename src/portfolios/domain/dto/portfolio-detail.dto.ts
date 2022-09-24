@@ -6,5 +6,5 @@ export class PortfolioDetailDto {
   name: string;
   created: number;
   positions: PositionDetailDto[];
-  state: PortfolioStateDetailDto[];
+  state: PortfolioStateDetailDto;
 }

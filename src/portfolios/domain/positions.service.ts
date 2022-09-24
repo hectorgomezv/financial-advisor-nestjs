@@ -9,6 +9,7 @@ import { CompanyStatesRepository } from '../../companies/repositories/company-st
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { PositionsRepository } from '../repositories/positions.repository';
 import { CreatePositionDto } from './dto/create-position.dto';
+import { PortfolioDetailDto } from './dto/portfolio-detail.dto';
 import { PositionDetailDto } from './dto/position-detail.dto';
 import { Position } from './entities/position.entity';
 
@@ -54,7 +55,9 @@ export class PositionsService {
     });
   }
 
-  async getByPortfolioUuid(portfolioUuid: string) {
+  async getByPortfolioUuid(
+    portfolioUuid: string,
+  ): Promise<PositionDetailDto[]> {
     const positions = await this.repository.findByPortfolioUuid(portfolioUuid);
     const companies = await this.companiesRepository.findByUuidIn(
       positions.map((p) => p.companyUuid),
@@ -63,7 +66,7 @@ export class PositionsService {
     const positionStates = await Promise.all(
       positions.map(async (position) => {
         const company = companies.find((c) => c.uuid === position.companyUuid);
-        const companyState =
+        const [companyState] =
           await this.companyStatesRepository.getLastByCompanyUuid(company.uuid);
         return this.calculatePositionState(position, company, companyState);
       }),
@@ -84,10 +87,12 @@ export class PositionsService {
     companyState,
   ): PositionDetailDto {
     return <PositionDetailDto>{
-      ...position,
+      uuid: position.uuid,
       companyName: company.name,
       symbol: company.symbol,
+      shares: position.shares,
       value: Number(companyState.price * position.shares),
+      targetWeight: position.targetWeight,
     };
   }
 
