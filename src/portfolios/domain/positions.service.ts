@@ -8,27 +8,28 @@ import { CompaniesRepository } from '../../companies/repositories/companies.repo
 import { CompanyStatesRepository } from '../../companies/repositories/company-states.repository';
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { PositionsRepository } from '../repositories/positions.repository';
-import { CreatePositionDto } from './dto/create-position.dto';
-import { PortfolioDetailDto } from './dto/portfolio-detail.dto';
+import { UpsertPositionDto } from './dto/create-position.dto';
 import { PositionDetailDto } from './dto/position-detail.dto';
 import { Position } from './entities/position.entity';
+import { PortfolioStatesService } from './portfolio-states.service';
 
 @Injectable()
 export class PositionsService {
   constructor(
     private readonly repository: PositionsRepository,
     private readonly portfoliosRepository: PortfoliosRepository,
+    private readonly portfolioStatesService: PortfolioStatesService,
     private readonly companiesRepository: CompaniesRepository,
     private readonly companyStatesRepository: CompanyStatesRepository,
   ) {}
 
   async create(
     portfolioUuid: string,
-    createPositionDto: CreatePositionDto,
+    upsertPositionDto: UpsertPositionDto,
   ): Promise<Position> {
     const portfolio = await this.portfoliosRepository.findOne(portfolioUuid);
     const company = await this.companiesRepository.findBySymbol(
-      createPositionDto.symbol,
+      upsertPositionDto.symbol,
     );
 
     if (!portfolio || !company) {
@@ -47,11 +48,76 @@ export class PositionsService {
       );
     }
 
-    return this.repository.create(<Position>{
-      ...createPositionDto,
+    await this.repository.create(<Position>{
+      ...upsertPositionDto,
       portfolioUuid,
       uuid: uuidv4(),
       companyUuid: company.uuid,
+    });
+
+    const created = await this.repository.findByUuid(existentPosition.uuid);
+    const positions = await this.getByPortfolioUuid(portfolioUuid);
+    await this.portfolioStatesService.createPortfolioState(
+      portfolioUuid,
+      this.mapToPositions(positions, portfolioUuid), // TODO: refactor when implementing PositionState
+    );
+
+    return created;
+  }
+
+  async update(portfolioUuid: string, upsertPositionDto: UpsertPositionDto) {
+    const portfolio = await this.portfoliosRepository.findOne(portfolioUuid);
+    const company = await this.companiesRepository.findBySymbol(
+      upsertPositionDto.symbol,
+    );
+
+    if (!portfolio || !company) {
+      throw new NotFoundException('Invalid reference for position');
+    }
+
+    const existentPosition =
+      await this.repository.findByCompanyUuidAndPortfolioUuid(
+        company.uuid,
+        portfolioUuid,
+      );
+
+    if (!existentPosition) {
+      throw new ConflictException(
+        `Position don't exists for ${company.symbol}`,
+      );
+    }
+
+    await this.repository.update(existentPosition.uuid, <Partial<Position>>{
+      targetWeight: upsertPositionDto.targetWeight,
+      shares: upsertPositionDto.shares,
+      companyUuid: company.uuid,
+      symbol: upsertPositionDto.symbol,
+    });
+
+    const updated = await this.repository.findByUuid(existentPosition.uuid);
+    const positions = await this.getByPortfolioUuid(portfolioUuid);
+    await this.portfolioStatesService.createPortfolioState(
+      portfolioUuid,
+      this.mapToPositions(positions, portfolioUuid), // TODO: refactor when implementing PositionState
+    );
+
+    return updated;
+  }
+
+  private mapToPositions(
+    positionDetailDTOs: PositionDetailDto[],
+    portfolioUuid: string,
+  ): Position[] {
+    return positionDetailDTOs.map((pdd) => {
+      return <Position>{
+        uuid: pdd.uuid,
+        portfolioUuid,
+        targetWeight: pdd.targetWeight,
+        shares: pdd.shares,
+        companyUuid: null,
+        symbol: pdd.symbol,
+        value: pdd.value,
+      };
     });
   }
 

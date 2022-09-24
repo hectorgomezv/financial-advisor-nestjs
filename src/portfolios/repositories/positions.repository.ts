@@ -9,30 +9,39 @@ import { PositionDocument, PositionModel } from './schemas/position.schema';
 export class PositionsRepository {
   constructor(
     @InjectModel(PositionModel.name)
-    private positionModel: Model<PositionDocument>,
+    private model: Model<PositionDocument>,
   ) {}
 
   async create(position: Position): Promise<Position> {
-    const created = (await this.positionModel.create(position)).toObject();
+    const created = (await this.model.create(position)).toObject();
     return plainToInstance(Position, created);
+  }
+
+  async findByUuid(uuid: string): Promise<Position> {
+    const position = (await this.model.findOne({ uuid })).toObject();
+    return plainToInstance(Position, position);
   }
 
   findByCompanyUuidAndPortfolioUuid(
     companyUuid: string,
     portfolioUuid: string,
   ) {
-    return this.positionModel.findOne({ companyUuid, portfolioUuid });
+    return this.model.findOne({ companyUuid, portfolioUuid });
   }
 
   findByPortfolioUuid(portfolioUuid: string) {
-    return this.positionModel.find({ portfolioUuid });
+    return this.model.find({ portfolioUuid });
   }
 
   deleteByPortfolioUuid(portfolioUuid: string) {
-    return this.positionModel.deleteMany({ portfolioUuid });
+    return this.model.deleteMany({ portfolioUuid });
   }
 
   deleteByUuidAndPortfolioUuid(portfolioUuid: string, uuid: string) {
-    return this.positionModel.deleteOne({ portfolioUuid, uuid });
+    return this.model.deleteOne({ portfolioUuid, uuid });
+  }
+
+  update(uuid: string, patch: Partial<Position>) {
+    return this.model.updateOne({ uuid }, patch);
   }
 }

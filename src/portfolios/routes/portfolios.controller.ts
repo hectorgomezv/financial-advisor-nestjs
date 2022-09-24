@@ -8,11 +8,12 @@ import {
   UseInterceptors,
   UseFilters,
   Query,
+  Put,
 } from '@nestjs/common';
 import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
 import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
 import { CreatePortfolioDto } from '../domain/dto/create-portfolio.dto';
-import { CreatePositionDto } from '../domain/dto/create-position.dto';
+import { UpsertPositionDto } from '../domain/dto/create-position.dto';
 import { PortfoliosService } from '../domain/portfolios.service';
 import { PositionsService } from '../domain/positions.service';
 
@@ -56,9 +57,17 @@ export class PortfoliosController {
   @Post(':uuid/positions')
   addPosition(
     @Param('uuid') uuid: string,
-    @Body() createPositionDto: CreatePositionDto,
+    @Body() upsertPositionDto: UpsertPositionDto,
   ) {
-    return this.positionsService.create(uuid, createPositionDto);
+    return this.positionsService.create(uuid, upsertPositionDto);
+  }
+
+  @Put(':uuid/positions')
+  updatePosition(
+    @Param('uuid') uuid: string,
+    @Body() upsertPositionDto: UpsertPositionDto,
+  ) {
+    return this.positionsService.update(uuid, upsertPositionDto);
   }
 
   @Delete(':uuid/positions/:positionUuid')
