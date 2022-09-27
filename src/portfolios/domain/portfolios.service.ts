@@ -4,7 +4,6 @@ import { PortfolioStatesRepository } from '../repositories/portfolio-states.repo
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { PortfolioDetailDto } from './dto/portfolio-detail.dto';
-import { PortfolioStateDetailDto } from './dto/portfolio-state-detail.dto';
 import { Portfolio } from './entities/portfolio.entity';
 import { timeRangeFromStr } from './entities/time-range.enum';
 import { PositionsService } from './positions.service';

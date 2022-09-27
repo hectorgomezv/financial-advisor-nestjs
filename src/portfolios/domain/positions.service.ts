@@ -56,11 +56,7 @@ export class PositionsService {
     });
 
     const created = await this.repository.findByUuid(existentPosition.uuid);
-    const positions = await this.getByPortfolioUuid(portfolioUuid);
-    await this.portfolioStatesService.createPortfolioState(
-      portfolioUuid,
-      this.mapToPositions(positions, portfolioUuid), // TODO: refactor when implementing PositionState
-    );
+    await this.updatePortfolioState(portfolioUuid);
 
     return created;
   }
@@ -95,30 +91,9 @@ export class PositionsService {
     });
 
     const updated = await this.repository.findByUuid(existentPosition.uuid);
-    const positions = await this.getByPortfolioUuid(portfolioUuid);
-    await this.portfolioStatesService.createPortfolioState(
-      portfolioUuid,
-      this.mapToPositions(positions, portfolioUuid), // TODO: refactor when implementing PositionState
-    );
+    await this.updatePortfolioState(portfolioUuid);
 
     return updated;
-  }
-
-  private mapToPositions(
-    positionDetailDTOs: PositionDetailDto[],
-    portfolioUuid: string,
-  ): Position[] {
-    return positionDetailDTOs.map((pdd) => {
-      return <Position>{
-        uuid: pdd.uuid,
-        portfolioUuid,
-        targetWeight: pdd.targetWeight,
-        shares: pdd.shares,
-        companyUuid: null,
-        symbol: pdd.symbol,
-        value: pdd.value,
-      };
-    });
   }
 
   async getByPortfolioUuid(
@@ -143,12 +118,19 @@ export class PositionsService {
       .reverse();
   }
 
-  deleteByPortfolioUuid(portfolioUuid: string) {
-    return this.repository.deleteByPortfolioUuid(portfolioUuid);
+  async deleteByPortfolioUuid(portfolioUuid: string) {
+    const result = await this.repository.deleteByPortfolioUuid(portfolioUuid);
+    await this.updatePortfolioState(portfolioUuid);
+    return result;
   }
 
-  deleteByUuidAndPortfolioUuid(portfolioUuid: string, uuid: string) {
-    return this.repository.deleteByUuidAndPortfolioUuid(portfolioUuid, uuid);
+  async deleteByUuidAndPortfolioUuid(portfolioUuid: string, uuid: string) {
+    const result = await this.repository.deleteByUuidAndPortfolioUuid(
+      portfolioUuid,
+      uuid,
+    );
+    await this.updatePortfolioState(portfolioUuid);
+    return result;
   }
 
   private calculatePositionState(
@@ -180,6 +162,31 @@ export class PositionsService {
         ...positionState,
         currentWeight,
         deltaWeight,
+      };
+    });
+  }
+
+  private async updatePortfolioState(portfolioUuid: string) {
+    const positions = await this.getByPortfolioUuid(portfolioUuid);
+    await this.portfolioStatesService.createPortfolioState(
+      portfolioUuid,
+      this.mapToPositions(positions, portfolioUuid), // TODO: refactor when implementing PositionState
+    );
+  }
+
+  private mapToPositions(
+    positionDetailDTOs: PositionDetailDto[],
+    portfolioUuid: string,
+  ): Position[] {
+    return positionDetailDTOs.map((pdd) => {
+      return <Position>{
+        uuid: pdd.uuid,
+        portfolioUuid,
+        targetWeight: pdd.targetWeight,
+        shares: pdd.shares,
+        companyUuid: null,
+        symbol: pdd.symbol,
+        value: pdd.value,
       };
     });
   }

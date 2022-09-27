@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
 import { CurrencyExchangeClient } from '../datasources/currency-exchange-client';
 import { PortfolioStatesRepository } from '../repositories/portfolio-states.repository';
 import { PortfolioState } from './entities/portfolio-state.entity';
@@ -20,6 +21,8 @@ export class PortfolioStatesService {
     const totalValueEUR = await this.getTotalValueEUR(positions);
 
     return this.repository.create(<PortfolioState>{
+      uuid: uuidv4(),
+      timestamp: Date.now(),
       portfolioUuid,
       isValid,
       sumWeights,
