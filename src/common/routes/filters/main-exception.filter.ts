@@ -7,6 +7,10 @@ import {
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 
+interface ErrorData {
+  message: string;
+}
+
 @Catch()
 export class MainExceptionFilter implements ExceptionFilter {
   constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
@@ -25,7 +29,9 @@ export class MainExceptionFilter implements ExceptionFilter {
       success: false,
       status: httpStatus,
       path: httpAdapter.getRequestUrl(ctx.getRequest()),
-      data: null,
+      data: <ErrorData>{
+        message: exception?.message ?? 'No error message provided',
+      },
     };
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);

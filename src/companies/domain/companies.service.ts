@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateCompanyDto } from '../routes/dto/create-company.dto';
 import { CompaniesRepository } from '../repositories/companies.repository';
@@ -9,6 +13,12 @@ export class CompaniesService {
   constructor(private readonly repository: CompaniesRepository) {}
 
   async create(createCompanyDto: CreateCompanyDto): Promise<Company> {
+    const company = await this.repository.findBySymbol(createCompanyDto.symbol);
+
+    if (company) {
+      throw new ConflictException(`Company ${company.symbol} already exists`);
+    }
+
     return this.repository.create(<Company>{
       ...createCompanyDto,
       uuid: uuidv4(),
@@ -23,13 +33,21 @@ export class CompaniesService {
     const company = await this.repository.findOne(uuid);
 
     if (!company) {
-      throw new NotFoundException();
+      throw new NotFoundException('Company not found');
     }
 
     return company;
   }
 
-  remove(uuid: string) {
-    return this.repository.deleteOne(uuid);
+  async remove(uuid: string) {
+    const company = await this.repository.findOne(uuid);
+
+    if (!company) {
+      throw new NotFoundException('Company not found');
+    }
+
+    await this.repository.deleteOne(uuid);
+
+    return company;
   }
 }

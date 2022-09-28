@@ -32,7 +32,7 @@ export class PortfoliosService {
     const portfolio = await this.repository.findOne(uuid);
 
     if (!portfolio) {
-      throw new NotFoundException();
+      throw new NotFoundException('Portfolio not found');
     }
 
     const positions = await this.positionService.getByPortfolioUuid(uuid);
@@ -53,20 +53,21 @@ export class PortfoliosService {
     const portfolio = await this.repository.findOne(uuid);
 
     if (!portfolio) {
-      throw new NotFoundException();
+      throw new NotFoundException('Portfolio not found');
     }
 
     await this.positionService.deleteByPortfolioUuid(uuid);
     await this.portfolioStatesRepository.deleteByPortfolioUuid(uuid);
+    await this.repository.deleteOne(uuid);
 
-    return this.repository.deleteOne(uuid);
+    return portfolio;
   }
 
   async getMetrics(uuid: string, range: string) {
     const portfolio = await this.repository.findOne(uuid);
 
     if (!portfolio) {
-      throw new NotFoundException();
+      throw new NotFoundException('Portfolio not found');
     }
 
     return this.portfolioStatesRepository.getSeriesForRange(

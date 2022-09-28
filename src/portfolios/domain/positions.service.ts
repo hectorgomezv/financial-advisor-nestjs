@@ -48,14 +48,16 @@ export class PositionsService {
       );
     }
 
+    const uuid = uuidv4();
+
     await this.repository.create(<Position>{
       ...upsertPositionDto,
       portfolioUuid,
-      uuid: uuidv4(),
+      uuid,
       companyUuid: company.uuid,
     });
 
-    const created = await this.repository.findByUuid(existentPosition.uuid);
+    const created = await this.repository.findByUuid(uuid);
     await this.updatePortfolioState(portfolioUuid);
 
     return created;
@@ -125,12 +127,10 @@ export class PositionsService {
   }
 
   async deleteByUuidAndPortfolioUuid(portfolioUuid: string, uuid: string) {
-    const result = await this.repository.deleteByUuidAndPortfolioUuid(
-      portfolioUuid,
-      uuid,
-    );
+    const position = await this.repository.findByUuid(uuid);
+    await this.repository.deleteByUuidAndPortfolioUuid(portfolioUuid, uuid);
     await this.updatePortfolioState(portfolioUuid);
-    return result;
+    return position;
   }
 
   private calculatePositionState(
@@ -143,7 +143,7 @@ export class PositionsService {
       companyName: company.name,
       symbol: company.symbol,
       shares: position.shares,
-      value: Number(companyState.price * position.shares),
+      value: Number(companyState?.price ?? 0 * position.shares),
       targetWeight: position.targetWeight,
     };
   }
