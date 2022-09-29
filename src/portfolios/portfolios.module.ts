@@ -21,6 +21,7 @@ import { PositionsRepository } from './repositories/positions.repository';
 import { CompaniesModule } from '../companies/companies.module';
 import { CurrencyExchangeClient } from './datasources/currency-exchange-client';
 import { PortfolioStatesService } from './domain/portfolio-states.service';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { PortfolioStatesService } from './domain/portfolio-states.service';
       { name: PositionModel.name, schema: PositionSchema },
     ]),
     CompaniesModule,
+    ConfigModule,
   ],
   controllers: [PortfoliosController],
   providers: [

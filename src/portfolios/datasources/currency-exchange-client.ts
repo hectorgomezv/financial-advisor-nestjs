@@ -1,14 +1,21 @@
-import { InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import * as oxr from 'open-exchange-rates';
 import * as money from 'money';
 import { CronJob } from 'cron';
-
-const { EXCHANGE_RATES_PROVIDER_APP_ID } = process.env;
+import { ConfigService } from '@nestjs/config';
 
 const EVERY_THREE_HOURS_CRON_EXP = '0 */3 * * *';
 
+@Injectable()
 export class CurrencyExchangeClient {
   private fx;
+  private exchangeRatesProviderAppId: string;
+
+  constructor(private configService: ConfigService) {
+    this.exchangeRatesProviderAppId = this.configService.get<string>(
+      'EXCHANGE_RATES_PROVIDER_APP_ID',
+    );
+  }
 
   async getFx() {
     if (!this.fx) {
@@ -21,13 +28,13 @@ export class CurrencyExchangeClient {
 
   private refreshFx() {
     return new Promise((resolve, reject) => {
-      if (!EXCHANGE_RATES_PROVIDER_APP_ID) {
+      if (!this.exchangeRatesProviderAppId) {
         throw new InternalServerErrorException(
           'No EXCHANGE_RATES_PROVIDER_APP_ID provided',
         );
       }
 
-      oxr.set({ app_id: EXCHANGE_RATES_PROVIDER_APP_ID });
+      oxr.set({ app_id: this.exchangeRatesProviderAppId });
 
       oxr.latest((err) => {
         if (err) {
