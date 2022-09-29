@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { FinancialDataClient } from '../datasources/financial-data.client.interface';
+import { IFinancialDataClient } from '../datasources/financial-data.client.interface';
 import { CompaniesRepository } from '../repositories/companies.repository';
 import { CompanyStatesRepository } from '../repositories/company-states.repository';
 import { CreateCompanyDto } from '../routes/dto/create-company.dto';
@@ -17,7 +17,7 @@ describe('CompaniesService', () => {
 
   const mockedFinancialDataClient = jest.mocked({
     getQuoteSummary: jest.fn(),
-  } as unknown as FinancialDataClient);
+  } as unknown as IFinancialDataClient);
 
   const service: CompaniesService = new CompaniesService(
     mockedCompaniesRepository,

@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -8,14 +9,15 @@ import { CreateCompanyDto } from '../routes/dto/create-company.dto';
 import { CompaniesRepository } from '../repositories/companies.repository';
 import { Company } from './entities/company.entity';
 import { CompanyStatesRepository } from '../repositories/company-states.repository';
-import { FinancialDataClient } from '../datasources/financial-data.client.interface';
+import { IFinancialDataClient } from '../datasources/financial-data.client.interface';
 
 @Injectable()
 export class CompaniesService {
   constructor(
     private readonly repository: CompaniesRepository,
     private readonly companyStatesRepository: CompanyStatesRepository,
-    private readonly financialDataClient: FinancialDataClient,
+    @Inject(IFinancialDataClient)
+    private readonly financialDataClient: IFinancialDataClient,
   ) {}
 
   async create(createCompanyDto: CreateCompanyDto): Promise<Company> {

@@ -1,5 +1,7 @@
 import { QuoteSummary } from '../domain/entities/quote-summary.entity';
 
-export interface FinancialDataClient {
+export const IFinancialDataClient = Symbol('IFinancialDataClient');
+
+export interface IFinancialDataClient {
   getQuoteSummary(symbol: string): Promise<QuoteSummary>;
 }

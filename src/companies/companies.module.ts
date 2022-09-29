@@ -13,6 +13,9 @@ import {
   CompanyStateSchema,
 } from './repositories/schemas/company-state.schema';
 import { HttpModule } from '@nestjs/axios';
+import { YahooFinancialDataClient } from './datasources/yahoo-financial-data.client';
+import { ConfigModule } from '@nestjs/config';
+import { IFinancialDataClient } from './datasources/financial-data.client.interface';
 
 @Module({
   imports: [
@@ -20,10 +23,16 @@ import { HttpModule } from '@nestjs/axios';
       { name: CompanyModel.name, schema: CompanySchema },
       { name: CompanyStateModel.name, schema: CompanyStateSchema },
     ]),
+    ConfigModule,
     HttpModule,
   ],
   controllers: [CompaniesController],
-  providers: [CompaniesService, CompaniesRepository, CompanyStatesRepository],
+  providers: [
+    CompaniesService,
+    CompaniesRepository,
+    CompanyStatesRepository,
+    { provide: IFinancialDataClient, useClass: YahooFinancialDataClient },
+  ],
   exports: [CompaniesRepository, CompanyStatesRepository],
 })
 export class CompaniesModule {}

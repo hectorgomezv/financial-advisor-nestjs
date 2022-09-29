@@ -3,10 +3,10 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { v4 as uuidv4 } from 'uuid';
 import { QuoteSummary } from '../domain/entities/quote-summary.entity';
-import { FinancialDataClient } from './financial-data.client.interface';
+import { IFinancialDataClient } from './financial-data.client.interface';
 
 @Injectable()
-export class YahooFinancialDataClient implements FinancialDataClient {
+export class YahooFinancialDataClient implements IFinancialDataClient {
   private baseUrl: string;
   private defaultModules: string;
   private providerApiToken: string;
