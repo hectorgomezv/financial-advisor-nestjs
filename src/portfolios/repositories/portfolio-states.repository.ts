@@ -17,11 +17,13 @@ export class PortfolioStatesRepository {
     private collection: Model<PortfolioStateDocument>,
   ) {}
 
-  getLastByPortfolioUuid(portfolioUuid: string) {
-    return this.collection
+  async getLastByPortfolioUuid(portfolioUuid: string): Promise<PortfolioState> {
+    const result = await this.collection
       .findOne({ portfolioUuid })
       .sort({ timestamp: -1 })
       .limit(1);
+
+    return plainToInstance(PortfolioState, result[0]);
   }
 
   async create(portfolioState: PortfolioState): Promise<PortfolioState> {
@@ -29,8 +31,8 @@ export class PortfolioStatesRepository {
     return plainToInstance(PortfolioState, created);
   }
 
-  deleteByPortfolioUuid(portfolioUuid: string) {
-    return this.collection.deleteMany({ portfolioUuid });
+  async deleteByPortfolioUuid(portfolioUuid: string): Promise<void> {
+    await this.collection.deleteMany({ portfolioUuid });
   }
 
   async getSeriesForRange(

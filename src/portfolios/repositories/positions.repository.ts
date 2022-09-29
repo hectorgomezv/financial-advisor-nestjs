@@ -51,7 +51,7 @@ export class PositionsRepository {
     await this.model.deleteOne({ portfolioUuid, uuid });
   }
 
-  update(uuid: string, patch: Partial<Position>) {
-    return this.model.updateOne({ uuid }, patch);
+  async update(uuid: string, patch: Partial<Position>): Promise<void> {
+    await this.model.updateOne({ uuid }, patch);
   }
 }

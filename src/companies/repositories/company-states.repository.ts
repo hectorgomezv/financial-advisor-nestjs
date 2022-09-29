@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
+import { CompanyState } from '../domain/entities/company-state.entity';
 import {
   CompanyStateDocument,
   CompanyStateModel,
@@ -13,7 +15,13 @@ export class CompanyStatesRepository {
     private model: Model<CompanyStateDocument>,
   ) {}
 
-  getLastByCompanyUuid(companyUuid: string) {
-    return this.model.find({ companyUuid }).sort({ timestamp: -1 }).limit(1);
+  async getLastByCompanyUuid(companyUuid: string): Promise<CompanyState> {
+    const result = await this.model
+      .find({ companyUuid })
+      .sort({ timestamp: -1 })
+      .limit(1)
+      .exec();
+
+    return plainToInstance(CompanyState, result[0]);
   }
 }
