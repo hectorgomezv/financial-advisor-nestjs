@@ -18,9 +18,11 @@ export class PortfoliosService {
 
   create(createPortfolioDto: CreatePortfolioDto) {
     return this.repository.create(<Portfolio>{
-      ...createPortfolioDto,
       uuid: uuidv4(),
-      created: new Date(),
+      name: createPortfolioDto.name,
+      created: Date.now(),
+      positions: [],
+      state: null,
     });
   }
 

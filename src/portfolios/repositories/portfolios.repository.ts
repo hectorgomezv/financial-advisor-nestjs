@@ -17,15 +17,20 @@ export class PortfoliosRepository {
     return plainToInstance(Portfolio, created);
   }
 
-  findAll() {
-    return this.portfolioModel.find().exec();
+  async findAll(): Promise<Portfolio[]> {
+    const result = await this.portfolioModel.find().exec();
+    return plainToInstance(
+      Portfolio,
+      result.map((i) => i.toObject()),
+    );
   }
 
-  findOne(uuid: string) {
-    return this.portfolioModel.findOne({ uuid }).exec();
+  async findOne(uuid: string): Promise<Portfolio> {
+    const result = (await this.portfolioModel.findOne({ uuid })).toObject();
+    return plainToInstance(Portfolio, result);
   }
 
-  deleteOne(uuid: string) {
-    return this.portfolioModel.deleteOne({ uuid });
+  async deleteOne(uuid: string): Promise<void> {
+    await this.portfolioModel.deleteOne({ uuid });
   }
 }

@@ -18,27 +18,37 @@ export class PositionsRepository {
   }
 
   async findByUuid(uuid: string): Promise<Position> {
-    const position = (await this.model.findOne({ uuid })).toObject();
-    return plainToInstance(Position, position);
+    const result = (await this.model.findOne({ uuid }))?.toObject();
+    return plainToInstance(Position, result);
   }
 
-  findByCompanyUuidAndPortfolioUuid(
+  async findByCompanyUuidAndPortfolioUuid(
     companyUuid: string,
     portfolioUuid: string,
-  ) {
-    return this.model.findOne({ companyUuid, portfolioUuid });
+  ): Promise<Position> {
+    const result = (
+      await this.model.findOne({ companyUuid, portfolioUuid })
+    )?.toObject();
+    return plainToInstance(Position, result);
   }
 
-  findByPortfolioUuid(portfolioUuid: string) {
-    return this.model.find({ portfolioUuid });
+  async findByPortfolioUuid(portfolioUuid: string): Promise<Position[]> {
+    const result = await this.model.find({ portfolioUuid }).exec();
+    return plainToInstance(
+      Position,
+      result.map((i) => i.toObject()),
+    );
   }
 
-  deleteByPortfolioUuid(portfolioUuid: string) {
-    return this.model.deleteMany({ portfolioUuid });
+  async deleteByPortfolioUuid(portfolioUuid: string): Promise<void> {
+    await this.model.deleteMany({ portfolioUuid });
   }
 
-  deleteByUuidAndPortfolioUuid(portfolioUuid: string, uuid: string) {
-    return this.model.deleteOne({ portfolioUuid, uuid });
+  async deleteByUuidAndPortfolioUuid(
+    portfolioUuid: string,
+    uuid: string,
+  ): Promise<void> {
+    await this.model.deleteOne({ portfolioUuid, uuid });
   }
 
   update(uuid: string, patch: Partial<Position>) {

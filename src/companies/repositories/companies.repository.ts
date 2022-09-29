@@ -17,23 +17,35 @@ export class CompaniesRepository {
     return plainToInstance(Company, created);
   }
 
-  findAll() {
-    return this.companyModel.find().exec();
+  async findAll(): Promise<Company[]> {
+    const result = await this.companyModel.find().exec();
+    return plainToInstance(
+      Company,
+      result.map((i) => i.toObject()),
+    );
   }
 
-  findByUuidIn(uuid: string[]) {
-    return this.companyModel.find({ uuid: { $in: uuid } });
+  async findByUuidIn(uuid: string[]): Promise<Company[]> {
+    const result = await this.companyModel.find({ uuid: { $in: uuid } }).exec();
+    return plainToInstance(
+      Company,
+      result.map((i) => i.toObject()),
+    );
   }
 
-  findOne(uuid: string) {
-    return this.companyModel.findOne({ uuid }).exec();
+  async findOne(uuid: string): Promise<Company> {
+    const result = (
+      await this.companyModel.findOne({ uuid }).exec()
+    )?.toObject();
+    return plainToInstance(Company, result);
   }
 
-  findBySymbol(symbol: string) {
-    return this.companyModel.findOne({ symbol });
+  async findBySymbol(symbol: string): Promise<Company> {
+    const result = (await this.companyModel.findOne({ symbol }))?.toObject();
+    return plainToInstance(Company, result);
   }
 
-  deleteOne(uuid: string) {
-    return this.companyModel.deleteOne({ uuid });
+  async deleteOne(uuid: string): Promise<void> {
+    await this.companyModel.deleteOne({ uuid });
   }
 }
