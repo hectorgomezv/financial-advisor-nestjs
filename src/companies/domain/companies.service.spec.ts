@@ -1,5 +1,7 @@
 import { faker } from '@faker-js/faker';
+import { FinancialDataClient } from '../datasources/financial-data.client.interface';
 import { CompaniesRepository } from '../repositories/companies.repository';
+import { CompanyStatesRepository } from '../repositories/company-states.repository';
 import { CreateCompanyDto } from '../routes/dto/create-company.dto';
 import { CompaniesService } from './companies.service';
 import { companyFactory } from './entities/__tests__/company.factory';
@@ -9,8 +11,18 @@ describe('CompaniesService', () => {
     findBySymbol: jest.fn(),
   } as unknown as CompaniesRepository);
 
+  const mockedCompanyStatesRepository = jest.mocked({
+    create: jest.fn(),
+  } as unknown as CompanyStatesRepository);
+
+  const mockedFinancialDataClient = jest.mocked({
+    getQuoteSummary: jest.fn(),
+  } as unknown as FinancialDataClient);
+
   const service: CompaniesService = new CompaniesService(
     mockedCompaniesRepository,
+    mockedCompanyStatesRepository,
+    mockedFinancialDataClient,
   );
 
   describe('creation', () => {

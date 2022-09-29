@@ -15,6 +15,11 @@ export class CompanyStatesRepository {
     private model: Model<CompanyStateDocument>,
   ) {}
 
+  async create(companyState: CompanyState): Promise<CompanyState> {
+    const created = (await this.model.create(companyState)).toObject();
+    return plainToInstance(CompanyState, created);
+  }
+
   async getLastByCompanyUuid(companyUuid: string): Promise<CompanyState> {
     const result = await this.model
       .findOne({ companyUuid })

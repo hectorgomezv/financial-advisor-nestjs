@@ -12,6 +12,7 @@ import {
   CompanyStateModel,
   CompanyStateSchema,
 } from './repositories/schemas/company-state.schema';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import {
       { name: CompanyModel.name, schema: CompanySchema },
       { name: CompanyStateModel.name, schema: CompanyStateSchema },
     ]),
+    HttpModule,
   ],
   controllers: [CompaniesController],
   providers: [CompaniesService, CompaniesRepository, CompanyStatesRepository],

@@ -1,4 +1,4 @@
-import { CurrencyExchangeClient } from '../datasources/currency-exchange-client';
+import { CurrencyExchangeClient } from '../datasources/currency-exchange.client';
 import { PortfolioStatesRepository } from '../repositories/portfolio-states.repository';
 import { PortfolioStatesService } from './portfolio-states.service';
 

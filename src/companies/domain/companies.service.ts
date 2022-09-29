@@ -7,29 +7,39 @@ import { v4 as uuidv4 } from 'uuid';
 import { CreateCompanyDto } from '../routes/dto/create-company.dto';
 import { CompaniesRepository } from '../repositories/companies.repository';
 import { Company } from './entities/company.entity';
+import { CompanyStatesRepository } from '../repositories/company-states.repository';
+import { FinancialDataClient } from '../datasources/financial-data.client.interface';
 
 @Injectable()
 export class CompaniesService {
-  constructor(private readonly repository: CompaniesRepository) {}
+  constructor(
+    private readonly repository: CompaniesRepository,
+    private readonly companyStatesRepository: CompanyStatesRepository,
+    private readonly financialDataClient: FinancialDataClient,
+  ) {}
 
   async create(createCompanyDto: CreateCompanyDto): Promise<Company> {
-    const company = await this.repository.findBySymbol(createCompanyDto.symbol);
+    const exists = await this.repository.findBySymbol(createCompanyDto.symbol);
 
-    if (company) {
-      throw new ConflictException(`Company ${company.symbol} already exists`);
+    if (exists) {
+      throw new ConflictException(`Company ${exists.symbol} already exists`);
     }
 
-    return this.repository.create(<Company>{
+    const company = await this.repository.create(<Company>{
       ...createCompanyDto,
       uuid: uuidv4(),
     });
+
+    await this.createCompanyState(company);
+
+    return company;
   }
 
-  findAll() {
+  findAll(): Promise<Company[]> {
     return this.repository.findAll();
   }
 
-  async findOne(uuid: string) {
+  async findOne(uuid: string): Promise<Company> {
     const company = await this.repository.findOne(uuid);
 
     if (!company) {
@@ -49,5 +59,13 @@ export class CompaniesService {
     await this.repository.deleteOne(uuid);
 
     return company;
+  }
+
+  private async createCompanyState(company: Company): Promise<void> {
+    const quoteSummary = await this.financialDataClient.getQuoteSummary(
+      company.symbol,
+    );
+
+    await this.companyStatesRepository.create(null);
   }
 }
