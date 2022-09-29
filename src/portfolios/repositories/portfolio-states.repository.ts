@@ -21,9 +21,10 @@ export class PortfolioStatesRepository {
     const result = await this.collection
       .findOne({ portfolioUuid })
       .sort({ timestamp: -1 })
-      .limit(1);
+      .limit(1)
+      .exec();
 
-    return plainToInstance(PortfolioState, result[0]);
+    return plainToInstance(PortfolioState, result && result[0]);
   }
 
   async create(portfolioState: PortfolioState): Promise<PortfolioState> {

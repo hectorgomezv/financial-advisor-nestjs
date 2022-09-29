@@ -22,6 +22,6 @@ export class CompanyStatesRepository {
       .limit(1)
       .exec();
 
-    return plainToInstance(CompanyState, result[0]);
+    return plainToInstance(CompanyState, result && result[0]);
   }
 }
