@@ -18,15 +18,12 @@ export class PortfoliosRepository {
   }
 
   async findAll(): Promise<Portfolio[]> {
-    const result = await this.portfolioModel.find().exec();
-    return plainToInstance(
-      Portfolio,
-      result.map((i) => i.toObject()),
-    );
+    const result = await this.portfolioModel.find().lean();
+    return plainToInstance(Portfolio, result);
   }
 
   async findOne(uuid: string): Promise<Portfolio> {
-    const result = (await this.portfolioModel.findOne({ uuid })).toObject();
+    const result = await this.portfolioModel.findOne({ uuid }).lean();
     return plainToInstance(Portfolio, result);
   }
 

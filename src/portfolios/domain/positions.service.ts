@@ -143,7 +143,7 @@ export class PositionsService {
       companyName: company.name,
       symbol: company.symbol,
       shares: position.shares,
-      value: Number(companyState?.price ?? 0 * position.shares),
+      value: Number((companyState?.price ?? 0) * position.shares),
       targetWeight: position.targetWeight,
     };
   }

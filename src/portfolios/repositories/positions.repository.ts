@@ -18,7 +18,7 @@ export class PositionsRepository {
   }
 
   async findByUuid(uuid: string): Promise<Position> {
-    const result = (await this.model.findOne({ uuid }))?.toObject();
+    const result = await this.model.findOne({ uuid }).limit(1).lean();
     return plainToInstance(Position, result);
   }
 
@@ -26,17 +26,18 @@ export class PositionsRepository {
     companyUuid: string,
     portfolioUuid: string,
   ): Promise<Position> {
-    const result = (
-      await this.model.findOne({ companyUuid, portfolioUuid })
-    )?.toObject();
+    const result = await this.model
+      .findOne({ companyUuid, portfolioUuid })
+      .limit(1)
+      .lean();
+
     return plainToInstance(Position, result);
   }
 
   async findByPortfolioUuid(portfolioUuid: string): Promise<Position[]> {
-    const result = await this.model.find({ portfolioUuid }).exec();
     return plainToInstance(
       Position,
-      result.map((i) => i.toObject()),
+      await this.model.find({ portfolioUuid }).lean(),
     );
   }
 

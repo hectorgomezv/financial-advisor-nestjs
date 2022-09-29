@@ -22,9 +22,9 @@ export class PortfolioStatesRepository {
       .findOne({ portfolioUuid })
       .sort({ timestamp: -1 })
       .limit(1)
-      .exec();
+      .lean();
 
-    return plainToInstance(PortfolioState, result && result[0]);
+    return plainToInstance(PortfolioState, result);
   }
 
   async create(portfolioState: PortfolioState): Promise<PortfolioState> {

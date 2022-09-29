@@ -17,11 +17,11 @@ export class CompanyStatesRepository {
 
   async getLastByCompanyUuid(companyUuid: string): Promise<CompanyState> {
     const result = await this.model
-      .find({ companyUuid })
+      .findOne({ companyUuid })
       .sort({ timestamp: -1 })
       .limit(1)
-      .exec();
+      .lean();
 
-    return plainToInstance(CompanyState, result && result[0]);
+    return plainToInstance(CompanyState, result);
   }
 }

@@ -18,30 +18,22 @@ export class CompaniesRepository {
   }
 
   async findAll(): Promise<Company[]> {
-    const result = await this.companyModel.find().exec();
-    return plainToInstance(
-      Company,
-      result.map((i) => i.toObject()),
-    );
+    const result = await this.companyModel.find().lean();
+    return plainToInstance(Company, result);
   }
 
   async findByUuidIn(uuid: string[]): Promise<Company[]> {
-    const result = await this.companyModel.find({ uuid: { $in: uuid } }).exec();
-    return plainToInstance(
-      Company,
-      result.map((i) => i.toObject()),
-    );
+    const result = await this.companyModel.find({ uuid: { $in: uuid } }).lean();
+    return plainToInstance(Company, result);
   }
 
   async findOne(uuid: string): Promise<Company> {
-    const result = (
-      await this.companyModel.findOne({ uuid }).exec()
-    )?.toObject();
+    const result = await this.companyModel.findOne({ uuid }).lean();
     return plainToInstance(Company, result);
   }
 
   async findBySymbol(symbol: string): Promise<Company> {
-    const result = (await this.companyModel.findOne({ symbol }))?.toObject();
+    const result = await this.companyModel.findOne({ symbol }).lean();
     return plainToInstance(Company, result);
   }
 
