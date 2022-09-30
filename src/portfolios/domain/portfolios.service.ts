@@ -40,7 +40,8 @@ export class PortfoliosService {
       throw new NotFoundException('Portfolio not found');
     }
 
-    const positions = await this.positionService.getByPortfolioUuid(uuid);
+    const positions =
+      await this.positionService.getPositionDetailsByPortfolioUuid(uuid);
     const state = await this.portfolioStatesService.getLastByPortfolioUuid(
       uuid,
     );
@@ -99,11 +100,12 @@ export class PortfoliosService {
     try {
       const portfolios = await this.repository.findAll();
       await Promise.all(
-        portfolios.map(async (portfolio) => {
-          const positions = await this.positionService.deleteByPortfolioUuid(
-            portfolio.uuid,
+        portfolios.map(async ({ uuid }) => {
+          const positions = await this.positionService.getByPortfolioUuid(uuid);
+          return this.portfolioStatesService.createPortfolioState(
+            uuid,
+            positions,
           );
-
         }),
       );
     } catch (err) {

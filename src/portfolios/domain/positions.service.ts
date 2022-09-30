@@ -98,7 +98,11 @@ export class PositionsService {
     return updated;
   }
 
-  async getByPortfolioUuid(
+  getByPortfolioUuid(portfolioUuid: string): Promise<Position[]> {
+    return this.repository.findByPortfolioUuid(portfolioUuid);
+  }
+
+  async getPositionDetailsByPortfolioUuid(
     portfolioUuid: string,
   ): Promise<PositionDetailDto[]> {
     const positions = await this.repository.findByPortfolioUuid(portfolioUuid);
@@ -167,7 +171,9 @@ export class PositionsService {
   }
 
   private async updatePortfolioState(portfolioUuid: string) {
-    const positions = await this.getByPortfolioUuid(portfolioUuid);
+    const positions = await this.getPositionDetailsByPortfolioUuid(
+      portfolioUuid,
+    );
     await this.portfolioStatesService.createPortfolioState(
       portfolioUuid,
       this.mapToPositions(positions, portfolioUuid), // TODO: refactor when implementing PositionState
