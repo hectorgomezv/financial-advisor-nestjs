@@ -17,13 +17,13 @@ describe('CompaniesService', () => {
 
   const mockedPositionsRepository = jest.mocked({
     create: jest.fn(),
-    deleteByCompanyUuid: jest.fn(),
     findBySymbol: jest.fn(),
     findByCompanyUuid: jest.fn(),
   } as unknown as PositionsRepository);
 
   const mockedCompanyStateService = jest.mocked({
     createCompanyState: jest.fn(),
+    deleteByCompanyUuid: jest.fn(),
   } as unknown as CompanyStatesService);
 
   const service = new CompaniesService(
@@ -86,7 +86,7 @@ describe('CompaniesService', () => {
 
       expect(deleted).toEqual(company);
       expect(
-        mockedPositionsRepository.deleteByCompanyUuid,
+        mockedCompanyStateService.deleteByCompanyUuid,
       ).toHaveBeenCalledWith(company.uuid);
       expect(mockedCompaniesRepository.deleteOne).toHaveBeenCalledWith(
         company.uuid,

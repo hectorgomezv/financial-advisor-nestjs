@@ -28,4 +28,8 @@ export class CompanyStatesService {
 
     return this.companyStatesRepository.create(companyState);
   }
+
+  deleteByCompanyUuid(companyUuid: string): Promise<void> {
+    return this.companyStatesRepository.deleteByCompanyUuid(companyUuid);
+  }
 }

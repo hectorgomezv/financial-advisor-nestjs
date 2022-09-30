@@ -48,10 +48,6 @@ export class PositionsRepository {
     );
   }
 
-  async deleteByCompanyUuid(companyUuid: string): Promise<void> {
-    await this.model.deleteMany({ companyUuid });
-  }
-
   async deleteByPortfolioUuid(portfolioUuid: string): Promise<void> {
     await this.model.deleteMany({ portfolioUuid });
   }

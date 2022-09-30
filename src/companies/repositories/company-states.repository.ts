@@ -20,6 +20,10 @@ export class CompanyStatesRepository {
     return plainToInstance(CompanyState, created);
   }
 
+  async deleteByCompanyUuid(companyUuid: string): Promise<void> {
+    await this.model.deleteMany({ companyUuid });
+  }
+
   async getLastByCompanyUuid(companyUuid: string): Promise<CompanyState> {
     const result = await this.model
       .findOne({ companyUuid })
