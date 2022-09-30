@@ -74,16 +74,16 @@ export class CompaniesService {
     return company;
   }
 
-  @Cron('0 32 15 * * *')
-  private refreshAllStatesAtMarketOpening() {
+  @Cron('0 32 9 * * *', { timeZone: 'America/New_York' })
+  private refreshAllStatesAtMarketOpen() {
     return this.refreshAllStates();
   }
 
-  @Cron('0 30 18 * * *')
+  @Cron('0 30 12 * * *', { timeZone: 'America/New_York' })
   private refreshAllStatesAtMidday() {
     return this.refreshAllStates();
   }
-  @Cron('0 02 22 * * *')
+  @Cron('0 02 4 * * *', { timeZone: 'America/New_York' })
   private refreshAllStatesAtMarketClose() {
     return this.refreshAllStates();
   }

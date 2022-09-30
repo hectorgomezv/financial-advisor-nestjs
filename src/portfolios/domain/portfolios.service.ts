@@ -1,18 +1,21 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 import { v4 as uuidv4 } from 'uuid';
-import { PortfolioStatesRepository } from '../repositories/portfolio-states.repository';
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { PortfolioDetailDto } from './dto/portfolio-detail.dto';
 import { Portfolio } from './entities/portfolio.entity';
 import { timeRangeFromStr } from './entities/time-range.enum';
+import { PortfolioStatesService } from './portfolio-states.service';
 import { PositionsService } from './positions.service';
 
 @Injectable()
 export class PortfoliosService {
+  private readonly logger = new Logger(PortfoliosService.name);
+
   constructor(
     private readonly repository: PortfoliosRepository,
-    private readonly portfolioStatesRepository: PortfolioStatesRepository,
+    private readonly portfolioStatesService: PortfolioStatesService,
     private readonly positionService: PositionsService,
   ) {}
 
@@ -38,7 +41,7 @@ export class PortfoliosService {
     }
 
     const positions = await this.positionService.getByPortfolioUuid(uuid);
-    const state = await this.portfolioStatesRepository.getLastByPortfolioUuid(
+    const state = await this.portfolioStatesService.getLastByPortfolioUuid(
       uuid,
     );
 
@@ -59,7 +62,7 @@ export class PortfoliosService {
     }
 
     await this.positionService.deleteByPortfolioUuid(uuid);
-    await this.portfolioStatesRepository.deleteByPortfolioUuid(uuid);
+    await this.portfolioStatesService.deleteByPortfolioUuid(uuid);
     await this.repository.deleteOne(uuid);
 
     return portfolio;
@@ -72,9 +75,41 @@ export class PortfoliosService {
       throw new NotFoundException('Portfolio not found');
     }
 
-    return this.portfolioStatesRepository.getSeriesForRange(
+    return this.portfolioStatesService.getSeriesForRange(
       uuid,
       timeRangeFromStr(range),
     );
+  }
+
+  @Cron('0 33 9 * * *', { timeZone: 'America/New_York' })
+  private refreshAllStatesAtMarketOpen() {
+    return this.refreshAllStates();
+  }
+
+  @Cron('0 31 12 * * *', { timeZone: 'America/New_York' })
+  private refreshAllStatesAtMidday() {
+    return this.refreshAllStates();
+  }
+  @Cron('0 03 4 * * *', { timeZone: 'America/New_York' })
+  private refreshAllStatesAtMarketClose() {
+    return this.refreshAllStates();
+  }
+
+  private async refreshAllStates() {
+    try {
+      const portfolios = await this.repository.findAll();
+      await Promise.all(
+        portfolios.map(async (portfolio) => {
+          const positions = await this.positionService.deleteByPortfolioUuid(
+            portfolio.uuid,
+          );
+
+        }),
+      );
+    } catch (err) {
+      this.logger.error(
+        `Error refreshing portfolios state from provider: ${err.message}`,
+      );
+    }
   }
 }
