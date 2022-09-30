@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { v4 as uuidv4 } from 'uuid';
 import { QuoteSummary } from '../domain/entities/quote-summary.entity';
@@ -32,7 +32,15 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
       { headers: { 'x-api-key': this.providerApiToken } },
     );
 
-    return this.mapQuoteSummaryResponse(data.quoteSummary.result[0]);
+    const result = data.quoteSummary?.result?.[0];
+
+    if (!result) {
+      throw new NotFoundException(
+        `Financial data client cannot find company ${symbol}`,
+      );
+    }
+
+    return this.mapQuoteSummaryResponse(result);
   }
 
   private mapQuoteSummaryResponse(item: any): QuoteSummary {
