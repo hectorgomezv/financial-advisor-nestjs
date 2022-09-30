@@ -1,6 +1,5 @@
 import {
   ConflictException,
-  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -8,16 +7,13 @@ import { v4 as uuidv4 } from 'uuid';
 import { CreateCompanyDto } from '../routes/dto/create-company.dto';
 import { CompaniesRepository } from '../repositories/companies.repository';
 import { Company } from './entities/company.entity';
-import { CompanyStatesRepository } from '../repositories/company-states.repository';
-import { IFinancialDataClient } from '../datasources/financial-data.client.interface';
+import { CompanyStatesService } from './company-states.service';
 
 @Injectable()
 export class CompaniesService {
   constructor(
     private readonly repository: CompaniesRepository,
-    private readonly companyStatesRepository: CompanyStatesRepository,
-    @Inject(IFinancialDataClient)
-    private readonly financialDataClient: IFinancialDataClient,
+    private readonly companyStatesService: CompanyStatesService,
   ) {}
 
   async create(createCompanyDto: CreateCompanyDto): Promise<Company> {
@@ -32,7 +28,7 @@ export class CompaniesService {
       uuid: uuidv4(),
     });
 
-    await this.createCompanyState(company);
+    await this.companyStatesService.createCompanyState(company);
 
     return company;
   }
@@ -61,13 +57,5 @@ export class CompaniesService {
     await this.repository.deleteOne(uuid);
 
     return company;
-  }
-
-  private async createCompanyState(company: Company): Promise<void> {
-    const quoteSummary = await this.financialDataClient.getQuoteSummary(
-      company.symbol,
-    );
-
-    await this.companyStatesRepository.create(null);
   }
 }
