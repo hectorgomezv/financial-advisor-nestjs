@@ -10,12 +10,14 @@ import { companyFactory } from './entities/__tests__/company.factory';
 describe('CompaniesService', () => {
   const mockedCompaniesRepository = jest.mocked({
     create: jest.fn(),
+    deleteOne: jest.fn(),
     findOne: jest.fn(),
     findBySymbol: jest.fn(),
   } as unknown as CompaniesRepository);
 
   const mockedPositionsRepository = jest.mocked({
     create: jest.fn(),
+    deleteByCompanyUuid: jest.fn(),
     findBySymbol: jest.fn(),
     findByCompanyUuid: jest.fn(),
   } as unknown as PositionsRepository);
@@ -75,15 +77,20 @@ describe('CompaniesService', () => {
       );
     });
 
-    // it('should delete company states when deleting a company', async () => {
-    //   const company = companyFactory();
+    it('should delete company states when deleting a company', async () => {
+      const company = companyFactory();
+      mockedCompaniesRepository.findOne.mockResolvedValue(company);
+      mockedPositionsRepository.findByCompanyUuid.mockResolvedValue([]);
 
-    //   const deleted = await service.remove(company.uuid);
+      const deleted = await service.remove(company.uuid);
 
-    //   expect(deleted).toEqual(company);
-    //   expect(mockedCompaniesRepository.deleteOne).toHaveBeenCalledWith(
-    //     company.uuid,
-    //   );
-    // });
+      expect(deleted).toEqual(company);
+      expect(
+        mockedPositionsRepository.deleteByCompanyUuid,
+      ).toHaveBeenCalledWith(company.uuid);
+      expect(mockedCompaniesRepository.deleteOne).toHaveBeenCalledWith(
+        company.uuid,
+      );
+    });
   });
 });

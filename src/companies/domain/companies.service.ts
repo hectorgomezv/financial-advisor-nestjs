@@ -64,6 +64,7 @@ export class CompaniesService {
       );
     }
 
+    await this.positionsRepository.deleteByCompanyUuid(uuid);
     await this.repository.deleteOne(uuid);
 
     return company;
