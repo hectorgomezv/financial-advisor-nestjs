@@ -16,6 +16,7 @@ import { HttpModule } from '@nestjs/axios';
 import { YahooFinancialDataClient } from './datasources/yahoo-financial-data.client';
 import { ConfigModule } from '@nestjs/config';
 import { IFinancialDataClient } from './datasources/financial-data.client.interface';
+import { CompanyStatesService } from './domain/company-states.service';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { IFinancialDataClient } from './datasources/financial-data.client.interf
   providers: [
     CompaniesService,
     CompaniesRepository,
+    CompanyStatesService,
     CompanyStatesRepository,
     { provide: IFinancialDataClient, useClass: YahooFinancialDataClient },
   ],
