@@ -9,6 +9,6 @@ export function companyFactory(
   return <Company>{
     uuid: uuid || faker.datatype.uuid(),
     name: name || faker.random.words(),
-    symbol: symbol || faker.finance.currencyCode(),
+    symbol: symbol || faker.random.word(),
   };
 }

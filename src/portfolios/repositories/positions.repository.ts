@@ -34,6 +34,13 @@ export class PositionsRepository {
     return plainToInstance(Position, result);
   }
 
+  async findByCompanyUuid(companyUuid: string): Promise<Position[]> {
+    return plainToInstance(
+      Position,
+      await this.model.find({ companyUuid }).lean(),
+    );
+  }
+
   async findByPortfolioUuid(portfolioUuid: string): Promise<Position[]> {
     return plainToInstance(
       Position,

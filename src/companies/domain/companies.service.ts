@@ -8,11 +8,13 @@ import { CreateCompanyDto } from '../routes/dto/create-company.dto';
 import { CompaniesRepository } from '../repositories/companies.repository';
 import { Company } from './entities/company.entity';
 import { CompanyStatesService } from './company-states.service';
+import { PositionsRepository } from '../../portfolios/repositories/positions.repository';
 
 @Injectable()
 export class CompaniesService {
   constructor(
     private readonly repository: CompaniesRepository,
+    private readonly positionsRepository: PositionsRepository,
     private readonly companyStatesService: CompanyStatesService,
   ) {}
 
@@ -52,6 +54,14 @@ export class CompaniesService {
 
     if (!company) {
       throw new NotFoundException('Company not found');
+    }
+
+    const positions = await this.positionsRepository.findByCompanyUuid(uuid);
+
+    if (positions.length) {
+      throw new ConflictException(
+        `Positions for company ${company.symbol} still exist`,
+      );
     }
 
     await this.repository.deleteOne(uuid);
