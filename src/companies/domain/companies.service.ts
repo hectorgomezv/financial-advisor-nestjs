@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
@@ -9,9 +10,12 @@ import { CompaniesRepository } from '../repositories/companies.repository';
 import { Company } from './entities/company.entity';
 import { CompanyStatesService } from './company-states.service';
 import { PositionsRepository } from '../../portfolios/repositories/positions.repository';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class CompaniesService {
+  private readonly logger = new Logger(CompaniesService.name);
+
   constructor(
     private readonly repository: CompaniesRepository,
     private readonly positionsRepository: PositionsRepository,
@@ -68,5 +72,34 @@ export class CompaniesService {
     await this.repository.deleteOne(uuid);
 
     return company;
+  }
+
+  @Cron('0 32 15 * * *')
+  private refreshAllStatesAtMarketOpening() {
+    return this.refreshAllStates();
+  }
+
+  @Cron('0 30 18 * * *')
+  private refreshAllStatesAtMidday() {
+    return this.refreshAllStates();
+  }
+  @Cron('0 02 22 * * *')
+  private refreshAllStatesAtMarketClose() {
+    return this.refreshAllStates();
+  }
+
+  private async refreshAllStates() {
+    try {
+      const companies = await this.repository.findAll();
+      await Promise.all(
+        companies.map((company) =>
+          this.companyStatesService.createCompanyState(company),
+        ),
+      );
+    } catch (err) {
+      this.logger.error(
+        `Error refreshing companies state from provider: ${err.message}`,
+      );
+    }
   }
 }

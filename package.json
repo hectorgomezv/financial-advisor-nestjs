@@ -30,6 +30,8 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/mongoose": "^9.2.0",
     "@nestjs/platform-express": "^9.0.0",
+    "@nestjs/schedule": "^2.1.0",
+    "@types/cron": "^2.0.0",
     "class-transformer": "^0.5.1",
     "cron": "^2.1.0",
     "money": "^0.2.0",
@@ -81,7 +83,8 @@
     ],
     "coverageDirectory": "../coverage",
     "coveragePathIgnorePatterns": [
-      ".*\\.module\\.ts$", "main.ts"
+      ".*\\.module\\.ts$",
+      "main.ts"
     ],
     "testEnvironment": "node"
   },
