@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PortfoliosService } from './domain/portfolios.service';
 import { PortfoliosController } from './routes/portfolios.controller';
@@ -30,8 +30,8 @@ import { ConfigModule } from '@nestjs/config';
       { name: PortfolioStateModel.name, schema: PortfolioStateSchema },
       { name: PositionModel.name, schema: PositionSchema },
     ]),
-    CompaniesModule,
     ConfigModule,
+    forwardRef(() => CompaniesModule),
   ],
   controllers: [PortfoliosController],
   providers: [
@@ -43,5 +43,6 @@ import { ConfigModule } from '@nestjs/config';
     PositionsService,
     PositionsRepository,
   ],
+  exports: [PositionsRepository],
 })
 export class PortfoliosModule {}
