@@ -11,6 +11,7 @@ describe('CompaniesService', () => {
   const mockedCompaniesRepository = jest.mocked({
     create: jest.fn(),
     deleteOne: jest.fn(),
+    findAll: jest.fn(),
     findOne: jest.fn(),
     findBySymbol: jest.fn(),
   } as unknown as CompaniesRepository);
@@ -31,6 +32,8 @@ describe('CompaniesService', () => {
     mockedPositionsRepository,
     mockedCompanyStateService,
   );
+
+  beforeEach(() => jest.resetAllMocks());
 
   describe('creation', () => {
     it('should fail if the symbol exists', async () => {
@@ -65,7 +68,45 @@ describe('CompaniesService', () => {
     });
   });
 
+  describe('retrieving', () => {
+    it('should call repository for retrieving all the companies', async () => {
+      await service.findAll();
+      expect(mockedCompaniesRepository.findAll).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call repository for retrieving a company', async () => {
+      const company = companyFactory();
+      mockedCompaniesRepository.findOne.mockResolvedValue(company);
+
+      await service.findOne(company.uuid);
+
+      expect(mockedCompaniesRepository.findOne).toHaveBeenCalledTimes(1);
+    });
+
+    it('should fail if a company cannot be found by uuid', async () => {
+      const companyUuid = faker.datatype.uuid();
+      mockedCompaniesRepository.findOne.mockResolvedValue(null);
+
+      await expect(service.findOne(companyUuid)).rejects.toThrow(
+        'Company not found',
+      );
+
+      expect(mockedCompaniesRepository.findOne).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('deletion', () => {
+    it('should fail if a company cannot be found by uuid', async () => {
+      const companyUuid = faker.datatype.uuid();
+      mockedCompaniesRepository.findOne.mockResolvedValue(null);
+
+      await expect(service.remove(companyUuid)).rejects.toThrow(
+        'Company not found',
+      );
+
+      expect(mockedCompaniesRepository.findOne).toHaveBeenCalledTimes(1);
+    });
+
     it('should fail if positions associated with the company exist', async () => {
       const company = companyFactory();
       const position = positionFactory();

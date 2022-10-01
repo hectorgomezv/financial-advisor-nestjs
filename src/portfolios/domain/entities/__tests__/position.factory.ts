@@ -14,9 +14,9 @@ export function positionFactory(
     uuid: uuid || faker.datatype.uuid(),
     portfolioUuid: portfolioUuid || faker.datatype.uuid(),
     companyUuid: companyUuid || faker.datatype.uuid(),
-    targetWeight: targetWeight || faker.random.numeric(),
-    shares: shares || faker.random.numeric(),
+    targetWeight: targetWeight || faker.datatype.number(),
+    shares: shares || faker.datatype.number(),
     symbol: symbol || faker.random.word(),
-    value: value || faker.random.numeric(),
+    value: value || faker.datatype.number(),
   };
 }

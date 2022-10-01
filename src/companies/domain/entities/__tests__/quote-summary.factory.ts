@@ -10,7 +10,7 @@ export function quoteSummaryFactory(
   return <QuoteSummary>{
     uuid: uuid || faker.datatype.uuid(),
     timestamp: timestamp || Date.now(),
-    price: price || faker.random.numeric(),
-    peg: peg || faker.random.numeric(),
+    price: price || faker.datatype.number(),
+    peg: peg || faker.datatype.number(),
   };
 }

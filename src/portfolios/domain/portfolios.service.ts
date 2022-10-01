@@ -19,7 +19,7 @@ export class PortfoliosService {
     private readonly positionService: PositionsService,
   ) {}
 
-  create(createPortfolioDto: CreatePortfolioDto) {
+  create(createPortfolioDto: CreatePortfolioDto): Promise<Portfolio> {
     return this.repository.create(<Portfolio>{
       uuid: uuidv4(),
       name: createPortfolioDto.name,

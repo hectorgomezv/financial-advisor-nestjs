@@ -1,4 +1,4 @@
-import { PortfolioStateDetailDto } from './portfolio-state-detail.dto';
+import { PortfolioState } from '../entities/portfolio-state.entity';
 import { PositionDetailDto } from './position-detail.dto';
 
 export class PortfolioDetailDto {
@@ -6,5 +6,5 @@ export class PortfolioDetailDto {
   name: string;
   created: number;
   positions: PositionDetailDto[];
-  state: PortfolioStateDetailDto;
+  state: PortfolioState;
 }

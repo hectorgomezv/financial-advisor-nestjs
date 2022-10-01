@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import { IFinancialDataClient } from '../datasources/financial-data.client.interface';
 import { CompanyStatesRepository } from '../repositories/company-states.repository';
 import { CompanyStatesService } from './company-states.service';
@@ -8,6 +9,7 @@ import { quoteSummaryFactory } from './entities/__tests__/quote-summary.factory'
 describe('CompanyStatesService', () => {
   const mockedCompanyStatesRepository = jest.mocked({
     create: jest.fn(),
+    deleteByCompanyUuid: jest.fn(),
   } as unknown as CompanyStatesRepository);
 
   const mockedFinancialDataClient = jest.mocked({
@@ -34,6 +36,18 @@ describe('CompanyStatesService', () => {
       );
       expect(mockedCompanyStatesRepository.create).toHaveBeenCalledTimes(1);
       expect(created).toEqual(companyState);
+    });
+  });
+
+  describe('deletion', () => {
+    it('should call repository for deletion', async () => {
+      const companyUuid = faker.datatype.uuid();
+
+      service.deleteByCompanyUuid(companyUuid);
+
+      expect(
+        mockedCompanyStatesRepository.deleteByCompanyUuid,
+      ).toHaveBeenCalledWith(companyUuid);
     });
   });
 });
