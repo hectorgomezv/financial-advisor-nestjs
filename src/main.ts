@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { readFileSync } from 'fs';
 import { AppModule } from './app.module';
 import { VersioningType } from '@nestjs/common';
 
@@ -13,12 +14,16 @@ async function bootstrap() {
     type: VersioningType.URI,
   });
 
+  const { version } = JSON.parse(
+    readFileSync('package.json', { encoding: 'utf-8' }),
+  );
+
   const document = SwaggerModule.createDocument(
     app,
     new DocumentBuilder()
       .setTitle('Financial Advisor')
       .setDescription('Nest.js Financial Advisor implementation')
-      .setVersion('0.0.6')
+      .setVersion(version ?? '')
       .build(),
   );
   SwaggerModule.setup('api', app, document);
