@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { Health } from './entities/health.entity';
 
 @Injectable()
 export class HealthService {
   findOne() {
-    return { health: 'OK' };
+    return <Health>{ health: 'OK' };
   }
 }

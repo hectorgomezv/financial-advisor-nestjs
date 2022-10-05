@@ -10,6 +10,7 @@ import {
   Query,
   Put,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
 import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
 import { CreatePortfolioDto } from '../domain/dto/create-portfolio.dto';
@@ -19,7 +20,11 @@ import { PositionsService } from '../domain/positions.service';
 
 @UseInterceptors(DataInterceptor)
 @UseFilters(MainExceptionFilter)
-@Controller('portfolios')
+@ApiTags('portfolios')
+@Controller({
+  path: 'portfolios',
+  version: '1',
+})
 export class PortfoliosController {
   constructor(
     private readonly portfoliosService: PortfoliosService,

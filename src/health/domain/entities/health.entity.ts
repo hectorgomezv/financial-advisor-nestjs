@@ -1,1 +1,3 @@
-export class Health {}
+export class Health {
+  health: string;
+}

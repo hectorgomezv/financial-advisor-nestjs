@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { version } from '../package.json';
 import { VersioningType } from '@nestjs/common';
 
 const { HTTP_SERVER_PORT } = process.env;
@@ -19,7 +18,7 @@ async function bootstrap() {
     new DocumentBuilder()
       .setTitle('Financial Advisor')
       .setDescription('Nest.js Financial Advisor implementation')
-      .setVersion(version ?? '')
+      .setVersion('0.0.6')
       .build(),
   );
   SwaggerModule.setup('api', app, document);
