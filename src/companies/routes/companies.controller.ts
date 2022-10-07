@@ -10,11 +10,12 @@ import {
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
-  ApiCreatedResponse,
   ApiNotFoundResponse,
-  ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { CreatedResponse } from '../../common/routes/entities/created-response.entity';
+import { OkArrayResponse } from '../../common/routes/entities/ok-array-response.entity';
+import { OkResponse } from '../../common/routes/entities/ok-response.entity';
 import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
 import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
 import { CompaniesService } from '../domain/companies.service';
@@ -32,27 +33,27 @@ export class CompaniesController {
   constructor(private readonly companiesService: CompaniesService) {}
 
   @Post()
-  @ApiCreatedResponse({ type: Company })
+  @CreatedResponse(Company)
   @ApiBadRequestResponse()
   create(@Body() createCompanyDto: CreateCompanyDto) {
     return this.companiesService.create(createCompanyDto);
   }
 
   @Get()
-  @ApiOkResponse({ type: [Company] })
+  @OkArrayResponse(Company)
   findAll() {
     return this.companiesService.findAll();
   }
 
   @Get(':uuid')
-  @ApiOkResponse({ type: Company })
+  @OkResponse(Company)
   @ApiNotFoundResponse()
   findOne(@Param('uuid') uuid: string) {
     return this.companiesService.findOne(uuid);
   }
 
   @Delete(':uuid')
-  @ApiOkResponse({ type: Company })
+  @OkResponse(Company)
   @ApiNotFoundResponse()
   remove(@Param('uuid') uuid: string) {
     return this.companiesService.remove(uuid);

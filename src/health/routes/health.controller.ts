@@ -1,5 +1,6 @@
 import { Controller, Get, UseFilters, UseInterceptors } from '@nestjs/common';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
+import { OkResponse } from '../../common/routes/entities/ok-response.entity';
 import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
 import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
 import { HealthService } from '../domain/health.service';
@@ -16,7 +17,7 @@ export class HealthController {
   constructor(private readonly healthService: HealthService) {}
 
   @Get()
-  @ApiOkResponse({ type: Health })
+  @OkResponse(Health)
   findOne() {
     return this.healthService.findOne();
   }
