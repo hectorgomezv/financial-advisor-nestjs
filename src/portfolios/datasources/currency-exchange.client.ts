@@ -30,10 +30,12 @@ export class CurrencyExchangeClient {
   }
 
   private initDaemon() {
-    const daemon = new CronJob(EVERY_THREE_HOURS_CRON_EXP, async () => {
-      this.fx = await this.refreshFx();
-    });
+    if (process.env.NODE_ENV !== 'test') {
+      const daemon = new CronJob(EVERY_THREE_HOURS_CRON_EXP, async () => {
+        this.fx = await this.refreshFx();
+      });
 
-    daemon.start();
+      daemon.start();
+    }
   }
 }
