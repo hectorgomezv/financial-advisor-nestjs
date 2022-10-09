@@ -13,17 +13,23 @@ import { HealthModule } from './health/health.module';
 import { MetricsModule } from './metrics/metrics.module';
 import { PortfoliosModule } from './portfolios/portfolios.module';
 
+const { NODE_ENV } = process.env;
+
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      envFilePath: NODE_ENV ? `.env.${NODE_ENV}` : '.env',
+    }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (config: ConfigService) => ({
-        uri: `${config.get<string>(
-          'MONGO_CONNECTION_STRING',
-        )}/${config.get<string>('MONGO_DATABASE_NAME')}`,
-      }),
+      useFactory: async (config: ConfigService) => {
+        return {
+          uri: `${config.get<string>(
+            'MONGO_CONNECTION_STRING',
+          )}/${config.get<string>('MONGO_DATABASE_NAME')}`,
+        };
+      },
     }),
     ScheduleModule.forRoot(),
     CompaniesModule,
