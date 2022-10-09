@@ -47,6 +47,7 @@ jobs:
       - run: yarn run build
       - run: yarn run test:cov
         env: 
+          EXCHANGE_RATES_PROVIDER_APP_ID: ${{ secrets.EXCHANGE_RATES_PROVIDER_APP_ID }}
           MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
           MONGO_DATABASE_NAME: ${{ secrets.MONGO_DATABASE_NAME }}
           PROVIDER_API_TOKEN: ${{ secrets.PROVIDER_API_TOKEN }}
