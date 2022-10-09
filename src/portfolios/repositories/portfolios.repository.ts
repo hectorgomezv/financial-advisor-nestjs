@@ -9,25 +9,25 @@ import { PortfolioDocument, PortfolioModel } from './schemas/portfolio.schema';
 export class PortfoliosRepository {
   constructor(
     @InjectModel(PortfolioModel.name)
-    private portfolioModel: Model<PortfolioDocument>,
+    public model: Model<PortfolioDocument>,
   ) {}
 
   async create(portfolio: Portfolio): Promise<Portfolio> {
-    const created = (await this.portfolioModel.create(portfolio)).toObject();
+    const created = (await this.model.create(portfolio)).toObject();
     return plainToInstance(Portfolio, created);
   }
 
   async findAll(): Promise<Portfolio[]> {
-    const result = await this.portfolioModel.find().lean();
+    const result = await this.model.find().lean();
     return plainToInstance(Portfolio, result);
   }
 
   async findOne(uuid: string): Promise<Portfolio> {
-    const result = await this.portfolioModel.findOne({ uuid }).lean();
+    const result = await this.model.findOne({ uuid }).lean();
     return plainToInstance(Portfolio, result);
   }
 
   async deleteOne(uuid: string): Promise<void> {
-    await this.portfolioModel.deleteOne({ uuid });
+    await this.model.deleteOne({ uuid });
   }
 }

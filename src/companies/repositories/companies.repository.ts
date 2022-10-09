@@ -9,35 +9,35 @@ import { CompanyDocument, CompanyModel } from './schemas/company.schema';
 export class CompaniesRepository {
   constructor(
     @InjectModel(CompanyModel.name)
-    private companyModel: Model<CompanyDocument>,
+    public model: Model<CompanyDocument>,
   ) {}
 
   async create(company: Company): Promise<Company> {
-    const created = (await this.companyModel.create(company)).toObject();
+    const created = (await this.model.create(company)).toObject();
     return plainToInstance(Company, created);
   }
 
   async findAll(): Promise<Company[]> {
-    const result = await this.companyModel.find().lean();
+    const result = await this.model.find().lean();
     return plainToInstance(Company, result);
   }
 
   async findByUuidIn(uuid: string[]): Promise<Company[]> {
-    const result = await this.companyModel.find({ uuid: { $in: uuid } }).lean();
+    const result = await this.model.find({ uuid: { $in: uuid } }).lean();
     return plainToInstance(Company, result);
   }
 
   async findOne(uuid: string): Promise<Company> {
-    const result = await this.companyModel.findOne({ uuid }).lean();
+    const result = await this.model.findOne({ uuid }).lean();
     return plainToInstance(Company, result);
   }
 
   async findBySymbol(symbol: string): Promise<Company> {
-    const result = await this.companyModel.findOne({ symbol }).lean();
+    const result = await this.model.findOne({ symbol }).lean();
     return plainToInstance(Company, result);
   }
 
   async deleteOne(uuid: string): Promise<void> {
-    await this.companyModel.deleteOne({ uuid });
+    await this.model.deleteOne({ uuid });
   }
 }

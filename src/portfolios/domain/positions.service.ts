@@ -8,7 +8,7 @@ import { CompaniesRepository } from '../../companies/repositories/companies.repo
 import { CompanyStatesRepository } from '../../companies/repositories/company-states.repository';
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { PositionsRepository } from '../repositories/positions.repository';
-import { UpsertPositionDto } from './dto/create-position.dto';
+import { UpsertPositionDto } from './dto/upsert-position.dto';
 import { PositionDetailDto } from './dto/position-detail.dto';
 import { Position } from './entities/position.entity';
 import { PortfolioStatesService } from './portfolio-states.service';

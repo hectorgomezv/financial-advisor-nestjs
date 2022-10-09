@@ -3,17 +3,21 @@ import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AppModule } from '../../app.module';
 import { createCompanyDtoFactory } from '../domain/dto/test/create-company.dto.factory';
+import { CompaniesRepository } from '../repositories/companies.repository';
+import { faker } from '@faker-js/faker';
 
 describe('Companies e2e tests', () => {
   let app: INestApplication;
   let createdUuid: string;
 
-  const dto = createCompanyDtoFactory();
+  const dto = createCompanyDtoFactory(faker.random.words(), 'IBM');
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
+
+    await moduleRef.get(CompaniesRepository).model.db.dropDatabase();
     app = moduleRef.createNestApplication();
     await app.init();
   });

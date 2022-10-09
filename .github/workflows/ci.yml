@@ -45,7 +45,7 @@ jobs:
          mongodb-version: ${{ matrix.mongodb-version }}
       - run: yarn install --immutable
       - run: yarn run build
-      - run: yarn run test:cov
+      - run: yarn run test:cov --runInBand
         env: 
           EXCHANGE_RATES_PROVIDER_APP_ID: ${{ secrets.EXCHANGE_RATES_PROVIDER_APP_ID }}
           MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
