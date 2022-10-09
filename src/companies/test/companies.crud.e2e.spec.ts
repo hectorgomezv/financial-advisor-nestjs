@@ -1,8 +1,8 @@
 import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { AppModule } from '../src/app.module';
-import { createCompanyDtoFactory } from '../src/companies/domain/dto/__tests__/create-company.dto.factory';
+import { AppModule } from '../../app.module';
+import { createCompanyDtoFactory } from '../domain/dto/test/create-company.dto.factory';
 
 describe('Companies e2e tests', () => {
   let app: INestApplication;

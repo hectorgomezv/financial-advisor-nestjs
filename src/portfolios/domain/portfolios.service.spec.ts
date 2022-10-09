@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { PortfolioDetailDto } from './dto/portfolio-detail.dto';
-import { positionDetailDtoFactory } from './dto/__tests__/position-detail-dto.factory';
+import { positionDetailDtoFactory } from './dto/test/position-detail-dto.factory';
 import { portfolioFactory } from './entities/__tests__/porfolio.factory';
 import { portfolioAverageMetricFactory } from './entities/__tests__/portfolio-average-metric.factory';
 import { portfolioStateFactory } from './entities/__tests__/portfolio-state.factory';
