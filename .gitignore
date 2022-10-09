@@ -47,3 +47,4 @@ docker.env
 !.yarn/versions
 
 .env
+.env.test
