@@ -2,9 +2,9 @@ import { faker } from '@faker-js/faker';
 import { positionFactory } from '../../portfolios/domain/entities/__tests__/position.factory';
 import { PositionsRepository } from '../../portfolios/repositories/positions.repository';
 import { CompaniesRepository } from '../repositories/companies.repository';
-import { CreateCompanyDto } from '../routes/dto/create-company.dto';
 import { CompaniesService } from './companies.service';
 import { CompanyStatesService } from './company-states.service';
+import { CreateCompanyDto } from './dto/create-company.dto';
 import { companyFactory } from './entities/__tests__/company.factory';
 
 describe('CompaniesService', () => {
