@@ -22,6 +22,8 @@ import { CompaniesModule } from '../companies/companies.module';
 import { CurrencyExchangeClient } from './datasources/currency-exchange.client';
 import { PortfolioStatesService } from './domain/portfolio-states.service';
 import { ConfigModule } from '@nestjs/config';
+import { OpenExchangeRatesClient } from './datasources/open-exchange-rates.client';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
@@ -31,17 +33,19 @@ import { ConfigModule } from '@nestjs/config';
       { name: PositionModel.name, schema: PositionSchema },
     ]),
     ConfigModule,
+    HttpModule,
     forwardRef(() => CompaniesModule),
   ],
   controllers: [PortfoliosController],
   providers: [
     CurrencyExchangeClient,
-    PortfoliosService,
+    OpenExchangeRatesClient,
     PortfoliosRepository,
-    PortfolioStatesService,
+    PortfoliosService,
     PortfolioStatesRepository,
-    PositionsService,
+    PortfolioStatesService,
     PositionsRepository,
+    PositionsService,
   ],
   exports: [PositionsRepository],
 })

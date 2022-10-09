@@ -3827,15 +3827,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"http-agent@npm:*":
-  version: 0.1.2
-  resolution: "http-agent@npm:0.1.2"
-  dependencies:
-    request: 1.9.x
-  checksum: d1bfc2b616aa2166c22ffa2dfec75266b6e3f6a3e6f091a5c7f4ab281346e75abcef8440c57788e02a2e67afea48cc9551649ca7d2d4e409a2d82bed69278c76
-  languageName: node
-  linkType: hard
-
 "http-cache-semantics@npm:^4.1.0":
   version: 4.1.0
   resolution: "http-cache-semantics@npm:4.1.0"
@@ -5448,15 +5439,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"open-exchange-rates@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "open-exchange-rates@npm:0.3.0"
-  dependencies:
-    http-agent: "*"
-  checksum: f93fc24270c93769cc183cb3e59a2c19bc3cfb21c680adb3e3b9ce37704940af7669fa8be9223891ef9d021f7375c0b812f235e0c9a62fb0067db56ee95d7328
-  languageName: node
-  linkType: hard
-
 "optionator@npm:^0.9.1":
   version: 0.9.1
   resolution: "optionator@npm:0.9.1"
@@ -5747,7 +5729,6 @@ __metadata:
     jest: 28.1.2
     money: ^0.2.0
     mongoose: ^6.5.0
-    open-exchange-rates: ^0.3.0
     prettier: ^2.3.2
     prom-client: ^14.1.0
     reflect-metadata: ^0.1.13
@@ -5949,13 +5930,6 @@ __metadata:
   version: 3.2.0
   resolution: "regexpp@npm:3.2.0"
   checksum: a78dc5c7158ad9ddcfe01aa9144f46e192ddbfa7b263895a70a5c6c73edd9ce85faf7c0430e59ac38839e1734e275b9c3de5c57ee3ab6edc0e0b1bdebefccef8
-  languageName: node
-  linkType: hard
-
-"request@npm:1.9.x":
-  version: 1.9.9
-  resolution: "request@npm:1.9.9"
-  checksum: 7244b424fafaac0a1a6ed8e4c30abdcf7471857210d68997ccc8c4ddc7a416728db6d53496607fb2412c544b0e3be7c944587bfda2fec328cd665552bbe6b7fe
   languageName: node
   linkType: hard
 
