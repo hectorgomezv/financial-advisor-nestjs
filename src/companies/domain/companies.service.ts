@@ -5,12 +5,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { CreateCompanyDto } from '../routes/dto/create-company.dto';
 import { CompaniesRepository } from '../repositories/companies.repository';
 import { Company } from './entities/company.entity';
 import { CompanyStatesService } from './company-states.service';
 import { PositionsRepository } from '../../portfolios/repositories/positions.repository';
 import { Cron } from '@nestjs/schedule';
+import { CreateCompanyDto } from './dto/create-company.dto';
 
 @Injectable()
 export class CompaniesService {

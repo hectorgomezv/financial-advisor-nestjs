@@ -19,7 +19,7 @@ import { OkResponse } from '../../common/routes/entities/ok-response.entity';
 import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
 import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
 import { CompaniesService } from '../domain/companies.service';
-import { CreateCompanyDto } from './dto/create-company.dto';
+import { CreateCompanyDto } from '../domain/dto/create-company.dto';
 import { Company } from './entities/company.entity';
 
 @UseInterceptors(DataInterceptor)
