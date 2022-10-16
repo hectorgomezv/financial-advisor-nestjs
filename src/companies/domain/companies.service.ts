@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { CompaniesRepository } from '../repositories/companies.repository';
-import { Company } from './entities/company.entity';
+import { Company, CompanyWithState } from './entities/company.entity';
 import { CompanyStatesService } from './company-states.service';
 import { PositionsRepository } from '../../portfolios/repositories/positions.repository';
 import { Cron } from '@nestjs/schedule';
@@ -22,7 +22,7 @@ export class CompaniesService {
     private readonly companyStatesService: CompanyStatesService,
   ) {}
 
-  async create(createCompanyDto: CreateCompanyDto): Promise<Company> {
+  async create(createCompanyDto: CreateCompanyDto): Promise<CompanyWithState> {
     const exists = await this.repository.findBySymbol(createCompanyDto.symbol);
 
     if (exists) {
@@ -34,23 +34,38 @@ export class CompaniesService {
       uuid: uuidv4(),
     });
 
-    await this.companyStatesService.createCompanyState(company);
+    const state = await this.companyStatesService.createCompanyState(company);
 
-    return company;
+    return <CompanyWithState>{ ...company, state };
   }
 
-  findAll(): Promise<Company[]> {
-    return this.repository.findAll();
+  async findAll(): Promise<CompanyWithState[]> {
+    const companies = await this.repository.findAll();
+    const states = await this.companyStatesService.getLastStateByCompanyUuids(
+      companies.map((company) => company.uuid),
+    );
+
+    return companies.map(
+      (company) =>
+        <CompanyWithState>{
+          ...company,
+          state: states.find((state) => state.companyUuid === company.uuid),
+        },
+    );
   }
 
-  async findOne(uuid: string): Promise<Company> {
+  async findOne(uuid: string): Promise<CompanyWithState> {
     const company = await this.repository.findOne(uuid);
 
     if (!company) {
       throw new NotFoundException('Company not found');
     }
 
-    return company;
+    const state = await this.companyStatesService.getLastStateByCompanyUuid(
+      uuid,
+    );
+
+    return <CompanyWithState>{ ...company, state };
   }
 
   async remove(uuid: string) {
@@ -83,6 +98,7 @@ export class CompaniesService {
   private refreshAllStatesAtMidday() {
     return this.refreshAllStates();
   }
+
   @Cron('0 02 4 * * *', { timeZone: 'America/New_York' })
   private refreshAllStatesAtMarketClose() {
     return this.refreshAllStates();

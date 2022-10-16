@@ -17,7 +17,9 @@ export class CompanyStatesRepository {
 
   async create(companyState: CompanyState): Promise<CompanyState> {
     const created = (await this.model.create(companyState)).toObject();
-    return plainToInstance(CompanyState, created);
+    return plainToInstance(CompanyState, created, {
+      excludePrefixes: ['_', '__'],
+    });
   }
 
   async deleteByCompanyUuid(companyUuid: string): Promise<void> {
@@ -31,6 +33,28 @@ export class CompanyStatesRepository {
       .limit(1)
       .lean();
 
-    return plainToInstance(CompanyState, result);
+    return plainToInstance(CompanyState, result, {
+      excludePrefixes: ['_', '__'],
+    });
+  }
+
+  async getLastByCompanyUuids(companyUuids: string[]): Promise<CompanyState[]> {
+    const result = await this.model
+      .aggregate()
+      .match({ companyUuid: { $in: companyUuids } })
+      .group({ _id: '$companyUuid', state: { $last: '$$ROOT' } })
+      .lookup({
+        from: 'companies',
+        localField: '_id',
+        foreignField: 'uuid',
+        as: 'company',
+      })
+      .exec();
+
+    return plainToInstance(
+      CompanyState,
+      result.map((i) => i.state),
+      { excludePrefixes: ['_', '__'] },
+    );
   }
 }

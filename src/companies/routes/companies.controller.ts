@@ -20,7 +20,7 @@ import { MainExceptionFilter } from '../../common/routes/filters/main-exception.
 import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
 import { CompaniesService } from '../domain/companies.service';
 import { CreateCompanyDto } from '../domain/dto/create-company.dto';
-import { Company } from './entities/company.entity';
+import { Company, CompanyWithState } from './entities/company.entity';
 
 @UseInterceptors(DataInterceptor)
 @UseFilters(MainExceptionFilter)
@@ -33,20 +33,20 @@ export class CompaniesController {
   constructor(private readonly companiesService: CompaniesService) {}
 
   @Post()
-  @CreatedResponse(Company)
+  @CreatedResponse(CompanyWithState)
   @ApiBadRequestResponse()
   create(@Body() createCompanyDto: CreateCompanyDto) {
     return this.companiesService.create(createCompanyDto);
   }
 
   @Get()
-  @OkArrayResponse(Company)
+  @OkArrayResponse(CompanyWithState)
   findAll() {
     return this.companiesService.findAll();
   }
 
   @Get(':uuid')
-  @OkResponse(Company)
+  @OkResponse(CompanyWithState)
   @ApiNotFoundResponse()
   findOne(@Param('uuid') uuid: string) {
     return this.companiesService.findOne(uuid);

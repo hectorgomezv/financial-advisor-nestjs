@@ -46,6 +46,7 @@ describe('Companies e2e tests', () => {
             uuid: createdUuid,
             name: dto.name,
             symbol: dto.symbol,
+            state: expect.anything(),
           }),
         });
       });
@@ -64,6 +65,7 @@ describe('Companies e2e tests', () => {
             uuid: createdUuid,
             name: dto.name,
             symbol: dto.symbol,
+            state: expect.anything(),
           }),
         });
       });
