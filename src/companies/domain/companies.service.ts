@@ -45,25 +45,27 @@ export class CompaniesService {
       companies.map((company) => company.uuid),
     );
 
-    const result = companies.map(
+    return companies.map(
       (company) =>
         <CompanyWithState>{
           ...company,
           state: states.find((state) => state.companyUuid === company.uuid),
         },
     );
-
-    return result;
   }
 
-  async findOne(uuid: string): Promise<Company> {
+  async findOne(uuid: string): Promise<CompanyWithState> {
     const company = await this.repository.findOne(uuid);
 
     if (!company) {
       throw new NotFoundException('Company not found');
     }
 
-    return company;
+    const state = await this.companyStatesService.getLastStateByCompanyUuid(
+      uuid,
+    );
+
+    return <CompanyWithState>{ ...company, state };
   }
 
   async remove(uuid: string) {

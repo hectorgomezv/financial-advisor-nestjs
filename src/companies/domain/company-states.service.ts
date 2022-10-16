@@ -14,6 +14,10 @@ export class CompanyStatesService {
     private readonly financialDataClient: IFinancialDataClient,
   ) {}
 
+  async getLastStateByCompanyUuid(companyUuid: string): Promise<CompanyState> {
+    return this.companyStatesRepository.getLastByCompanyUuid(companyUuid);
+  }
+
   async getLastStateByCompanyUuids(
     companyUuids: string[],
   ): Promise<CompanyState[]> {
