@@ -22,7 +22,7 @@ export class CompaniesService {
     private readonly companyStatesService: CompanyStatesService,
   ) {}
 
-  async create(createCompanyDto: CreateCompanyDto): Promise<Company> {
+  async create(createCompanyDto: CreateCompanyDto): Promise<CompanyWithState> {
     const exists = await this.repository.findBySymbol(createCompanyDto.symbol);
 
     if (exists) {
@@ -34,9 +34,9 @@ export class CompaniesService {
       uuid: uuidv4(),
     });
 
-    await this.companyStatesService.createCompanyState(company);
+    const state = await this.companyStatesService.createCompanyState(company);
 
-    return company;
+    return <CompanyWithState>{ ...company, state };
   }
 
   async findAll(): Promise<CompanyWithState[]> {
@@ -98,6 +98,7 @@ export class CompaniesService {
   private refreshAllStatesAtMidday() {
     return this.refreshAllStates();
   }
+
   @Cron('0 02 4 * * *', { timeZone: 'America/New_York' })
   private refreshAllStatesAtMarketClose() {
     return this.refreshAllStates();

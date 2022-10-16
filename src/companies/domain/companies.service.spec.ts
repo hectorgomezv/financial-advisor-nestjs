@@ -54,16 +54,18 @@ describe('CompaniesService', () => {
 
     it('should create a CompanyState when creating a company', async () => {
       const company = companyFactory();
+      const state = companyStateFactory();
       const dto = <CreateCompanyDto>{
         symbol: faker.finance.currencyCode(),
         name: faker.company.name(),
       };
       mockedCompaniesRepository.findBySymbol.mockResolvedValue(null);
       mockedCompaniesRepository.create.mockResolvedValue(company);
+      mockedCompanyStateService.createCompanyState.mockResolvedValue(state);
 
-      const created = await service.create(dto);
+      const actual = await service.create(dto);
 
-      expect(created).toEqual(company);
+      expect(actual).toEqual({ ...company, state });
       expect(mockedCompanyStateService.createCompanyState).toBeCalledTimes(1);
       expect(mockedCompanyStateService.createCompanyState).toBeCalledWith(
         company,
