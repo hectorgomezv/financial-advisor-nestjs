@@ -14,17 +14,19 @@ export class PortfoliosRepository {
 
   async create(portfolio: Portfolio): Promise<Portfolio> {
     const created = (await this.model.create(portfolio)).toObject();
-    return plainToInstance(Portfolio, created);
+    return plainToInstance(Portfolio, created, {
+      excludePrefixes: ['_', '__'],
+    });
   }
 
   async findAll(): Promise<Portfolio[]> {
     const result = await this.model.find().lean();
-    return plainToInstance(Portfolio, result);
+    return plainToInstance(Portfolio, result, { excludePrefixes: ['_', '__'] });
   }
 
   async findOne(uuid: string): Promise<Portfolio> {
     const result = await this.model.findOne({ uuid }).lean();
-    return plainToInstance(Portfolio, result);
+    return plainToInstance(Portfolio, result, { excludePrefixes: ['_', '__'] });
   }
 
   async deleteOne(uuid: string): Promise<void> {

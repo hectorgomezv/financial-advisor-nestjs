@@ -14,12 +14,12 @@ export class PositionsRepository {
 
   async create(position: Position): Promise<Position> {
     const created = (await this.model.create(position)).toObject();
-    return plainToInstance(Position, created);
+    return plainToInstance(Position, created, { excludePrefixes: ['_', '__'] });
   }
 
   async findByUuid(uuid: string): Promise<Position> {
     const result = await this.model.findOne({ uuid }).limit(1).lean();
-    return plainToInstance(Position, result);
+    return plainToInstance(Position, result, { excludePrefixes: ['_', '__'] });
   }
 
   async findByCompanyUuidAndPortfolioUuid(
@@ -31,13 +31,14 @@ export class PositionsRepository {
       .limit(1)
       .lean();
 
-    return plainToInstance(Position, result);
+    return plainToInstance(Position, result, { excludePrefixes: ['_', '__'] });
   }
 
   async findByCompanyUuid(companyUuid: string): Promise<Position[]> {
     return plainToInstance(
       Position,
       await this.model.find({ companyUuid }).lean(),
+      { excludePrefixes: ['_', '__'] },
     );
   }
 
@@ -45,6 +46,7 @@ export class PositionsRepository {
     return plainToInstance(
       Position,
       await this.model.find({ portfolioUuid }).lean(),
+      { excludePrefixes: ['_', '__'] },
     );
   }
 

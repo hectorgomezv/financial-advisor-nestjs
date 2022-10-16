@@ -24,12 +24,16 @@ export class PortfolioStatesRepository {
       .limit(1)
       .lean();
 
-    return plainToInstance(PortfolioState, result);
+    return plainToInstance(PortfolioState, result, {
+      excludePrefixes: ['_', '__'],
+    });
   }
 
   async create(portfolioState: PortfolioState): Promise<PortfolioState> {
     const created = (await this.model.create(portfolioState)).toObject();
-    return plainToInstance(PortfolioState, created);
+    return plainToInstance(PortfolioState, created, {
+      excludePrefixes: ['_', '__'],
+    });
   }
 
   async deleteByPortfolioUuid(portfolioUuid: string): Promise<void> {
