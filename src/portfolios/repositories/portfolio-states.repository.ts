@@ -14,11 +14,11 @@ import {
 export class PortfolioStatesRepository {
   constructor(
     @InjectModel(PortfolioStateModel.name)
-    private collection: Model<PortfolioStateDocument>,
+    private model: Model<PortfolioStateDocument>,
   ) {}
 
   async getLastByPortfolioUuid(portfolioUuid: string): Promise<PortfolioState> {
-    const result = await this.collection
+    const result = await this.model
       .findOne({ portfolioUuid })
       .sort({ timestamp: -1 })
       .limit(1)
@@ -28,19 +28,19 @@ export class PortfolioStatesRepository {
   }
 
   async create(portfolioState: PortfolioState): Promise<PortfolioState> {
-    const created = (await this.collection.create(portfolioState)).toObject();
+    const created = (await this.model.create(portfolioState)).toObject();
     return plainToInstance(PortfolioState, created);
   }
 
   async deleteByPortfolioUuid(portfolioUuid: string): Promise<void> {
-    await this.collection.deleteMany({ portfolioUuid });
+    await this.model.deleteMany({ portfolioUuid });
   }
 
   async getSeriesForRange(
     portfolioUuid: string,
     range: TimeRange,
   ): Promise<PortfolioAverageMetric[]> {
-    const result = await this.collection
+    const result = await this.model
       .aggregate()
       .match({
         portfolioUuid,

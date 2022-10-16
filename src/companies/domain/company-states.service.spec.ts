@@ -10,6 +10,7 @@ describe('CompanyStatesService', () => {
   const mockedCompanyStatesRepository = jest.mocked({
     create: jest.fn(),
     deleteByCompanyUuid: jest.fn(),
+    getLastByCompanyUuids: jest.fn(),
   } as unknown as CompanyStatesRepository);
 
   const mockedFinancialDataClient = jest.mocked({
@@ -36,6 +37,21 @@ describe('CompanyStatesService', () => {
       );
       expect(mockedCompanyStatesRepository.create).toHaveBeenCalledTimes(1);
       expect(created).toEqual(companyState);
+    });
+  });
+
+  describe('retrieving', () => {
+    it('should call repository to obtain the last states for an array of company uuids', async () => {
+      const companyUuids = [faker.datatype.uuid(), faker.datatype.uuid()];
+
+      await service.getLastStateByCompanyUuids(companyUuids);
+
+      expect(
+        mockedCompanyStatesRepository.getLastByCompanyUuids,
+      ).toBeCalledTimes(1);
+      expect(
+        mockedCompanyStatesRepository.getLastByCompanyUuids,
+      ).toHaveBeenCalledWith(companyUuids);
     });
   });
 

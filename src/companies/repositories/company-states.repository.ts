@@ -33,4 +33,20 @@ export class CompanyStatesRepository {
 
     return plainToInstance(CompanyState, result);
   }
+
+  async getLastByCompanyUuids(companyUuids: string[]): Promise<CompanyState[]> {
+    const result = await this.model
+      .aggregate()
+      .match({ companyUuid: { $in: companyUuids } })
+      .group({ _id: '$companyUuid', state: { $last: '$$ROOT' } })
+      .lookup({
+        from: 'companies',
+        localField: '_id',
+        foreignField: 'uuid',
+        as: 'company',
+      })
+      .exec();
+
+    return plainToInstance(CompanyState, result);
+  }
 }

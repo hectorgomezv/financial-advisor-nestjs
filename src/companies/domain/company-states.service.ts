@@ -14,6 +14,12 @@ export class CompanyStatesService {
     private readonly financialDataClient: IFinancialDataClient,
   ) {}
 
+  async getLastStateByCompanyUuids(
+    companyUuids: string[],
+  ): Promise<CompanyState[]> {
+    return this.companyStatesRepository.getLastByCompanyUuids(companyUuids);
+  }
+
   async createCompanyState(company: Company): Promise<CompanyState> {
     const quoteSummary: QuoteSummary =
       await this.financialDataClient.getQuoteSummary(company.symbol);

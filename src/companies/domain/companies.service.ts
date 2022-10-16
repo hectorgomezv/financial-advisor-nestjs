@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { CompaniesRepository } from '../repositories/companies.repository';
-import { Company } from './entities/company.entity';
+import { Company, CompanyWithState } from './entities/company.entity';
 import { CompanyStatesService } from './company-states.service';
 import { PositionsRepository } from '../../portfolios/repositories/positions.repository';
 import { Cron } from '@nestjs/schedule';
@@ -39,8 +39,21 @@ export class CompaniesService {
     return company;
   }
 
-  findAll(): Promise<Company[]> {
-    return this.repository.findAll();
+  async findAll(): Promise<CompanyWithState[]> {
+    const companies = await this.repository.findAll();
+    const states = await this.companyStatesService.getLastStateByCompanyUuids(
+      companies.map((company) => company.uuid),
+    );
+
+    const result = companies.map(
+      (company) =>
+        <CompanyWithState>{
+          ...company,
+          state: states.find((state) => state.companyUuid === company.uuid),
+        },
+    );
+
+    return result;
   }
 
   async findOne(uuid: string): Promise<Company> {

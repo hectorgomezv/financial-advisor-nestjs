@@ -5,6 +5,7 @@ import { CompaniesRepository } from '../repositories/companies.repository';
 import { CompaniesService } from './companies.service';
 import { CompanyStatesService } from './company-states.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
+import { companyStateFactory } from './entities/__tests__/company-state.factory';
 import { companyFactory } from './entities/__tests__/company.factory';
 
 describe('CompaniesService', () => {
@@ -25,6 +26,7 @@ describe('CompaniesService', () => {
   const mockedCompanyStateService = jest.mocked({
     createCompanyState: jest.fn(),
     deleteByCompanyUuid: jest.fn(),
+    getLastStateByCompanyUuids: jest.fn(),
   } as unknown as CompanyStatesService);
 
   const service = new CompaniesService(
@@ -69,9 +71,46 @@ describe('CompaniesService', () => {
   });
 
   describe('retrieving', () => {
-    it('should call repository for retrieving all the companies', async () => {
-      await service.findAll();
+    it('should retrieve all the companies and merge their states', async () => {
+      const companies = [companyFactory(), companyFactory()];
+      const states = [
+        companyStateFactory(
+          faker.datatype.uuid(),
+          Date.now(),
+          faker.datatype.number(),
+          faker.datatype.number(),
+          companies[1].uuid,
+        ),
+        companyStateFactory(
+          faker.datatype.uuid(),
+          Date.now(),
+          faker.datatype.number(),
+          faker.datatype.number(),
+          companies[0].uuid,
+        ),
+      ];
+      mockedCompaniesRepository.findAll.mockResolvedValue(companies);
+      mockedCompanyStateService.getLastStateByCompanyUuids.mockResolvedValue(
+        states,
+      );
+
+      const actual = await service.findAll();
+
+      const expected = [
+        {
+          ...companies[0],
+          state: states[1],
+        },
+        {
+          ...companies[1],
+          state: states[0],
+        },
+      ];
+      expect(actual).toEqual(expected);
       expect(mockedCompaniesRepository.findAll).toHaveBeenCalledTimes(1);
+      expect(
+        mockedCompanyStateService.getLastStateByCompanyUuids,
+      ).toHaveBeenCalledTimes(1);
     });
 
     it('should call repository for retrieving a company', async () => {
