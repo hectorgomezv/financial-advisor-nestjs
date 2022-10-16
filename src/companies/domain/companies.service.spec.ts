@@ -26,6 +26,7 @@ describe('CompaniesService', () => {
   const mockedCompanyStateService = jest.mocked({
     createCompanyState: jest.fn(),
     deleteByCompanyUuid: jest.fn(),
+    getLastStateByCompanyUuid: jest.fn(),
     getLastStateByCompanyUuids: jest.fn(),
   } as unknown as CompanyStatesService);
 
@@ -115,11 +116,19 @@ describe('CompaniesService', () => {
 
     it('should call repository for retrieving a company', async () => {
       const company = companyFactory();
+      const state = companyStateFactory();
       mockedCompaniesRepository.findOne.mockResolvedValue(company);
+      mockedCompanyStateService.getLastStateByCompanyUuid.mockResolvedValue(
+        state,
+      );
 
-      await service.findOne(company.uuid);
+      const actual = await service.findOne(company.uuid);
 
+      expect(actual).toEqual({ ...company, state });
       expect(mockedCompaniesRepository.findOne).toHaveBeenCalledTimes(1);
+      expect(
+        mockedCompanyStateService.getLastStateByCompanyUuid,
+      ).toHaveBeenCalledTimes(1);
     });
 
     it('should fail if a company cannot be found by uuid', async () => {
