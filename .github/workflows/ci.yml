@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  prettier:
+  prettier-and-eslint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -15,16 +15,6 @@ jobs:
           cache: 'yarn'
       - run: yarn install --immutable
       - run: yarn run format-check
-
-  es-lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '16.x'
-          cache: 'yarn'
-      - run: yarn install --immutable
       - run: yarn run lint-check
 
   tests:
