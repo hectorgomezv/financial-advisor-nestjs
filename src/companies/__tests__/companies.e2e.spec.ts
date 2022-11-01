@@ -5,14 +5,31 @@ import { AppModule } from '../../app.module';
 import { createCompanyDtoFactory } from '../domain/dto/test/create-company.dto.factory';
 import { CompaniesRepository } from '../repositories/companies.repository';
 import { faker } from '@faker-js/faker';
+import Redis from 'ioredis';
+import { mongo, Mongoose } from 'mongoose';
 
 describe('Companies e2e tests', () => {
   let app: INestApplication;
   let createdUuid: string;
+  let mongoClient;
 
   const dto = createCompanyDtoFactory(faker.random.words(), 'IBM');
 
+  // const redis = new Redis({
+  //   username: 'default',
+  //   password: process.env.REDIS_PASSWORD,
+  // });
+
   beforeAll(async () => {
+    // const mongoose = new Mongoose();
+    // const conn = await mongoose.createConnection(
+    //   `${process.env.MONGO_CONNECTION_STRING}/${process.env.MONGO_DATABASE_NAME}`,
+    // );
+    // mongoClient = await conn.getClient();
+    // const db = await mongoClient.db('TEST_financialAdvisorDB');
+    // const collection = await db.collection('companies');
+    // await collection.drop();
+
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -21,6 +38,10 @@ describe('Companies e2e tests', () => {
     app = moduleRef.createNestApplication();
     await app.init();
   });
+
+  // beforeEach(() => {
+  //   redis.flushall();
+  // });
 
   it('/GET companies', () => {
     return request(app.getHttpServer()).get('/companies').expect(200).expect({
@@ -91,5 +112,8 @@ describe('Companies e2e tests', () => {
 
   afterAll(async () => {
     await app.close();
+    // await redis.flushall();
+    // await mongoClient.quit();
+    // await redis.quit();
   });
 });
