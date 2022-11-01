@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker';
+import { omit } from 'lodash';
 import { positionFactory } from '../../portfolios/domain/entities/__tests__/position.factory';
 import { PositionsRepository } from '../../portfolios/repositories/positions.repository';
 import { companyStateFactory } from '../domain/entities/__tests__/company-state.factory';
@@ -102,11 +103,11 @@ describe('CompaniesService', () => {
       const expected = [
         {
           ...companies[0],
-          state: states[1],
+          state: omit(states[1], 'companyUuid'),
         },
         {
           ...companies[1],
-          state: states[0],
+          state: omit(states[0], 'companyUuid'),
         },
       ];
       expect(actual).toEqual(expected);
