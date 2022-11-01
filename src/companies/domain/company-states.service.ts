@@ -2,9 +2,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { IFinancialDataClient } from '../datasources/financial-data.client.interface';
 import { CompanyStatesRepository } from '../repositories/company-states.repository';
-import { CompanyState } from './entities/company-state.entity';
-import { Company } from './entities/company.entity';
-import { QuoteSummary } from './entities/quote-summary.entity';
+import { CompanyState } from '../domain/entities/company-state.entity';
+import { Company } from '../domain/entities/company.entity';
+import { QuoteSummary } from '../domain/entities/quote-summary.entity';
 
 @Injectable()
 export class CompanyStatesService {

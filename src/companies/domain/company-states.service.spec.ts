@@ -1,10 +1,10 @@
 import { faker } from '@faker-js/faker';
 import { IFinancialDataClient } from '../datasources/financial-data.client.interface';
+import { companyStateFactory } from '../domain/entities/__tests__/company-state.factory';
+import { companyFactory } from '../domain/entities/__tests__/company.factory';
+import { quoteSummaryFactory } from '../domain/entities/__tests__/quote-summary.factory';
 import { CompanyStatesRepository } from '../repositories/company-states.repository';
 import { CompanyStatesService } from './company-states.service';
-import { companyStateFactory } from './entities/__tests__/company-state.factory';
-import { companyFactory } from './entities/__tests__/company.factory';
-import { quoteSummaryFactory } from './entities/__tests__/quote-summary.factory';
 
 describe('CompanyStatesService', () => {
   const mockedCompanyStatesRepository = jest.mocked({

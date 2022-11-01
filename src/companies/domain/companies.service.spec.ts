@@ -1,12 +1,12 @@
 import { faker } from '@faker-js/faker';
 import { positionFactory } from '../../portfolios/domain/entities/__tests__/position.factory';
 import { PositionsRepository } from '../../portfolios/repositories/positions.repository';
+import { companyStateFactory } from './entities/__tests__/company-state.factory';
+import { companyFactory } from './entities/__tests__/company.factory';
 import { CompaniesRepository } from '../repositories/companies.repository';
 import { CompaniesService } from './companies.service';
 import { CompanyStatesService } from './company-states.service';
-import { CreateCompanyDto } from './dto/create-company.dto';
-import { companyStateFactory } from './entities/__tests__/company-state.factory';
-import { companyFactory } from './entities/__tests__/company.factory';
+import { CreateCompanyDto } from '../routes/dto/create-company.dto';
 
 describe('CompaniesService', () => {
   const mockedCompaniesRepository = jest.mocked({
