@@ -1,34 +1,29 @@
-import * as request from 'supertest';
+import { faker } from '@faker-js/faker';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
+import Redis from 'ioredis';
+import * as request from 'supertest';
 import { AppModule } from '../../app.module';
+import { MongoDBClient } from '../../common/__tests__/database/mongodb.client';
 import { createCompanyDtoFactory } from '../domain/dto/test/create-company.dto.factory';
 import { CompaniesRepository } from '../repositories/companies.repository';
-import { faker } from '@faker-js/faker';
-import Redis from 'ioredis';
-import { mongo, Mongoose } from 'mongoose';
 
 describe('Companies e2e tests', () => {
   let app: INestApplication;
   let createdUuid: string;
-  let mongoClient;
+  let mongoClient: MongoDBClient;
 
   const dto = createCompanyDtoFactory(faker.random.words(), 'IBM');
 
-  // const redis = new Redis({
-  //   username: 'default',
-  //   password: process.env.REDIS_PASSWORD,
-  // });
+  const redis = new Redis({
+    username: 'default',
+    password: process.env.REDIS_PASSWORD,
+  });
 
   beforeAll(async () => {
-    // const mongoose = new Mongoose();
-    // const conn = await mongoose.createConnection(
-    //   `${process.env.MONGO_CONNECTION_STRING}/${process.env.MONGO_DATABASE_NAME}`,
-    // );
-    // mongoClient = await conn.getClient();
-    // const db = await mongoClient.db('TEST_financialAdvisorDB');
-    // const collection = await db.collection('companies');
-    // await collection.drop();
+    mongoClient = new MongoDBClient();
+    const collection = await mongoClient.getCollection('companies');
+    await collection.deleteMany({});
 
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
@@ -39,9 +34,9 @@ describe('Companies e2e tests', () => {
     await app.init();
   });
 
-  // beforeEach(() => {
-  //   redis.flushall();
-  // });
+  beforeEach(() => {
+    redis.flushall();
+  });
 
   it('/GET companies', () => {
     return request(app.getHttpServer()).get('/companies').expect(200).expect({
@@ -112,8 +107,8 @@ describe('Companies e2e tests', () => {
 
   afterAll(async () => {
     await app.close();
-    // await redis.flushall();
-    // await mongoClient.quit();
-    // await redis.quit();
+    await redis.flushall();
+    await mongoClient.close();
+    await redis.quit();
   });
 });

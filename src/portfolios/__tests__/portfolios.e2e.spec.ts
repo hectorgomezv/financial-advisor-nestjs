@@ -6,9 +6,11 @@ import { createPortfolioDtoFactory } from '../domain/dto/test/create-portfolio-d
 import { createCompanyDtoFactory } from '../../companies/domain/dto/test/create-company.dto.factory';
 import { upsertPositionDtoFactory } from '../domain/dto/test/upsert-position-dto.factory';
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
+import { MongoDBClient } from '../../common/__tests__/database/mongodb.client';
 
 describe('Portfolios e2e tests', () => {
   let app: INestApplication;
+  let mongoClient: MongoDBClient;
   let createdPortfolioUuid: string;
   let createdCompanyUuid: string;
   let createdPositionUuid: string;
@@ -18,6 +20,10 @@ describe('Portfolios e2e tests', () => {
   const upsertPositionDto = upsertPositionDtoFactory(createCompanyDto.symbol);
 
   beforeAll(async () => {
+    mongoClient = new MongoDBClient();
+    const collection = await mongoClient.getCollection('portfolios');
+    await collection.deleteMany({});
+
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -145,5 +151,6 @@ describe('Portfolios e2e tests', () => {
 
   afterAll(async () => {
     await app.close();
+    await mongoClient.close();
   });
 });
