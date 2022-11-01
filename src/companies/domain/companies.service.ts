@@ -11,7 +11,6 @@ import { PositionsRepository } from '../../portfolios/repositories/positions.rep
 import { Cron } from '@nestjs/schedule';
 import { CreateCompanyDto } from '../domain/dto/create-company.dto';
 import { Company, CompanyWithState } from './entities/company.entity';
-import { omit } from 'lodash';
 
 @Injectable()
 export class CompaniesService {
@@ -50,10 +49,7 @@ export class CompaniesService {
       (company) =>
         <CompanyWithState>{
           ...company,
-          state: omit(
-            states.find((state) => state.companyUuid === company.uuid),
-            'companyUuid',
-          ),
+          state: states.find((state) => state.companyUuid === company.uuid),
         },
     );
   }

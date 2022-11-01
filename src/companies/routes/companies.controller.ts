@@ -13,12 +13,13 @@ import {
   ApiNotFoundResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { omit } from 'lodash';
 import { CreatedResponse } from '../../common/routes/entities/created-response.entity';
 import { OkArrayResponse } from '../../common/routes/entities/ok-array-response.entity';
 import { OkResponse } from '../../common/routes/entities/ok-response.entity';
 import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
 import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
-import { CompaniesService } from './companies.service';
+import { CompaniesService } from '../domain/companies.service';
 import { CreateCompanyDto } from '../domain/dto/create-company.dto';
 import { Company, CompanyWithState } from './entities/company.entity';
 
@@ -41,15 +42,23 @@ export class CompaniesController {
 
   @Get()
   @OkArrayResponse(CompanyWithState)
-  findAll() {
-    return this.companiesService.findAll();
+  async findAll() {
+    const companies = await this.companiesService.findAll();
+    return companies.map((company) => ({
+      ...company,
+      state: omit(company.state, 'companyUuid'),
+    }));
   }
 
   @Get(':uuid')
   @OkResponse(CompanyWithState)
   @ApiNotFoundResponse()
-  findOne(@Param('uuid') uuid: string) {
-    return this.companiesService.findOne(uuid);
+  async findOne(@Param('uuid') uuid: string) {
+    const company = await this.companiesService.findOne(uuid);
+    return {
+      ...company,
+      state: omit(company.state, 'companyUuid'),
+    };
   }
 
   @Delete(':uuid')

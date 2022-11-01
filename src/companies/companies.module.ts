@@ -1,5 +1,4 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { CompaniesService } from './routes/companies.service';
 import { CompaniesController } from './routes/companies.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CompaniesRepository } from './repositories/companies.repository';
@@ -16,8 +15,9 @@ import { HttpModule } from '@nestjs/axios';
 import { YahooFinancialDataClient } from './datasources/yahoo-financial-data.client';
 import { ConfigModule } from '@nestjs/config';
 import { IFinancialDataClient } from './datasources/financial-data.client.interface';
-import { CompanyStatesService } from './routes/company-states.service';
 import { PortfoliosModule } from '../portfolios/portfolios.module';
+import { CompaniesService } from './domain/companies.service';
+import { CompanyStatesService } from './domain/company-states.service';
 
 @Module({
   imports: [

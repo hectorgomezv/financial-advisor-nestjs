@@ -1,13 +1,12 @@
 import { faker } from '@faker-js/faker';
-import { omit } from 'lodash';
 import { positionFactory } from '../../portfolios/domain/entities/__tests__/position.factory';
 import { PositionsRepository } from '../../portfolios/repositories/positions.repository';
-import { companyStateFactory } from '../domain/entities/__tests__/company-state.factory';
-import { companyFactory } from '../domain/entities/__tests__/company.factory';
+import { companyStateFactory } from './entities/__tests__/company-state.factory';
+import { companyFactory } from './entities/__tests__/company.factory';
 import { CompaniesRepository } from '../repositories/companies.repository';
 import { CompaniesService } from './companies.service';
 import { CompanyStatesService } from './company-states.service';
-import { CreateCompanyDto } from './dto/create-company.dto';
+import { CreateCompanyDto } from '../routes/dto/create-company.dto';
 
 describe('CompaniesService', () => {
   const mockedCompaniesRepository = jest.mocked({
@@ -103,11 +102,11 @@ describe('CompaniesService', () => {
       const expected = [
         {
           ...companies[0],
-          state: omit(states[1], 'companyUuid'),
+          state: states[1],
         },
         {
           ...companies[1],
-          state: omit(states[0], 'companyUuid'),
+          state: states[0],
         },
       ];
       expect(actual).toEqual(expected);
