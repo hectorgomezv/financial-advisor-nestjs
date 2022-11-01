@@ -18,7 +18,7 @@ import { OkArrayResponse } from '../../common/routes/entities/ok-array-response.
 import { OkResponse } from '../../common/routes/entities/ok-response.entity';
 import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
 import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
-import { CompaniesService } from '../domain/companies.service';
+import { CompaniesService } from './companies.service';
 import { CreateCompanyDto } from '../domain/dto/create-company.dto';
 import { Company, CompanyWithState } from './entities/company.entity';
 

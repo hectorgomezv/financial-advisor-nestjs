@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { CompanyState as DomainCompanyState } from '../../domain/entities/company-state.entity';
 
-export class CompanyState implements DomainCompanyState {
+export class CompanyState {
   @ApiProperty()
   uuid: string;
   @ApiProperty()
@@ -10,6 +9,4 @@ export class CompanyState implements DomainCompanyState {
   price: number;
   @ApiProperty()
   peg: number;
-  @ApiProperty()
-  companyUuid: string;
 }

@@ -6,11 +6,12 @@ import {
 } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { CompaniesRepository } from '../repositories/companies.repository';
-import { Company, CompanyWithState } from './entities/company.entity';
 import { CompanyStatesService } from './company-states.service';
 import { PositionsRepository } from '../../portfolios/repositories/positions.repository';
 import { Cron } from '@nestjs/schedule';
-import { CreateCompanyDto } from './dto/create-company.dto';
+import { CreateCompanyDto } from '../domain/dto/create-company.dto';
+import { Company, CompanyWithState } from './entities/company.entity';
+import { omit } from 'lodash';
 
 @Injectable()
 export class CompaniesService {
@@ -49,7 +50,10 @@ export class CompaniesService {
       (company) =>
         <CompanyWithState>{
           ...company,
-          state: states.find((state) => state.companyUuid === company.uuid),
+          state: omit(
+            states.find((state) => state.companyUuid === company.uuid),
+            'companyUuid',
+          ),
         },
     );
   }
