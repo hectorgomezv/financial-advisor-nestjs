@@ -18,6 +18,7 @@ import { IFinancialDataClient } from './datasources/financial-data.client.interf
 import { PortfoliosModule } from '../portfolios/portfolios.module';
 import { CompaniesService } from './domain/companies.service';
 import { CompanyStatesService } from './domain/company-states.service';
+import { RedisClient } from '../common/cache/redis.client';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { CompanyStatesService } from './domain/company-states.service';
     CompanyStatesService,
     CompanyStatesRepository,
     { provide: IFinancialDataClient, useClass: YahooFinancialDataClient },
+    RedisClient,
   ],
   exports: [CompaniesRepository, CompanyStatesRepository],
 })

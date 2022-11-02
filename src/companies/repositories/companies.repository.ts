@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
+import { RedisClient } from '../../common/cache/redis.client';
 import { Company } from '../domain/entities/company.entity';
 import { CompanyDocument, CompanyModel } from './schemas/company.schema';
 
@@ -10,6 +11,7 @@ export class CompaniesRepository {
   constructor(
     @InjectModel(CompanyModel.name)
     public model: Model<CompanyDocument>,
+    private readonly redisClient: RedisClient,
   ) {}
 
   async create(company: Company): Promise<Company> {
@@ -18,7 +20,14 @@ export class CompaniesRepository {
   }
 
   async findAll(): Promise<Company[]> {
+    const cached = await this.redisClient.redis.get('companies');
+
+    if (cached) {
+      return JSON.parse(cached);
+    }
+
     const result = await this.model.find().lean();
+    await this.redisClient.redis.set('companies', JSON.stringify(result));
     return plainToInstance(Company, result, { excludePrefixes: ['_', '__'] });
   }
 

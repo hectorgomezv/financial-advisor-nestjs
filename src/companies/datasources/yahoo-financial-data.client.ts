@@ -1,6 +1,12 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { AxiosError } from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { QuoteSummary } from '../domain/entities/quote-summary.entity';
 import { IFinancialDataClient } from './financial-data.client.interface';
@@ -27,12 +33,17 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
   }
 
   async getQuoteSummary(symbol: string): Promise<QuoteSummary> {
-    const { data } = await this.httpService.axiosRef.get(
-      `${this.baseUrl}/${symbol}${this.defaultModules}`,
-      { headers: { 'x-api-key': this.providerApiToken } },
-    );
+    let response;
+    try {
+      response = await this.httpService.axiosRef.get(
+        `${this.baseUrl}/${symbol}${this.defaultModules}`,
+        { headers: { 'x-api-key': this.providerApiToken } },
+      );
+    } catch (err) {
+      return this.mapYahooErrorResponse(err);
+    }
 
-    const result = data.quoteSummary?.result?.[0];
+    const result = response?.data?.quoteSummary?.result?.[0];
 
     if (!result) {
       throw new NotFoundException(
@@ -55,5 +66,19 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
       ),
       peg: Number(item?.defaultKeyStatistics?.pegRatio?.raw),
     };
+  }
+
+  private mapYahooErrorResponse(err: AxiosError): never {
+    if (err?.response?.status === HttpStatus.TOO_MANY_REQUESTS) {
+      throw new HttpException(
+        'Financial data provider limit exceeded',
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+    }
+
+    throw new HttpException(
+      'Financial data provider error',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
   }
 }

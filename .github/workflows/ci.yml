@@ -57,3 +57,4 @@ jobs:
           MONGO_DATABASE_NAME: ${{ secrets.MONGO_DATABASE_NAME }}
           PROVIDER_API_TOKEN: ${{ secrets.PROVIDER_API_TOKEN }}
           PROVIDER_BASE_URL: ${{ secrets.PROVIDER_BASE_URL }}
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
