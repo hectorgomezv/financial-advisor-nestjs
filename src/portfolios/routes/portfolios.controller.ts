@@ -9,12 +9,16 @@ import {
   UseFilters,
   Query,
   Put,
+  UseGuards,
+  Request,
+  Logger,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiNotFoundResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../../common/auth/jwt-auth.guard';
 import { CreatedResponse } from '../../common/routes/entities/created-response.entity';
 import { OkArrayResponse } from '../../common/routes/entities/ok-array-response.entity';
 import { OkResponse } from '../../common/routes/entities/ok-response.entity';
@@ -36,6 +40,8 @@ import { Position } from './entities/position.entity';
   version: '1',
 })
 export class PortfoliosController {
+  private readonly logger = new Logger(PortfoliosController.name);
+
   constructor(
     private readonly portfoliosService: PortfoliosService,
     private readonly positionsService: PositionsService,
@@ -55,9 +61,11 @@ export class PortfoliosController {
   }
 
   @Get(':uuid')
+  @UseGuards(JwtAuthGuard)
   @OkResponse(Portfolio)
   @ApiNotFoundResponse()
-  findOne(@Param('uuid') uuid: string) {
+  findOne(@Request() req, @Param('uuid') uuid: string) {
+    this.logger.debug(req.user);
     return this.portfoliosService.findOne(uuid);
   }
 
