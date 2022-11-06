@@ -58,3 +58,30 @@ jobs:
           PROVIDER_API_TOKEN: ${{ secrets.PROVIDER_API_TOKEN }}
           PROVIDER_BASE_URL: ${{ secrets.PROVIDER_BASE_URL }}
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Extract commit metadata
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: hectorgomezv1/financial-advisor-nestjs
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
