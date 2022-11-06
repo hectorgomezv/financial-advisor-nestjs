@@ -1,6 +1,9 @@
 {
   "cSpell.words": [
     "DTOs",
+    "hdel",
+    "hget",
+    "hset",
     "nestjs",
     "uuidv"
   ]
