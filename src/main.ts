@@ -1,15 +1,24 @@
+import { VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { readFileSync } from 'fs';
 import { AppModule } from './app.module';
-import { VersioningType } from '@nestjs/common';
 
-const { HTTP_SERVER_PORT } = process.env;
+const { CORS_BASE_URL, HTTP_SERVER_PORT } = process.env;
+
+function getAllowedOrigins(): (string | RegExp)[] {
+  const allowedOrigins = [/localhost/];
+
+  return CORS_BASE_URL
+    ? [...allowedOrigins, new URL(CORS_BASE_URL).hostname]
+    : allowedOrigins;
+}
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix('/api');
+  app.enableCors({ origin: getAllowedOrigins() });
   app.enableShutdownHooks();
   app.enableVersioning({
     type: VersioningType.URI,

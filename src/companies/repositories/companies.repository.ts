@@ -8,6 +8,8 @@ import { CompanyDocument, CompanyModel } from './schemas/company.schema';
 
 @Injectable()
 export class CompaniesRepository {
+  private companiesKey = 'companies';
+
   constructor(
     @InjectModel(CompanyModel.name)
     public model: Model<CompanyDocument>,
@@ -15,19 +17,20 @@ export class CompaniesRepository {
   ) {}
 
   async create(company: Company): Promise<Company> {
+    await this.redisClient.redis.del(this.companiesKey);
     const created = (await this.model.create(company)).toObject();
     return plainToInstance(Company, created, { excludePrefixes: ['_', '__'] });
   }
 
   async findAll(): Promise<Company[]> {
-    const cached = await this.redisClient.redis.get('companies');
+    const cached = await this.redisClient.redis.get(this.companiesKey);
 
     if (cached) {
       return JSON.parse(cached);
     }
 
     const result = await this.model.find().lean();
-    await this.redisClient.redis.set('companies', JSON.stringify(result));
+    await this.redisClient.redis.set(this.companiesKey, JSON.stringify(result));
     return plainToInstance(Company, result, { excludePrefixes: ['_', '__'] });
   }
 
@@ -47,6 +50,7 @@ export class CompaniesRepository {
   }
 
   async deleteOne(uuid: string): Promise<void> {
+    await this.redisClient.redis.del(this.companiesKey);
     await this.model.deleteOne({ uuid });
   }
 }
