@@ -12,6 +12,8 @@ import { CompaniesModule } from './companies/companies.module';
 import { HealthModule } from './health/health.module';
 import { MetricsModule } from './metrics/metrics.module';
 import { PortfoliosModule } from './portfolios/portfolios.module';
+import { JwtStrategy } from './common/auth/jwt.strategy';
+import { JwtService } from '@nestjs/jwt';
 
 const { NODE_ENV } = process.env;
 
@@ -37,6 +39,7 @@ const { NODE_ENV } = process.env;
     MetricsModule,
     PortfoliosModule,
   ],
+  providers: [JwtService, JwtStrategy],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
