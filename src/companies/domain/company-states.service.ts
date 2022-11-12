@@ -31,8 +31,8 @@ export class CompanyStatesService {
     const companyState: CompanyState = <CompanyState>{
       uuid: uuidv4(),
       timestamp: Date.now(),
-      price: quoteSummary.price,
-      peg: quoteSummary.peg,
+      price: quoteSummary?.price || 0,
+      peg: quoteSummary?.peg || 0,
       companyUuid: company.uuid,
     };
 
