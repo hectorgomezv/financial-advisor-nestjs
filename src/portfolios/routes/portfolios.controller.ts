@@ -38,7 +38,7 @@ import { Position } from './entities/position.entity';
 @UseGuards(JwtAuthGuard)
 @Controller({
   path: 'portfolios',
-  version: '1',
+  version: '2',
 })
 export class PortfoliosController {
   private readonly logger = new Logger(PortfoliosController.name);

@@ -11,7 +11,7 @@ import { Health } from './entities/health.entity';
 @ApiTags('health')
 @Controller({
   path: 'health',
-  version: '1',
+  version: '2',
 })
 export class HealthController {
   constructor(private readonly healthService: HealthService) {}

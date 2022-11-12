@@ -31,7 +31,7 @@ import { Company, CompanyWithState } from './entities/company.entity';
 @UseGuards(JwtAuthGuard)
 @Controller({
   path: 'companies',
-  version: '1',
+  version: '2',
 })
 export class CompaniesController {
   constructor(private readonly companiesService: CompaniesService) {}

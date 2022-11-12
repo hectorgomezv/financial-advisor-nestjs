@@ -5,7 +5,7 @@ import { MetricsService } from '../domain/metrics.service';
 @ApiTags('metrics')
 @Controller({
   path: 'metrics',
-  version: '1',
+  version: '2',
 })
 export class MetricsController {
   constructor(private readonly metricsService: MetricsService) {}
