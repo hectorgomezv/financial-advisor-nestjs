@@ -67,7 +67,9 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
       enterpriseToEbitda: Number(
         item?.defaultKeyStatistics?.enterpriseToEbitda?.raw,
       ),
-      shortPercentOfFloat: Number(item?.defaultKeyStatistics?.shortPercentOfFloat?.raw),
+      shortPercentOfFloat: Number(
+        item?.defaultKeyStatistics?.shortPercentOfFloat?.raw,
+      ),
     };
   }
 
