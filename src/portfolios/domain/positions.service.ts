@@ -149,6 +149,7 @@ export class PositionsService {
       shares: position.shares,
       value: Number((companyState?.price ?? 0) * position.shares),
       targetWeight: position.targetWeight,
+      companyState,
     };
   }
 

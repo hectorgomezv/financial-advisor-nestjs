@@ -22,6 +22,7 @@ export class RedisClient implements OnModuleDestroy {
   }
 
   async onModuleDestroy() {
+    await this.redis.flushall();
     await this.redis.quit();
   }
 }

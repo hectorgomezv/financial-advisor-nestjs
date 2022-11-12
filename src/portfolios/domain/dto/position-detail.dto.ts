@@ -1,3 +1,5 @@
+import { CompanyState } from '../../../companies/domain/entities/company-state.entity';
+
 export class PositionDetailDto {
   uuid: string;
   companyName: string;
@@ -7,4 +9,5 @@ export class PositionDetailDto {
   targetWeight: number;
   currentWeight: number;
   deltaWeight: number;
+  companyState: CompanyState;
 }
