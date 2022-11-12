@@ -9,6 +9,9 @@ export class CompanyStateModel {
   uuid: string;
 
   @Prop({ required: true })
+  companyUuid: string;
+
+  @Prop({ required: true })
   timestamp: number;
 
   @Prop({ required: true })
@@ -18,7 +21,10 @@ export class CompanyStateModel {
   peg: number;
 
   @Prop({ required: true })
-  companyUuid: string;
+  enterpriseToEbitda: number;
+
+  @Prop({ required: true })
+  shortPercentOfFloat: number;
 }
 
 export const CompanyStateSchema =
