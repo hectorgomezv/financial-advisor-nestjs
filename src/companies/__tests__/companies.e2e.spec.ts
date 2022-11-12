@@ -14,6 +14,7 @@ describe('Companies e2e tests', () => {
   let mongoClient: MongoDBClient;
 
   const dto = createCompanyDtoFactory(faker.random.words(), 'IBM');
+  const accessToken = process.env.ACCESS_TOKEN;
 
   const redis = new Redis({
     username: 'default',
@@ -39,17 +40,22 @@ describe('Companies e2e tests', () => {
   });
 
   it('/GET companies', () => {
-    return request(app.getHttpServer()).get('/companies').expect(200).expect({
-      success: true,
-      status: 200,
-      path: '/companies',
-      data: [],
-    });
+    return request(app.getHttpServer())
+      .get('/companies')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .expect(200)
+      .expect({
+        success: true,
+        status: 200,
+        path: '/companies',
+        data: [],
+      });
   });
 
   it('/POST company', () => {
     return request(app.getHttpServer())
       .post('/companies')
+      .set('Authorization', `Bearer ${accessToken}`)
       .send(dto)
       .expect(201)
       .then(({ body }) => {
@@ -71,6 +77,7 @@ describe('Companies e2e tests', () => {
   it('/GET company by uuid', () => {
     return request(app.getHttpServer())
       .get(`/companies/${createdUuid}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(200)
       .then(({ body }) => {
         expect(body).toEqual({
@@ -90,6 +97,7 @@ describe('Companies e2e tests', () => {
   it('/DELETE company by uuid', () => {
     return request(app.getHttpServer())
       .delete(`/companies/${createdUuid}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(200)
       .then(({ body }) => {
         expect(body).toEqual({

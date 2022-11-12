@@ -60,6 +60,7 @@ jobs:
           PROVIDER_BASE_URL: ${{ secrets.PROVIDER_BASE_URL }}
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
   build:
     runs-on: ubuntu-latest

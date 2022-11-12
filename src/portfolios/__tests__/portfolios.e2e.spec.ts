@@ -18,6 +18,7 @@ describe('Portfolios e2e tests', () => {
   const createPortfolioDto = createPortfolioDtoFactory();
   const createCompanyDto = createCompanyDtoFactory();
   const upsertPositionDto = upsertPositionDtoFactory(createCompanyDto.symbol);
+  const accessToken = process.env.ACCESS_TOKEN;
 
   beforeAll(async () => {
     mongoClient = new MongoDBClient();
@@ -34,17 +35,22 @@ describe('Portfolios e2e tests', () => {
   });
 
   it('/GET portfolios', () => {
-    return request(app.getHttpServer()).get('/portfolios').expect(200).expect({
-      success: true,
-      status: 200,
-      path: '/portfolios',
-      data: [],
-    });
+    return request(app.getHttpServer())
+      .get('/portfolios')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .expect(200)
+      .expect({
+        success: true,
+        status: 200,
+        path: '/portfolios',
+        data: [],
+      });
   });
 
   it('/POST portfolio, company and two positions', async () => {
     await request(app.getHttpServer())
       .post('/portfolios')
+      .set('Authorization', `Bearer ${accessToken}`)
       .send(createPortfolioDto)
       .expect(201)
       .then(({ body }) => {
@@ -62,6 +68,7 @@ describe('Portfolios e2e tests', () => {
 
     await request(app.getHttpServer())
       .post('/companies')
+      .set('Authorization', `Bearer ${accessToken}`)
       .send(createCompanyDto)
       .expect(201)
       .then(({ body }) => {
@@ -80,6 +87,7 @@ describe('Portfolios e2e tests', () => {
 
     return request(app.getHttpServer())
       .post(`/portfolios/${createdPortfolioUuid}/positions`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send(upsertPositionDto)
       .expect(201)
       .then(({ body }) => {
@@ -102,6 +110,7 @@ describe('Portfolios e2e tests', () => {
   it('/GET portfolio by uuid', () => {
     return request(app.getHttpServer())
       .get(`/portfolios/${createdPortfolioUuid}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(200)
       .then(({ body }) => {
         expect(body).toEqual({
@@ -119,6 +128,7 @@ describe('Portfolios e2e tests', () => {
   it('/DELETE portfolio and company by uuid', async () => {
     await request(app.getHttpServer())
       .delete(`/portfolios/${createdPortfolioUuid}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(200)
       .then(({ body }) => {
         expect(body).toEqual({
@@ -134,6 +144,7 @@ describe('Portfolios e2e tests', () => {
 
     return request(app.getHttpServer())
       .delete(`/companies/${createdCompanyUuid}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(200)
       .then(({ body }) => {
         expect(body).toEqual({

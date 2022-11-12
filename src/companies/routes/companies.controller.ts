@@ -7,6 +7,7 @@ import {
   Delete,
   UseInterceptors,
   UseFilters,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -14,6 +15,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { omit } from 'lodash';
+import { JwtAuthGuard } from '../../common/auth/jwt-auth.guard';
 import { CreatedResponse } from '../../common/routes/entities/created-response.entity';
 import { OkArrayResponse } from '../../common/routes/entities/ok-array-response.entity';
 import { OkResponse } from '../../common/routes/entities/ok-response.entity';
@@ -26,6 +28,7 @@ import { Company, CompanyWithState } from './entities/company.entity';
 @UseInterceptors(DataInterceptor)
 @UseFilters(MainExceptionFilter)
 @ApiTags('companies')
+@UseGuards(JwtAuthGuard)
 @Controller({
   path: 'companies',
   version: '1',

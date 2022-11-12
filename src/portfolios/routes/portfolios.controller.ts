@@ -35,6 +35,7 @@ import { Position } from './entities/position.entity';
 @UseInterceptors(DataInterceptor)
 @UseFilters(MainExceptionFilter)
 @ApiTags('portfolios')
+@UseGuards(JwtAuthGuard)
 @Controller({
   path: 'portfolios',
   version: '1',
@@ -61,7 +62,6 @@ export class PortfoliosController {
   }
 
   @Get(':uuid')
-  @UseGuards(JwtAuthGuard)
   @OkResponse(Portfolio)
   @ApiNotFoundResponse()
   findOne(@Request() req, @Param('uuid') uuid: string) {
