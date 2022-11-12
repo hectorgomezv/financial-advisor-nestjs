@@ -33,6 +33,8 @@ export class CompanyStatesService {
       timestamp: Date.now(),
       price: quoteSummary?.price || 0,
       peg: quoteSummary?.peg || 0,
+      enterpriseToEbitda: quoteSummary?.enterpriseToEbitda || 0,
+      shortPercentOfFloat: quoteSummary?.shortPercentOfFloat || 0,
       companyUuid: company.uuid,
     };
 

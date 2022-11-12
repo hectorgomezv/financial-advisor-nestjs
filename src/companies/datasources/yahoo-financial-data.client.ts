@@ -25,8 +25,7 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
       'PROVIDER_BASE_URL',
     )}/finance/quoteSummary`;
 
-    this.defaultModules =
-      '?modules=summaryDetail,defaultKeyStatistics,fundOwnership,majorDirectHolders';
+    this.defaultModules = '?modules=summaryDetail,defaultKeyStatistics';
 
     this.providerApiToken =
       this.configService.get<string>('PROVIDER_API_TOKEN');
@@ -65,6 +64,10 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
           item?.summaryDetail?.previousClose?.raw,
       ),
       peg: Number(item?.defaultKeyStatistics?.pegRatio?.raw),
+      enterpriseToEbitda: Number(
+        item?.defaultKeyStatistics?.enterpriseToEbitda?.raw,
+      ),
+      shortPercentOfFloat: Number(item?.defaultKeyStatistics?.shortPercentOfFloat?.raw),
     };
   }
 
