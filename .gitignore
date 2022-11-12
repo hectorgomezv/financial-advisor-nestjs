@@ -36,6 +36,7 @@ lerna-debug.log*
 
 docker.env
 *.gz
+/certbot
 
 # Yarn No Zero Installs
 .pnp.*
