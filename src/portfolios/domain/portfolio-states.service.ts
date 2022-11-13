@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { CurrencyExchangeClient } from '../datasources/currency-exchange.client';
 import { PortfolioStatesRepository } from '../repositories/portfolio-states.repository';
-import { PortfolioAverageMetric } from './entities/portfolio-average-metric.entity';
+import { PortfolioAverageBalance } from './entities/portfolio-average-balanace.entity';
 import { PortfolioState } from './entities/portfolio-state.entity';
 import { Position } from './entities/position.entity';
 import { TimeRange } from './entities/time-range.enum';
@@ -36,11 +36,11 @@ export class PortfolioStatesService {
     return this.repository.getLastByPortfolioUuid(portfolioUuid);
   }
 
-  getSeriesForRange(
+  getAverageBalancesForRange(
     uuid: string,
     range: TimeRange,
-  ): Promise<PortfolioAverageMetric[]> {
-    return this.repository.getSeriesForRange(uuid, range);
+  ): Promise<PortfolioAverageBalance[]> {
+    return this.repository.getAverageBalancesForRange(uuid, range);
   }
 
   deleteByPortfolioUuid(portfolioUuid: string): Promise<void> {

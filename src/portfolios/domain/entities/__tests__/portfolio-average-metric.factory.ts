@@ -1,11 +1,11 @@
 import { faker } from '@faker-js/faker';
-import { PortfolioAverageMetric } from '../portfolio-average-metric.entity';
+import { PortfolioAverageBalance } from '../portfolio-average-balanace.entity';
 
 export function portfolioAverageMetricFactory(
   timestamp?: number,
   average?: number,
-): PortfolioAverageMetric {
-  return <PortfolioAverageMetric>{
+): PortfolioAverageBalance {
+  return <PortfolioAverageBalance>{
     timestamp: timestamp || faker.datatype.number(),
     average: average || faker.datatype.number(),
   };

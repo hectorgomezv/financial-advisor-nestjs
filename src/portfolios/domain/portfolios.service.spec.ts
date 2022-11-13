@@ -4,7 +4,7 @@ import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { PortfolioDetailDto } from './dto/portfolio-detail.dto';
 import { positionDetailDtoFactory } from './dto/test/position-detail-dto.factory';
 import { portfolioFactory } from './entities/__tests__/porfolio.factory';
-import { portfolioAverageMetricFactory } from './entities/__tests__/portfolio-average-metric.factory';
+import { portfolioAverageMetricFactory as portfolioAverageBalanceFactory } from './entities/__tests__/portfolio-average-metric.factory';
 import { portfolioStateFactory } from './entities/__tests__/portfolio-state.factory';
 import { PortfolioStatesService } from './portfolio-states.service';
 import { PortfoliosService } from './portfolios.service';
@@ -21,7 +21,7 @@ describe('PortfoliosService', () => {
   const portfolioStatesService = jest.mocked({
     getLastByPortfolioUuid: jest.fn(),
     deleteByPortfolioUuid: jest.fn(),
-    getSeriesForRange: jest.fn(),
+    getAverageBalancesForRange: jest.fn(),
   } as unknown as PortfolioStatesService);
 
   const positionsService = jest.mocked({
@@ -102,27 +102,27 @@ describe('PortfoliosService', () => {
       portfoliosRepository.findOne.mockResolvedValueOnce(null);
 
       await expect(
-        service.getMetrics(faker.datatype.uuid(), faker.random.word()),
+        service.getAverageBalances(faker.datatype.uuid(), faker.random.word()),
       ).rejects.toThrow('Portfolio not found');
     });
 
     it('should call repository to get portfolio metrics', async () => {
       const portfolio = portfolioFactory();
-      const portfolioAverageMetrics = [
-        portfolioAverageMetricFactory(),
-        portfolioAverageMetricFactory(),
+      const portfolioAverageBalances = [
+        portfolioAverageBalanceFactory(),
+        portfolioAverageBalanceFactory(),
       ];
       portfoliosRepository.findOne.mockResolvedValueOnce(portfolio);
-      portfolioStatesService.getSeriesForRange.mockResolvedValueOnce(
-        portfolioAverageMetrics,
+      portfolioStatesService.getAverageBalancesForRange.mockResolvedValueOnce(
+        portfolioAverageBalances,
       );
 
-      const metrics = await service.getMetrics(
+      const metrics = await service.getAverageBalances(
         faker.datatype.uuid(),
         faker.random.word(),
       );
 
-      expect(metrics).toEqual(portfolioAverageMetrics);
+      expect(metrics).toEqual(portfolioAverageBalances);
     });
   });
 

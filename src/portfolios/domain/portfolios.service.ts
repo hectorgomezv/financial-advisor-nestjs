@@ -69,14 +69,14 @@ export class PortfoliosService {
     return portfolio;
   }
 
-  async getMetrics(uuid: string, range: string) {
+  async getAverageBalances(uuid: string, range: string) {
     const portfolio = await this.repository.findOne(uuid);
 
     if (!portfolio) {
       throw new NotFoundException('Portfolio not found');
     }
 
-    return this.portfolioStatesService.getSeriesForRange(
+    return this.portfolioStatesService.getAverageBalancesForRange(
       uuid,
       timeRangeFromStr(range),
     );

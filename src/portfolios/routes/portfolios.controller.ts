@@ -28,7 +28,7 @@ import { PortfoliosService } from '../domain/portfolios.service';
 import { PositionsService } from '../domain/positions.service';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { UpsertPositionDto } from './dto/upsert-position.dto';
-import { PortfolioAverageMetric } from './entities/portfolio-average-metric.entity';
+import { PortfolioAverageMetric as PortfolioAverageBalance } from './entities/portfolio-average-balance.entity';
 import { Portfolio } from './entities/portfolio.entity';
 import { Position } from './entities/position.entity';
 
@@ -76,14 +76,14 @@ export class PortfoliosController {
     return this.portfoliosService.deleteOne(uuid);
   }
 
-  @Get(':uuid/metrics')
-  @OkArrayResponse(PortfolioAverageMetric)
+  @Get(':uuid/metrics/average-balances')
+  @OkArrayResponse(PortfolioAverageBalance)
   @ApiNotFoundResponse()
   getPortfolioMetrics(
     @Param('uuid') uuid: string,
     @Query('range') range?: string,
   ) {
-    return this.portfoliosService.getMetrics(uuid, range);
+    return this.portfoliosService.getAverageBalances(uuid, range);
   }
 
   @Post(':uuid/positions')
