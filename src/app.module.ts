@@ -14,6 +14,7 @@ import { MetricsModule } from './metrics/metrics.module';
 import { PortfoliosModule } from './portfolios/portfolios.module';
 import { JwtStrategy } from './common/auth/jwt.strategy';
 import { JwtService } from '@nestjs/jwt';
+import { AboutModule } from './about/about.module';
 
 const { NODE_ENV } = process.env;
 
@@ -34,6 +35,7 @@ const { NODE_ENV } = process.env;
       },
     }),
     ScheduleModule.forRoot(),
+    AboutModule,
     CompaniesModule,
     HealthModule,
     MetricsModule,
