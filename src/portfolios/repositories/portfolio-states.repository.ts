@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
-import { PortfolioAverageMetric } from '../domain/entities/portfolio-average-metric.entity';
+import { PortfolioAverageBalance } from '../domain/entities/portfolio-average-balanace.entity';
 import { PortfolioState } from '../domain/entities/portfolio-state.entity';
 import { TimeRange } from '../domain/entities/time-range.enum';
 import {
@@ -40,10 +40,10 @@ export class PortfolioStatesRepository {
     await this.model.deleteMany({ portfolioUuid });
   }
 
-  async getSeriesForRange(
+  async getAverageBalancesForRange(
     portfolioUuid: string,
     range: TimeRange,
-  ): Promise<PortfolioAverageMetric[]> {
+  ): Promise<PortfolioAverageBalance[]> {
     const result = await this.model
       .aggregate()
       .match({
@@ -58,7 +58,7 @@ export class PortfolioStatesRepository {
       .sort({ '_id.year': 1, '_id.day': 1, '_id.hour': 1 })
       .exec();
 
-    return result.map((i) => this.mapToPortfolioAverageMetric(i, range));
+    return result.map((i) => this.mapToPortfolioAverageBalance(i, range));
   }
 
   private getRangeStartTimestamp(range: TimeRange) {
@@ -95,10 +95,10 @@ export class PortfolioStatesRepository {
     }
   }
 
-  private mapToPortfolioAverageMetric(
+  private mapToPortfolioAverageBalance(
     item: any,
     range: TimeRange,
-  ): PortfolioAverageMetric {
+  ): PortfolioAverageBalance {
     const { _id, average } = item;
 
     switch (range) {

@@ -10,7 +10,7 @@ describe('PortfolioStatesService', () => {
   const portfolioStatesRepository = jest.mocked({
     create: jest.fn(),
     getLastByPortfolioUuid: jest.fn(),
-    getSeriesForRange: jest.fn(),
+    getAverageBalancesForRange: jest.fn(),
     deleteByPortfolioUuid: jest.fn(),
   } as unknown as PortfolioStatesRepository);
 
@@ -64,13 +64,12 @@ describe('PortfolioStatesService', () => {
       ).toHaveBeenCalledWith(portfolio.uuid);
     });
 
-    it('should call repository to retrieve portfolio metrics for range', async () => {
+    it('should call repository to retrieve portfolio average balances for range', async () => {
       const uuid = faker.datatype.uuid();
-      await service.getSeriesForRange(uuid, TimeRange.Week);
-      expect(portfolioStatesRepository.getSeriesForRange).toHaveBeenCalledWith(
-        uuid,
-        TimeRange.Week,
-      );
+      await service.getAverageBalancesForRange(uuid, TimeRange.Week);
+      expect(
+        portfolioStatesRepository.getAverageBalancesForRange,
+      ).toHaveBeenCalledWith(uuid, TimeRange.Week);
     });
   });
 
