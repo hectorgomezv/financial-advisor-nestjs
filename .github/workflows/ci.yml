@@ -88,4 +88,4 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: GITHUB_RUN_NUMBER=${{GITHUB_RUN_NUMBER}}
+          build-args: GITHUB_RUN_NUMBER=${{ github.GITHUB_RUN_NUMBER }}
