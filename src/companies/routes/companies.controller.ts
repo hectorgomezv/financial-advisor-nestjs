@@ -1,13 +1,13 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Param,
+  Controller,
   Delete,
-  UseInterceptors,
+  Get,
+  Param,
+  Post,
   UseFilters,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -22,7 +22,7 @@ import { OkResponse } from '../../common/routes/entities/ok-response.entity';
 import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
 import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
 import { CompaniesService } from '../domain/companies.service';
-import { CreateCompanyDto } from '../domain/dto/create-company.dto';
+import { CreateCompanyDto } from './dto/create-company.dto';
 import { Company, CompanyWithState } from './entities/company.entity';
 
 @UseInterceptors(DataInterceptor)
