@@ -4,12 +4,13 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
+import { sortBy } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
+import { PositionsRepository } from '../../portfolios/repositories/positions.repository';
+import { CreateCompanyDto } from '../domain/dto/create-company.dto';
 import { CompaniesRepository } from '../repositories/companies.repository';
 import { CompanyStatesService } from './company-states.service';
-import { PositionsRepository } from '../../portfolios/repositories/positions.repository';
-import { Cron } from '@nestjs/schedule';
-import { CreateCompanyDto } from '../domain/dto/create-company.dto';
 import { Company, CompanyWithState } from './entities/company.entity';
 
 @Injectable()
@@ -45,12 +46,15 @@ export class CompaniesService {
       companies.map((company) => company.uuid),
     );
 
-    return companies.map(
-      (company) =>
-        <CompanyWithState>{
-          ...company,
-          state: states.find((state) => state.companyUuid === company.uuid),
-        },
+    return sortBy(
+      companies.map(
+        (company) =>
+          <CompanyWithState>{
+            ...company,
+            state: states.find((state) => state.companyUuid === company.uuid),
+          },
+      ),
+      'symbol',
     );
   }
 

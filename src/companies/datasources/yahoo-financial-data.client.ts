@@ -54,6 +54,8 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
   }
 
   private mapQuoteSummaryResponse(item: any): QuoteSummary {
+    const peg = Number(item?.defaultKeyStatistics?.pegRatio?.raw);
+
     return <QuoteSummary>{
       uuid: uuidv4(),
       timestamp: Date.now(),
@@ -63,7 +65,7 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
           item?.summaryDetail?.open?.raw ||
           item?.summaryDetail?.previousClose?.raw,
       ),
-      peg: Number(item?.defaultKeyStatistics?.pegRatio?.raw),
+      peg: peg < 500 ? peg : 0,
       enterpriseToEbitda: Number(
         item?.defaultKeyStatistics?.enterpriseToEbitda?.raw,
       ),
