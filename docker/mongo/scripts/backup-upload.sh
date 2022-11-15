@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## Usage
-## DB=financialAdvisorDB sh upload-backup.sh
+## DB=financialAdvisorDB sh backup-upload.sh
 
 set -e
 BACKUP_PREFIX=$DB-$(date +%y%m%d)
