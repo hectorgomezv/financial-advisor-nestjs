@@ -1,7 +1,7 @@
 const config = {
   mongodb: {
     url: process.env.MONGO_CONNECTION_STRING,
-    databaseName: 'financialAdvisorDB',
+    databaseName: process.env.MONGO_DATABASE_NAME,
     options: {
       useNewUrlParser: true,
       useUnifiedTopology: true,
