@@ -98,10 +98,6 @@ export class PositionsService {
     return updated;
   }
 
-  getByPortfolioUuid(portfolioUuid: string): Promise<Position[]> {
-    return this.repository.findByPortfolioUuid(portfolioUuid);
-  }
-
   async getPositionDetailsByPortfolioUuid(
     portfolioUuid: string,
   ): Promise<PositionDetailDto[]> {
@@ -171,7 +167,7 @@ export class PositionsService {
     });
   }
 
-  private async updatePortfolioState(portfolioUuid: string) {
+  async updatePortfolioState(portfolioUuid: string) {
     const positions = await this.getPositionDetailsByPortfolioUuid(
       portfolioUuid,
     );

@@ -7,6 +7,7 @@ import { CompaniesRepository } from '../repositories/companies.repository';
 import { CompaniesService } from './companies.service';
 import { CompanyStatesService } from './company-states.service';
 import { CreateCompanyDto } from '../routes/dto/create-company.dto';
+import { sortBy } from 'lodash';
 
 describe('CompaniesService', () => {
   const mockedCompaniesRepository = jest.mocked({
@@ -99,16 +100,19 @@ describe('CompaniesService', () => {
 
       const actual = await service.findAll();
 
-      const expected = [
-        {
-          ...companies[0],
-          state: states[1],
-        },
-        {
-          ...companies[1],
-          state: states[0],
-        },
-      ];
+      const expected = sortBy(
+        [
+          {
+            ...companies[0],
+            state: states[1],
+          },
+          {
+            ...companies[1],
+            state: states[0],
+          },
+        ],
+        'symbol',
+      );
       expect(actual).toEqual(expected);
       expect(mockedCompaniesRepository.findAll).toHaveBeenCalledTimes(1);
       expect(
