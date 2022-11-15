@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { PortfolioAverageBalance } from '../portfolio-average-balanace.entity';
 
-export function portfolioAverageMetricFactory(
+export function portfolioAverageBalanceFactory(
   timestamp?: number,
   average?: number,
 ): PortfolioAverageBalance {

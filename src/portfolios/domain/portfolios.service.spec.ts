@@ -4,7 +4,7 @@ import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { PortfolioDetailDto } from './dto/portfolio-detail.dto';
 import { positionDetailDtoFactory } from './dto/test/position-detail-dto.factory';
 import { portfolioFactory } from './entities/__tests__/porfolio.factory';
-import { portfolioAverageMetricFactory as portfolioAverageBalanceFactory } from './entities/__tests__/portfolio-average-metric.factory';
+import { portfolioAverageBalanceFactory } from './entities/__tests__/portfolio-average-metric.factory';
 import { portfolioStateFactory } from './entities/__tests__/portfolio-state.factory';
 import { PortfolioStatesService } from './portfolio-states.service';
 import { PortfoliosService } from './portfolios.service';
