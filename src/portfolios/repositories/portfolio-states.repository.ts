@@ -66,11 +66,11 @@ export class PortfolioStatesRepository {
 
     switch (range) {
       case TimeRange.Year:
-        return Date.now() - 365 * oneDayInMs;
+        return new Date(Date.now() - 365 * oneDayInMs);
       case TimeRange.Month:
-        return Date.now() - 30 * oneDayInMs;
+        return new Date(Date.now() - 30 * oneDayInMs);
       case TimeRange.Week:
-        return Date.now() - 7 * oneDayInMs;
+        return new Date(Date.now() - 7 * oneDayInMs);
     }
   }
 
