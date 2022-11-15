@@ -82,7 +82,7 @@ export class PortfoliosService {
     );
   }
 
-  @Cron('0 55 9 * * *', { timeZone: 'Europe/Madrid' })
+  @Cron('0 22 10 * * *', { timeZone: 'Europe/Madrid' })
   private refreshAllStatesTemp() {
     return this.refreshAllStates();
   }
@@ -105,13 +105,9 @@ export class PortfoliosService {
     try {
       const portfolios = await this.repository.findAll();
       await Promise.all(
-        portfolios.map(async ({ uuid }) => {
-          const positions = await this.positionService.getByPortfolioUuid(uuid);
-          return this.portfolioStatesService.createPortfolioState(
-            uuid,
-            positions,
-          );
-        }),
+        portfolios.map(({ uuid }) =>
+          this.positionService.updatePortfolioState(uuid),
+        ),
       );
     } catch (err) {
       this.logger.error(
