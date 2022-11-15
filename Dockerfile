@@ -5,7 +5,7 @@ FROM node:18 as base
 USER node
 ENV NODE_ENV production
 WORKDIR /app
-COPY --chown=node:node package.json yarn.lock .yarnrc.yml tsconfig*.json ./
+COPY --chown=node:node package.json yarn.lock .yarnrc.yml tsconfig*.json migrate-mongo-config.js ./
 COPY --chown=node:node .yarn/releases ./.yarn/releases
 RUN yarn install --immutable 
 COPY --chown=node:node . .
