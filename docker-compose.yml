@@ -78,7 +78,7 @@ services:
     image: mongo:5-focal
     ports:
       - "27017:27017"
-    command: [--auth]
+    # command: [--auth]
     volumes:
       - mongo_data:/data/db
 

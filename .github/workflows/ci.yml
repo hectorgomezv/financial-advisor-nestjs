@@ -60,7 +60,10 @@ jobs:
           PROVIDER_BASE_URL: ${{ secrets.PROVIDER_BASE_URL }}
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          E2E_AUTH_EMAIL: ${{ secrets.E2E_AUTH_EMAIL }}
+          E2E_AUTH_PASSWORD: ${{ secrets.E2E_AUTH_PASSWORD }}
+          E2E_AUTH_URL: ${{ secrets.E2E_AUTH_URL }}
+        
 
   build:
     runs-on: ubuntu-latest
