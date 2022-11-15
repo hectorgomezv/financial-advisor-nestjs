@@ -7,10 +7,12 @@ import { createCompanyDtoFactory } from '../../companies/domain/dto/test/create-
 import { upsertPositionDtoFactory } from '../domain/dto/test/upsert-position-dto.factory';
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { MongoDBClient } from '../../common/__tests__/database/mongodb.client';
+import { AuthClient } from '../../common/__tests__/auth/auth.client';
 
 describe('Portfolios e2e tests', () => {
   let app: INestApplication;
   let mongoClient: MongoDBClient;
+  let accessToken: string;
   let createdPortfolioUuid: string;
   let createdCompanyUuid: string;
   let createdPositionUuid: string;
@@ -18,9 +20,12 @@ describe('Portfolios e2e tests', () => {
   const createPortfolioDto = createPortfolioDtoFactory();
   const createCompanyDto = createCompanyDtoFactory();
   const upsertPositionDto = upsertPositionDtoFactory(createCompanyDto.symbol);
-  const accessToken = process.env.ACCESS_TOKEN;
 
   beforeAll(async () => {
+    const authClient = new AuthClient();
+    const { data } = await authClient.getAuth();
+    accessToken = data.accessToken;
+
     mongoClient = new MongoDBClient();
     const collection = await mongoClient.getCollection('portfolios');
     await collection.deleteMany({});

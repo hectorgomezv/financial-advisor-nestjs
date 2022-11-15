@@ -12,12 +12,11 @@ import { CompaniesRepository } from '../repositories/companies.repository';
 
 describe('Companies e2e tests', () => {
   let app: INestApplication;
-  let authClient: AuthClient;
   let createdUuid: string;
   let mongoClient: MongoDBClient;
+  let accessToken: string;
 
   const dto = createCompanyDtoFactory(faker.random.words(), 'IBM');
-  const accessToken = process.env.ACCESS_TOKEN;
 
   const redis = new Redis({
     username: 'default',
@@ -25,7 +24,10 @@ describe('Companies e2e tests', () => {
   });
 
   beforeAll(async () => {
-    authClient = new AuthClient();
+    const authClient = new AuthClient();
+    const { data } = await authClient.getAuth();
+    accessToken = data.accessToken;
+
     mongoClient = new MongoDBClient();
     const collection = await mongoClient.getCollection('companies');
     await collection.deleteMany({});
@@ -44,9 +46,7 @@ describe('Companies e2e tests', () => {
     redis.flushall();
   });
 
-  it.only('/GET companies', async () => {
-    const foo = await authClient.getAuth();
-    console.log(foo);
+  it('/GET companies', async () => {
     return request(app.getHttpServer())
       .get('/companies')
       .set('Authorization', `Bearer ${accessToken}`)
