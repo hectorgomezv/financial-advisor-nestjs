@@ -82,7 +82,7 @@ export class PortfoliosService {
     );
   }
 
-  @Cron('0 46 9 * * *', { timeZone: 'Europe/Madrid' })
+  @Cron('0 55 9 * * *', { timeZone: 'Europe/Madrid' })
   private refreshAllStatesTemp() {
     return this.refreshAllStates();
   }
