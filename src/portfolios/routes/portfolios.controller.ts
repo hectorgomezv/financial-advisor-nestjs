@@ -64,8 +64,7 @@ export class PortfoliosController {
   @Get(':uuid')
   @OkResponse(Portfolio)
   @ApiNotFoundResponse()
-  findOne(@Request() req, @Param('uuid') uuid: string) {
-    this.logger.debug(req.user);
+  findOne(@Param('uuid') uuid: string) {
     return this.portfoliosService.findOne(uuid);
   }
 

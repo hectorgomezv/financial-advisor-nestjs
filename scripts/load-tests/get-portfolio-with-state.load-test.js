@@ -1,35 +1,32 @@
 /**
  * Usage:
- * ACCESS_TOKEN=[...] k6 run get-portfolio-with-state.load-test.js
+ * EMAIL=[...] PASSWORD=[...] k6 run get-portfolio-with-state.load-test.js
  */
 
 import http from 'k6/http';
 import { check } from 'k6';
+import {
+  baseUrl,
+  getAccessToken,
+  getFirstPortfolio,
+  commonOptions,
+} from './load-test-commons.js';
 
-const baseUrl = 'http://localhost:3000/api/v2';
-
-export const options = {
-  stages: [
-    { duration: '10s', target: 20 },
-    { duration: '30s', target: 10 },
-    { duration: '10s', target: 0 },
-  ],
-};
+export const options = commonOptions;
 
 export function setup() {
-  const { body } = http.get(`${baseUrl}/portfolios`, {
-    headers: {
-      Authorization: `Bearer ${__ENV.ACCESS_TOKEN}`,
-    },
-  });
+  const accessToken = getAccessToken();
 
-  return { portfolioUuid: JSON.parse(body).data[0].uuid };
+  return {
+    accessToken,
+    portfolioUuid: getFirstPortfolio(accessToken),
+  };
 }
 
 export default function (data) {
   const res = http.get(`${baseUrl}/portfolios/${data.portfolioUuid}`, {
     headers: {
-      Authorization: `Bearer ${__ENV.ACCESS_TOKEN}`,
+      Authorization: `Bearer ${data.accessToken}`,
     },
   });
 
