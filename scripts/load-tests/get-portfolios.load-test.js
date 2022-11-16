@@ -1,6 +1,6 @@
 /**
  * Usage:
- * EMAIL=[...] PASSWORD=[...] k6 run get-companies.load-test.js
+ * EMAIL=[...] PASSWORD=[...] k6 run get-portfolios.load-test.js
  */
 
 import http from 'k6/http';
@@ -19,7 +19,7 @@ export const setup = () => ({
 });
 
 export default function (data) {
-  const res = http.get(`${baseUrl}/companies`, buildParams(data));
+  const res = http.get(`${baseUrl}/portfolios`, buildParams(data));
 
   check(res, { 'status was 200': (r) => r.status == 200 });
 }
