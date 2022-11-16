@@ -21,13 +21,7 @@ export class PortfolioStateModel {
   sumWeights: number;
 
   @Prop({ required: true })
-  seed: number;
-
-  @Prop({ required: true })
   cash: number;
-
-  @Prop({ required: true })
-  contributions: [];
 
   @Prop({ required: true })
   totalValueEUR: number;

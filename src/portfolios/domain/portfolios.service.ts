@@ -25,6 +25,8 @@ export class PortfoliosService {
       name: createPortfolioDto.name,
       created: Date.now(),
       positions: [],
+      seed: createPortfolioDto.seed,
+      contributions: [],
       state: null,
     });
   }

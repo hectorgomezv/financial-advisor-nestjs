@@ -4,4 +4,6 @@ import { CreatePortfolioDto as DomainCreatePortfolioDto } from '../../domain/dto
 export class CreatePortfolioDto implements DomainCreatePortfolioDto {
   @ApiProperty()
   name: string;
+  @ApiProperty()
+  seed: number;
 }

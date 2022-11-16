@@ -22,10 +22,13 @@ export class PortfolioStatesService {
     );
     const isValid = sumWeights === 100;
     const totalValueEUR = await this.getTotalValueEUR(positions);
-    const contributionsAmount = portfolio.contributions.reduce(
-      (sum, contribution) => sum + contribution.amountEUR,
-      0,
-    );
+    const cash = portfolio.cash || 0;
+    const contributionsAmount = portfolio.contributions
+      ? portfolio.contributions.reduce(
+          (sum, contribution) => sum + contribution.amountEUR,
+          0,
+        )
+      : 0;
 
     return this.repository.create(<PortfolioState>{
       uuid: uuidv4(),
@@ -33,9 +36,9 @@ export class PortfolioStatesService {
       portfolioUuid: portfolio.uuid,
       isValid,
       sumWeights,
+      cash,
       totalValueEUR,
-      roicEUR:
-        totalValueEUR + portfolio.cash - (portfolio.seed + contributionsAmount),
+      roicEUR: totalValueEUR + cash - (portfolio.seed + contributionsAmount),
     });
   }
 

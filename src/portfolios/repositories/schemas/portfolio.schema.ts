@@ -13,6 +13,12 @@ export class PortfolioModel {
 
   @Prop({ required: true })
   created: number;
+
+  @Prop({ required: true })
+  seed: number;
+
+  @Prop({ required: true })
+  contributions: [];
 }
 
 export const PortfolioSchema = SchemaFactory.createForClass(PortfolioModel);

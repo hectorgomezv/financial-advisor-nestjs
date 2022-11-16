@@ -40,6 +40,7 @@ describe('PortfoliosService', () => {
       const portfolio = portfolioFactory();
       const dto = <CreatePortfolioDto>{
         name: faker.random.words(),
+        seed: Number(faker.finance.amount()),
       };
       portfoliosRepository.create.mockResolvedValueOnce(portfolio);
 
