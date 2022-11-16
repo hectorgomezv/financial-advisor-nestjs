@@ -8,7 +8,7 @@ export const baseUrl = 'http://localhost:3000/api/v2';
 export const commonOptions = {
   stages: [
     { duration: '10s', target: 20 },
-    { duration: '30s', target: 10 },
+    { duration: '30s', target: 100 },
     { duration: '10s', target: 0 },
   ],
 };
