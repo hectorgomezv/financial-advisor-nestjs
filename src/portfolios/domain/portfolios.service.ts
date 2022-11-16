@@ -105,8 +105,8 @@ export class PortfoliosService {
     try {
       const portfolios = await this.repository.findAll();
       await Promise.all(
-        portfolios.map(({ uuid }) =>
-          this.positionService.updatePortfolioState(uuid),
+        portfolios.map((portfolio) =>
+          this.positionService.updatePortfolioState(portfolio),
         ),
       );
     } catch (err) {

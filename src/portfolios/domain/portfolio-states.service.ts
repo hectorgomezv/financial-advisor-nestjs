@@ -4,6 +4,7 @@ import { CurrencyExchangeClient } from '../datasources/currency-exchange.client'
 import { PortfolioStatesRepository } from '../repositories/portfolio-states.repository';
 import { PortfolioAverageBalance } from './entities/portfolio-average-balanace.entity';
 import { PortfolioState } from './entities/portfolio-state.entity';
+import { Portfolio } from './entities/portfolio.entity';
 import { Position } from './entities/position.entity';
 import { TimeRange } from './entities/time-range.enum';
 
@@ -14,21 +15,27 @@ export class PortfolioStatesService {
     private readonly exchangeClient: CurrencyExchangeClient,
   ) {}
 
-  async createPortfolioState(portfolioUuid: string, positions: Position[]) {
+  async createPortfolioState(portfolio: Portfolio, positions: Position[]) {
     const sumWeights = positions.reduce(
       (acc, pos) => acc + pos.targetWeight,
       0,
     );
     const isValid = sumWeights === 100;
     const totalValueEUR = await this.getTotalValueEUR(positions);
+    const contributionsAmount = portfolio.contributions.reduce(
+      (sum, contribution) => sum + contribution.amountEUR,
+      0,
+    );
 
     return this.repository.create(<PortfolioState>{
       uuid: uuidv4(),
       timestamp: Date.now(),
-      portfolioUuid,
+      portfolioUuid: portfolio.uuid,
       isValid,
       sumWeights,
       totalValueEUR,
+      roicEUR:
+        totalValueEUR + portfolio.cash - (portfolio.seed + contributionsAmount),
     });
   }
 
