@@ -10,6 +10,7 @@ import {
   getAccessToken,
   getFirstPortfolio,
   commonOptions,
+  buildParams,
 } from './load-test-commons.js';
 
 export const options = commonOptions;
@@ -24,11 +25,10 @@ export function setup() {
 }
 
 export default function (data) {
-  const res = http.get(`${baseUrl}/portfolios/${data.portfolioUuid}`, {
-    headers: {
-      Authorization: `Bearer ${data.accessToken}`,
-    },
-  });
+  const res = http.get(
+    `${baseUrl}/portfolios/${data.portfolioUuid}`,
+    buildParams(data),
+  );
 
   check(res, { 'status was 200': (r) => r.status == 200 });
 }

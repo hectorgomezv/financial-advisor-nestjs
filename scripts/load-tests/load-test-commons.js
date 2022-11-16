@@ -39,3 +39,9 @@ export function getFirstPortfolio(accessToken) {
 
   return JSON.parse(body).data[0].uuid;
 }
+
+export const buildParams = (setupData) => ({
+  headers: {
+    Authorization: `Bearer ${setupData.accessToken}`,
+  },
+});
