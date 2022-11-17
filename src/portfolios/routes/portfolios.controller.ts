@@ -3,12 +3,10 @@ import {
   Controller,
   Delete,
   Get,
-  Logger,
   Param,
   Post,
   Put,
   Query,
-  Request,
   UseFilters,
   UseGuards,
   UseInterceptors,
@@ -24,6 +22,7 @@ import { OkArrayResponse } from '../../common/routes/entities/ok-array-response.
 import { OkResponse } from '../../common/routes/entities/ok-response.entity';
 import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
 import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
+import { UpdatePortfolioCashDto } from '../domain/dto/update-portfolio-cash.dto';
 import { PortfoliosService } from '../domain/portfolios.service';
 import { PositionsService } from '../domain/positions.service';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
@@ -41,8 +40,6 @@ import { Position } from './entities/position.entity';
   version: '2',
 })
 export class PortfoliosController {
-  private readonly logger = new Logger(PortfoliosController.name);
-
   constructor(
     private readonly portfoliosService: PortfoliosService,
     private readonly positionsService: PositionsService,
@@ -104,6 +101,17 @@ export class PortfoliosController {
     @Body() upsertPositionDto: UpsertPositionDto,
   ) {
     return this.positionsService.update(uuid, upsertPositionDto);
+  }
+
+  @Put(':uuid/cash')
+  @OkResponse(Position)
+  @ApiBadRequestResponse()
+  @ApiNotFoundResponse()
+  updatePortfolioCash(
+    @Param('uuid') uuid: string,
+    @Body() updatePortfolioCash: UpdatePortfolioCashDto,
+  ) {
+    return this.portfoliosService.updateCash(uuid, updatePortfolioCash);
   }
 
   @Delete(':uuid/positions/:positionUuid')

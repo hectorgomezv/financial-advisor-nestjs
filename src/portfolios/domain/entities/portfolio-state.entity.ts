@@ -5,4 +5,5 @@ export class PortfolioState {
   isValid: boolean;
   sumWeights: number;
   totalValueEUR: number;
+  roicEUR: number;
 }

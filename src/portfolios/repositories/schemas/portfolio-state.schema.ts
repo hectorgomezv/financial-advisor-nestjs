@@ -21,6 +21,12 @@ export class PortfolioStateModel {
   sumWeights: number;
 
   @Prop({ required: true })
+  cash: number;
+
+  @Prop({ required: true })
+  roicEUR: number;
+
+  @Prop({ required: true })
   totalValueEUR: number;
 }
 

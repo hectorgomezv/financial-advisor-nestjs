@@ -1,9 +1,11 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
+import { isNumber } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { PortfolioDetailDto } from './dto/portfolio-detail.dto';
+import { UpdatePortfolioCashDto } from './dto/update-portfolio-cash.dto';
 import { Portfolio } from './entities/portfolio.entity';
 import { timeRangeFromStr } from './entities/time-range.enum';
 import { PortfolioStatesService } from './portfolio-states.service';
@@ -25,6 +27,8 @@ export class PortfoliosService {
       name: createPortfolioDto.name,
       created: Date.now(),
       positions: [],
+      seed: createPortfolioDto.seed,
+      contributions: [],
       state: null,
     });
   }
@@ -50,6 +54,8 @@ export class PortfoliosService {
       uuid,
       name: portfolio.name,
       created: portfolio.created,
+      seed: portfolio.seed,
+      cash: portfolio.cash,
       positions,
       state,
     };
@@ -82,6 +88,27 @@ export class PortfoliosService {
     );
   }
 
+  async updateCash(
+    portfolioUuid: string,
+    updatePortfolioCashDto: UpdatePortfolioCashDto,
+  ): Promise<Portfolio> {
+    const portfolio = await this.repository.findOne(portfolioUuid);
+    if (!portfolio) {
+      throw new NotFoundException(`Portfolio not found`);
+    }
+
+    // TODO: implement validation
+    const { cash } = updatePortfolioCashDto;
+    if (!isNumber(cash)) {
+      throw new Error('Invalid cash value');
+    }
+
+    const updated = { ...portfolio, cash };
+    await this.repository.updateCash(portfolioUuid, cash);
+    await this.positionService.updatePortfolioState(updated);
+    return updated;
+  }
+
   @Cron('0 0 8 * * *', { timeZone: 'Europe/Madrid' })
   private refreshAllStatesExtra() {
     return this.refreshAllStates();
@@ -105,8 +132,8 @@ export class PortfoliosService {
     try {
       const portfolios = await this.repository.findAll();
       await Promise.all(
-        portfolios.map(({ uuid }) =>
-          this.positionService.updatePortfolioState(uuid),
+        portfolios.map((portfolio) =>
+          this.positionService.updatePortfolioState(portfolio),
         ),
       );
     } catch (err) {
