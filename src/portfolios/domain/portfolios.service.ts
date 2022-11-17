@@ -97,7 +97,6 @@ export class PortfoliosService {
     }
 
     // TODO: validate cash as number (nest class validator?)
-    // TODO: add migration to set all cash to 0?
 
     const updated = {
       ...portfolio,
