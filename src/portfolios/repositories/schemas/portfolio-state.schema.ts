@@ -24,6 +24,9 @@ export class PortfolioStateModel {
   cash: number;
 
   @Prop({ required: true })
+  roicEUR: number;
+
+  @Prop({ required: true })
   totalValueEUR: number;
 }
 
