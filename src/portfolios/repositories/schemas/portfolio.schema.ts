@@ -18,6 +18,9 @@ export class PortfolioModel {
   seed: number;
 
   @Prop({ required: true })
+  cash: number;
+
+  @Prop({ required: true })
   contributions: [];
 }
 

@@ -34,6 +34,6 @@ export class PortfoliosRepository {
   }
 
   async updateCash(uuid: string, cash: number) {
-    this.model.updateOne({ uuid }, { $set: { cash } });
+    await this.model.updateOne({ uuid }, { $set: { cash } });
   }
 }
