@@ -3,6 +3,7 @@ import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { PortfolioDetailDto } from './dto/portfolio-detail.dto';
 import { positionDetailDtoFactory } from './dto/test/position-detail-dto.factory';
+import { updatePortfolioCashDtoFactory } from './dto/test/update-portfolio-cash.dto.factory';
 import { portfolioFactory } from './entities/__tests__/porfolio.factory';
 import { portfolioAverageBalanceFactory } from './entities/__tests__/portfolio-average-metric.factory';
 import { portfolioStateFactory } from './entities/__tests__/portfolio-state.factory';
@@ -16,6 +17,7 @@ describe('PortfoliosService', () => {
     findAll: jest.fn(),
     findOne: jest.fn(),
     deleteOne: jest.fn(),
+    updateCash: jest.fn(),
   } as unknown as PortfoliosRepository);
 
   const portfolioStatesService = jest.mocked({
@@ -27,6 +29,7 @@ describe('PortfoliosService', () => {
   const positionsService = jest.mocked({
     getPositionDetailsByPortfolioUuid: jest.fn(),
     deleteByPortfolioUuid: jest.fn(),
+    updatePortfolioState: jest.fn(),
   } as unknown as PositionsService);
 
   const service: PortfoliosService = new PortfoliosService(
@@ -93,6 +96,8 @@ describe('PortfoliosService', () => {
       expect(retrieved).toEqual(<PortfolioDetailDto>{
         uuid: portfolio.uuid,
         name: portfolio.name,
+        seed: portfolio.seed,
+        cash: portfolio.cash,
         created: portfolio.created,
         positions,
         state,
@@ -124,6 +129,36 @@ describe('PortfoliosService', () => {
       );
 
       expect(metrics).toEqual(portfolioAverageBalances);
+    });
+  });
+
+  describe('update', () => {
+    it('should fail if the portfolio does not exist', async () => {
+      const dto = updatePortfolioCashDtoFactory();
+      portfoliosRepository.findOne.mockResolvedValueOnce(null);
+
+      await expect(
+        service.updateCash(faker.datatype.uuid(), dto),
+      ).rejects.toThrow('Portfolio not found');
+    });
+
+    it('should call repo to update cash', async () => {
+      const uuid = faker.datatype.uuid();
+      const dto = updatePortfolioCashDtoFactory();
+      const portfolio = portfolioFactory();
+      portfoliosRepository.findOne.mockResolvedValueOnce(portfolio);
+
+      const actual = await service.updateCash(uuid, dto);
+
+      expect(actual).toEqual({ ...portfolio, cash: dto.cash });
+      expect(portfoliosRepository.updateCash).toHaveBeenCalledWith(
+        uuid,
+        dto.cash,
+      );
+      expect(positionsService.updatePortfolioState).toBeCalledWith({
+        ...portfolio,
+        cash: dto.cash,
+      });
     });
   });
 

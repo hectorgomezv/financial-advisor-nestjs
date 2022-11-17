@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { PortfolioDetailDto } from './dto/portfolio-detail.dto';
+import { UpdatePortfolioCashDto } from './dto/update-portfolio-cash.dto';
 import { Portfolio } from './entities/portfolio.entity';
 import { timeRangeFromStr } from './entities/time-range.enum';
 import { PortfolioStatesService } from './portfolio-states.service';
@@ -52,6 +53,8 @@ export class PortfoliosService {
       uuid,
       name: portfolio.name,
       created: portfolio.created,
+      seed: portfolio.seed,
+      cash: portfolio.cash,
       positions,
       state,
     };
@@ -82,6 +85,30 @@ export class PortfoliosService {
       uuid,
       timeRangeFromStr(range),
     );
+  }
+
+  async updateCash(
+    portfolioUuid: string,
+    updatePortfolioCashDto: UpdatePortfolioCashDto,
+  ): Promise<Portfolio> {
+    const portfolio = await this.repository.findOne(portfolioUuid);
+    if (!portfolio) {
+      throw new NotFoundException(`Portfolio not found`);
+    }
+
+    // TODO: validate cash as number (nest class validator?)
+    // TODO: add migration to set all cash to 0?
+
+    const updated = {
+      ...portfolio,
+      cash: updatePortfolioCashDto.cash,
+    };
+    await this.repository.updateCash(
+      portfolioUuid,
+      updatePortfolioCashDto.cash,
+    );
+    await this.positionService.updatePortfolioState(updated);
+    return updated;
   }
 
   @Cron('0 0 8 * * *', { timeZone: 'Europe/Madrid' })

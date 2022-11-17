@@ -32,4 +32,8 @@ export class PortfoliosRepository {
   async deleteOne(uuid: string): Promise<void> {
     await this.model.deleteOne({ uuid });
   }
+
+  async updateCash(uuid: string, cash: number) {
+    this.model.updateOne({ uuid }, { $set: { cash } });
+  }
 }
