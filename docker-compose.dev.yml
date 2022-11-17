@@ -1,0 +1,24 @@
+version: '3'
+services:
+  fa-nginx:
+    build:
+      context: ./docker/nginx
+      dockerfile: Dockerfile.dev
+    ports:
+      - "80:80"
+
+  financial-advisor-nestjs:
+    build: "./"
+
+  fa-frontend:
+    build:
+      context: '../fa-frontend'
+      args:
+        - REACT_APP_BASE_URL=http://localhost/api
+        - REACT_APP_AUTH_BASE_URL=http://localhost/api/v1/auth
+
+  fa-mongo:
+    command: []
+
+  fa-redis:
+    command: redis-server --save 20 1 --loglevel warning
