@@ -1,0 +1,35 @@
+version: '3'
+services:
+  fa-nginx: 
+    build: ./docker/nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  financial-advisor-nestjs:
+    image: "hectorgomezv1/financial-advisor-nestjs:${IMAGE_RELEASE}"
+    ports:
+      - "5100:5100"
+
+  # README: https://www.programonaut.com/setup-ssl-with-docker-nginx-and-lets-encrypt/
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email ${CERT_EMAIL} -d ${CERT_DOMAIN} --agree-tos
+
+  fa-frontend:
+    image: "hectorgomezv1/fa-frontend:${FA_FRONTEND_IMAGE_RELEASE}"
+
+  fa-mongo:
+    command: [--auth]
+
+  fa-redis:
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
