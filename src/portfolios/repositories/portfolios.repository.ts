@@ -34,14 +34,14 @@ export class PortfoliosRepository {
     await this.model.deleteOne({ uuid });
   }
 
-  async updateCash(uuid: string, cash: number) {
+  async updateCash(uuid: string, cash: number): Promise<void> {
     await this.model.updateOne({ uuid }, { $set: { cash } });
   }
 
   async addContribution(
     uuid: string,
     contribution: PortfolioContribution,
-  ): Promise<Portfolio> {
+  ): Promise<void> {
     const portfolio = await this.model.findOne({ uuid });
     portfolio.contributions.push({
       uuid: contribution.uuid,
@@ -49,7 +49,15 @@ export class PortfoliosRepository {
       amountEUR: contribution.amountEUR,
     });
     await portfolio.save();
-    const result = await this.model.findOne({ uuid }).lean();
-    return plainToInstance(Portfolio, result, { excludePrefixes: ['_', '__'] });
+  }
+
+  async deleteContribution(
+    portfolioUuid: string,
+    contributionUuid: string,
+  ): Promise<void> {
+    await this.model.updateOne(
+      { uuid: portfolioUuid },
+      { $pull: { contributions: { uuid: contributionUuid } } },
+    );
   }
 }

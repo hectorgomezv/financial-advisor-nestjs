@@ -128,11 +128,27 @@ export class PortfoliosService {
       throw new Error('Invalid contribution');
     }
 
-    const updated = await this.repository.addContribution(uuid, {
+    await this.repository.addContribution(uuid, {
       uuid: uuidv4(),
       timestamp,
       amountEUR,
     });
+    const updated = await this.repository.findOne(uuid);
+    await this.positionService.updatePortfolioState(updated);
+    return updated;
+  }
+
+  async deleteContribution(
+    portfolioUuid: string,
+    contributionUuid: string,
+  ): Promise<Portfolio> {
+    const portfolio = await this.repository.findOne(portfolioUuid);
+    if (!portfolio) {
+      throw new NotFoundException(`Portfolio not found`);
+    }
+
+    await this.repository.deleteContribution(portfolioUuid, contributionUuid);
+    const updated = await this.repository.findOne(portfolioUuid);
     await this.positionService.updatePortfolioState(updated);
     return updated;
   }

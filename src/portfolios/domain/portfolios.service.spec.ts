@@ -20,6 +20,7 @@ describe('PortfoliosService', () => {
     deleteOne: jest.fn(),
     updateCash: jest.fn(),
     addContribution: jest.fn(),
+    deleteContribution: jest.fn(),
   } as unknown as PortfoliosRepository);
 
   const portfolioStatesService = jest.mocked({
@@ -188,7 +189,7 @@ describe('PortfoliosService', () => {
         ],
       };
       portfoliosRepository.findOne.mockResolvedValueOnce(portfolio);
-      portfoliosRepository.addContribution.mockResolvedValueOnce(expected);
+      portfoliosRepository.findOne.mockResolvedValueOnce(expected);
 
       const actual = await service.addContribution(uuid, dto);
 
@@ -198,6 +199,27 @@ describe('PortfoliosService', () => {
         timestamp: dto.timestamp,
         amountEUR: dto.amountEUR,
       });
+      expect(positionsService.updatePortfolioState).toBeCalledWith(expected);
+    });
+
+    it('should call repo to delete a contribution', async () => {
+      const portfolioUuid = faker.datatype.uuid();
+      const contributionUuid = faker.datatype.uuid();
+      const portfolio = portfolioFactory();
+      const expected = { ...portfolio, contributions: [] };
+      portfoliosRepository.findOne.mockResolvedValueOnce(portfolio);
+      portfoliosRepository.findOne.mockResolvedValueOnce(expected);
+
+      const actual = await service.deleteContribution(
+        portfolioUuid,
+        contributionUuid,
+      );
+
+      expect(actual).toEqual(expected);
+      expect(portfoliosRepository.deleteContribution).toHaveBeenCalledWith(
+        portfolioUuid,
+        contributionUuid,
+      );
       expect(positionsService.updatePortfolioState).toBeCalledWith(expected);
     });
   });

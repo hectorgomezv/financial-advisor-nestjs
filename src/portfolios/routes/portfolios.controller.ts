@@ -22,10 +22,10 @@ import { OkArrayResponse } from '../../common/routes/entities/ok-array-response.
 import { OkResponse } from '../../common/routes/entities/ok-response.entity';
 import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
 import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
-import { AddPortfolioContributionDto } from '../domain/dto/add-portfolio-contribution.dto';
 import { UpdatePortfolioCashDto } from '../domain/dto/update-portfolio-cash.dto';
 import { PortfoliosService } from '../domain/portfolios.service';
 import { PositionsService } from '../domain/positions.service';
+import { AddPortfolioContributionDto } from './dto/add-portfolio-contribution.dto';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { UpsertPositionDto } from './dto/upsert-position.dto';
 import { PortfolioAverageMetric as PortfolioAverageBalance } from './entities/portfolio-average-balance.entity';
@@ -126,6 +126,16 @@ export class PortfoliosController {
       uuid,
       addPortfolioContributionDto,
     );
+  }
+
+  @Delete(':uuid/contributions/:contributionUuid')
+  @CreatedResponse(Portfolio)
+  @ApiBadRequestResponse()
+  deleteContribution(
+    @Param('uuid') uuid: string,
+    @Param('contributionUuid') contributionUuid: string,
+  ) {
+    return this.portfoliosService.deleteContribution(uuid, contributionUuid);
   }
 
   @Delete(':uuid/positions/:positionUuid')
