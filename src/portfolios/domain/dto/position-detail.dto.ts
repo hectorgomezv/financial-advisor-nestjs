@@ -9,5 +9,6 @@ export class PositionDetailDto {
   targetWeight: number;
   currentWeight: number;
   deltaWeight: number;
+  deltaShares: number;
   companyState: CompanyState;
 }

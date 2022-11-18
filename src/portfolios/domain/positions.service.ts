@@ -116,7 +116,7 @@ export class PositionsService {
       }),
     );
 
-    return this.addWeights(positionStates)
+    return this.addWeightsAndDeltas(positionStates)
       .sort((a, b) => a.value - b.value)
       .reverse();
   }
@@ -152,20 +152,22 @@ export class PositionsService {
     };
   }
 
-  private addWeights(positionsStates): PositionDetailDto[] {
+  private addWeightsAndDeltas(
+    positionsStates: PositionDetailDto[],
+  ): PositionDetailDto[] {
     const totalValue = positionsStates.reduce((sum, it) => sum + it.value, 0);
 
     return positionsStates.map((positionState) => {
-      const currentWeight = Number((positionState.value / totalValue) * 100);
-      const deltaWeight = Number(
-        (currentWeight - positionState.targetWeight) /
-          positionState.targetWeight,
-      );
+      const { value, shares, targetWeight } = positionState;
+      const currentWeight = (value / totalValue) * 100;
+      const deltaWeight = (currentWeight - targetWeight) / targetWeight;
+      const deltaShares = (shares * targetWeight) / currentWeight - shares;
 
       return <PositionDetailDto>{
         ...positionState,
         currentWeight,
         deltaWeight,
+        deltaShares,
       };
     });
   }
