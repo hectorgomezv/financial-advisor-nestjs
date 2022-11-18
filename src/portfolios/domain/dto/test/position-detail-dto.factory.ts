@@ -10,6 +10,7 @@ export function positionDetailDtoFactory(
   targetWeight?: number,
   currentWeight?: number,
   deltaWeight?: number,
+  deltaShares?: number,
 ): PositionDetailDto {
   return <PositionDetailDto>{
     uuid: uuid || faker.datatype.uuid(),
@@ -20,5 +21,6 @@ export function positionDetailDtoFactory(
     targetWeight: targetWeight || faker.datatype.number(),
     currentWeight: currentWeight || faker.datatype.number(),
     deltaWeight: deltaWeight || faker.datatype.number(),
+    deltaShares: deltaShares || faker.datatype.number(),
   };
 }
