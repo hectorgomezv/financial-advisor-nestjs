@@ -57,6 +57,7 @@ export class PortfoliosService {
       created: portfolio.created,
       seed: portfolio.seed,
       cash: portfolio.cash,
+      contributions: portfolio.contributions,
       positions,
       state,
     };

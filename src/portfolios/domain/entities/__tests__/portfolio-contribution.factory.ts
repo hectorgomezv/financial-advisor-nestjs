@@ -2,13 +2,13 @@ import { faker } from '@faker-js/faker';
 import { PortfolioContribution } from '../portfolio-contribution.entity';
 
 export function portfolioContributionFactory(
-  portfolioUuid: string,
-  created?: Date,
+  uuid: string,
+  timestamp?: Date,
   amountEUR?: number,
 ): PortfolioContribution {
   return <PortfolioContribution>{
-    portfolioUuid: portfolioUuid || faker.datatype.uuid(),
-    created: created || Date.now(),
+    uuid: uuid || faker.datatype.uuid(),
+    timestamp: timestamp || Date.now(),
     amountEUR: amountEUR || Number(faker.finance.amount()),
   };
 }
