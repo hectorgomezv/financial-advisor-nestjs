@@ -22,6 +22,7 @@ import { OkArrayResponse } from '../../common/routes/entities/ok-array-response.
 import { OkResponse } from '../../common/routes/entities/ok-response.entity';
 import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
 import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
+import { AddPortfolioContributionDto } from '../domain/dto/add-portfolio-contribution.dto';
 import { UpdatePortfolioCashDto } from '../domain/dto/update-portfolio-cash.dto';
 import { PortfoliosService } from '../domain/portfolios.service';
 import { PositionsService } from '../domain/positions.service';
@@ -112,6 +113,19 @@ export class PortfoliosController {
     @Body() updatePortfolioCash: UpdatePortfolioCashDto,
   ) {
     return this.portfoliosService.updateCash(uuid, updatePortfolioCash);
+  }
+
+  @Post(':uuid/contributions')
+  @CreatedResponse(Portfolio)
+  @ApiBadRequestResponse()
+  addContribution(
+    @Param('uuid') uuid: string,
+    @Body() addPortfolioContributionDto: AddPortfolioContributionDto,
+  ) {
+    return this.portfoliosService.addContribution(
+      uuid,
+      addPortfolioContributionDto,
+    );
   }
 
   @Delete(':uuid/positions/:positionUuid')

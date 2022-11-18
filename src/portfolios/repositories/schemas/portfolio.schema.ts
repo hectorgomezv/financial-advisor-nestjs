@@ -23,7 +23,7 @@ export class PortfolioModel {
   cash: number;
 
   @Prop({ required: true, schema: PortfolioContributionSchema })
-  contributions: PortfolioContribution;
+  contributions: PortfolioContribution[];
 }
 
 export const PortfolioSchema = SchemaFactory.createForClass(PortfolioModel);
