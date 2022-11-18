@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { PortfolioContribution } from '../../domain/entities/portfolio-contribution.entity';
+import { PortfolioContributionSchema } from './portfolio-contribution.schema';
 
 export type PortfolioDocument = PortfolioModel & Document;
 
@@ -20,8 +22,8 @@ export class PortfolioModel {
   @Prop({ required: true })
   cash: number;
 
-  @Prop({ required: true })
-  contributions: [];
+  @Prop({ required: true, schema: PortfolioContributionSchema })
+  contributions: PortfolioContribution[];
 }
 
 export const PortfolioSchema = SchemaFactory.createForClass(PortfolioModel);

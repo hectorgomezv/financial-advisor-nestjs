@@ -25,6 +25,7 @@ import { DataInterceptor } from '../../common/routes/interceptors/data.intercept
 import { UpdatePortfolioCashDto } from '../domain/dto/update-portfolio-cash.dto';
 import { PortfoliosService } from '../domain/portfolios.service';
 import { PositionsService } from '../domain/positions.service';
+import { AddPortfolioContributionDto } from './dto/add-portfolio-contribution.dto';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { UpsertPositionDto } from './dto/upsert-position.dto';
 import { PortfolioAverageMetric as PortfolioAverageBalance } from './entities/portfolio-average-balance.entity';
@@ -112,6 +113,29 @@ export class PortfoliosController {
     @Body() updatePortfolioCash: UpdatePortfolioCashDto,
   ) {
     return this.portfoliosService.updateCash(uuid, updatePortfolioCash);
+  }
+
+  @Post(':uuid/contributions')
+  @CreatedResponse(Portfolio)
+  @ApiBadRequestResponse()
+  addContribution(
+    @Param('uuid') uuid: string,
+    @Body() addPortfolioContributionDto: AddPortfolioContributionDto,
+  ) {
+    return this.portfoliosService.addContribution(
+      uuid,
+      addPortfolioContributionDto,
+    );
+  }
+
+  @Delete(':uuid/contributions/:contributionUuid')
+  @CreatedResponse(Portfolio)
+  @ApiBadRequestResponse()
+  deleteContribution(
+    @Param('uuid') uuid: string,
+    @Param('contributionUuid') contributionUuid: string,
+  ) {
+    return this.portfoliosService.deleteContribution(uuid, contributionUuid);
   }
 
   @Delete(':uuid/positions/:positionUuid')

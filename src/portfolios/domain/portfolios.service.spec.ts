@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { PortfolioDetailDto } from './dto/portfolio-detail.dto';
+import { addPortfolioContributionDtoFactory } from './dto/test/add-portfolio-contribution.dto.factory';
 import { positionDetailDtoFactory } from './dto/test/position-detail-dto.factory';
 import { updatePortfolioCashDtoFactory } from './dto/test/update-portfolio-cash.dto.factory';
 import { portfolioFactory } from './entities/__tests__/porfolio.factory';
@@ -18,6 +19,8 @@ describe('PortfoliosService', () => {
     findOne: jest.fn(),
     deleteOne: jest.fn(),
     updateCash: jest.fn(),
+    addContribution: jest.fn(),
+    deleteContribution: jest.fn(),
   } as unknown as PortfoliosRepository);
 
   const portfolioStatesService = jest.mocked({
@@ -99,6 +102,7 @@ describe('PortfoliosService', () => {
         seed: portfolio.seed,
         cash: portfolio.cash,
         created: portfolio.created,
+        contributions: portfolio.contributions,
         positions,
         state,
       });
@@ -133,7 +137,7 @@ describe('PortfoliosService', () => {
   });
 
   describe('update', () => {
-    it('should fail if the portfolio does not exist', async () => {
+    it('should fail if the portfolio does not exist when updating cash', async () => {
       const dto = updatePortfolioCashDtoFactory();
       portfoliosRepository.findOne.mockResolvedValueOnce(null);
 
@@ -159,6 +163,64 @@ describe('PortfoliosService', () => {
         ...portfolio,
         cash: dto.cash,
       });
+    });
+
+    it('should fail if the portfolio does not exist when adding a contribution', async () => {
+      const dto = addPortfolioContributionDtoFactory();
+      portfoliosRepository.findOne.mockResolvedValueOnce(null);
+
+      await expect(
+        service.addContribution(faker.datatype.uuid(), dto),
+      ).rejects.toThrow('Portfolio not found');
+    });
+
+    it('should call repo to add a contribution', async () => {
+      const uuid = faker.datatype.uuid();
+      const dto = addPortfolioContributionDtoFactory();
+      const portfolio = portfolioFactory();
+      const expected = {
+        ...portfolio,
+        contributions: [
+          expect.objectContaining({
+            uuid: expect.any(String),
+            timestamp: dto.timestamp,
+            amountEUR: dto.amountEUR,
+          }),
+        ],
+      };
+      portfoliosRepository.findOne.mockResolvedValueOnce(portfolio);
+      portfoliosRepository.findOne.mockResolvedValueOnce(expected);
+
+      const actual = await service.addContribution(uuid, dto);
+
+      expect(actual).toEqual(expected);
+      expect(portfoliosRepository.addContribution).toHaveBeenCalledWith(uuid, {
+        uuid: expect.any(String),
+        timestamp: dto.timestamp,
+        amountEUR: dto.amountEUR,
+      });
+      expect(positionsService.updatePortfolioState).toBeCalledWith(expected);
+    });
+
+    it('should call repo to delete a contribution', async () => {
+      const portfolioUuid = faker.datatype.uuid();
+      const contributionUuid = faker.datatype.uuid();
+      const portfolio = portfolioFactory();
+      const expected = { ...portfolio, contributions: [] };
+      portfoliosRepository.findOne.mockResolvedValueOnce(portfolio);
+      portfoliosRepository.findOne.mockResolvedValueOnce(expected);
+
+      const actual = await service.deleteContribution(
+        portfolioUuid,
+        contributionUuid,
+      );
+
+      expect(actual).toEqual(expected);
+      expect(portfoliosRepository.deleteContribution).toHaveBeenCalledWith(
+        portfolioUuid,
+        contributionUuid,
+      );
+      expect(positionsService.updatePortfolioState).toBeCalledWith(expected);
     });
   });
 

@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { PortfolioContribution } from '../../domain/entities/portfolio-contribution.entity';
 import { PortfolioState } from '../../domain/entities/portfolio-state.entity';
 import { Portfolio as DomainPortfolio } from '../../domain/entities/portfolio.entity';
 import { Position } from '../../domain/entities/position.entity';
+import { PortfolioContribution } from './portfolio-contribution.entity';
 
 export class Portfolio implements DomainPortfolio {
   @ApiProperty()

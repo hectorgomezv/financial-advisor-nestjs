@@ -1,8 +1,9 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { isNumber } from 'lodash';
+import { isDate, isNumber } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
+import { AddPortfolioContributionDto } from './dto/add-portfolio-contribution.dto';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { PortfolioDetailDto } from './dto/portfolio-detail.dto';
 import { UpdatePortfolioCashDto } from './dto/update-portfolio-cash.dto';
@@ -57,6 +58,7 @@ export class PortfoliosService {
       created: portfolio.created,
       seed: portfolio.seed,
       cash: portfolio.cash,
+      contributions: portfolio.contributions,
       positions,
       state,
     };
@@ -106,6 +108,47 @@ export class PortfoliosService {
 
     const updated = { ...portfolio, cash };
     await this.repository.updateCash(portfolioUuid, cash);
+    await this.positionService.updatePortfolioState(updated);
+    return updated;
+  }
+
+  async addContribution(
+    uuid: string,
+    addPortfolioContributionDto: AddPortfolioContributionDto,
+  ): Promise<Portfolio> {
+    const portfolio = await this.repository.findOne(uuid);
+    if (!portfolio) {
+      throw new NotFoundException(`Portfolio not found`);
+    }
+
+    // TODO: implement validation
+    const { timestamp: inputTS, amountEUR } = addPortfolioContributionDto;
+    const timestamp = new Date(inputTS);
+    if (!isNumber(amountEUR) || !isDate(timestamp)) {
+      throw new Error('Invalid contribution');
+    }
+
+    await this.repository.addContribution(uuid, {
+      uuid: uuidv4(),
+      timestamp,
+      amountEUR,
+    });
+    const updated = await this.repository.findOne(uuid);
+    await this.positionService.updatePortfolioState(updated);
+    return updated;
+  }
+
+  async deleteContribution(
+    portfolioUuid: string,
+    contributionUuid: string,
+  ): Promise<Portfolio> {
+    const portfolio = await this.repository.findOne(portfolioUuid);
+    if (!portfolio) {
+      throw new NotFoundException(`Portfolio not found`);
+    }
+
+    await this.repository.deleteContribution(portfolioUuid, contributionUuid);
+    const updated = await this.repository.findOne(portfolioUuid);
     await this.positionService.updatePortfolioState(updated);
     return updated;
   }
