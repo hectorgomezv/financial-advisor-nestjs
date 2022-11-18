@@ -167,7 +167,7 @@ export class PortfoliosService {
   private refreshAllStatesAtMidday() {
     return this.refreshAllStates();
   }
-  @Cron('0 03 4 * * *', { timeZone: 'America/New_York' })
+  @Cron('0 03 16 * * *', { timeZone: 'America/New_York' })
   private refreshAllStatesAtMarketClose() {
     return this.refreshAllStates();
   }
