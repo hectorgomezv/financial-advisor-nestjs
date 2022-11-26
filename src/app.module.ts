@@ -1,20 +1,16 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ScheduleModule } from '@nestjs/schedule';
+import { JwtService } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
-import { LoggerMiddleware } from './common/middleware/logger.middleware';
+import { ScheduleModule } from '@nestjs/schedule';
+import { LoggerModule } from 'nestjs-pino';
+import pino from 'pino';
+import { AboutModule } from './about/about.module';
+import { JwtStrategy } from './common/auth/jwt.strategy';
 import { CompaniesModule } from './companies/companies.module';
 import { HealthModule } from './health/health.module';
 import { MetricsModule } from './metrics/metrics.module';
 import { PortfoliosModule } from './portfolios/portfolios.module';
-import { JwtStrategy } from './common/auth/jwt.strategy';
-import { JwtService } from '@nestjs/jwt';
-import { AboutModule } from './about/about.module';
 
 const { NODE_ENV } = process.env;
 
@@ -22,6 +18,16 @@ const { NODE_ENV } = process.env;
   imports: [
     ConfigModule.forRoot({
       envFilePath: NODE_ENV ? `.env.${NODE_ENV}` : '.env',
+    }),
+    LoggerModule.forRoot({
+      pinoHttp: {
+        level: NODE_ENV === 'production' ? 'info' : 'debug',
+        stream: pino.destination({
+          dest: NODE_ENV === 'production' ? '/var/log/fa.log' : './fa.log',
+          minLength: 4096,
+          sync: false,
+        }),
+      },
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
@@ -43,10 +49,4 @@ const { NODE_ENV } = process.env;
   ],
   providers: [JwtService, JwtStrategy],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(LoggerMiddleware)
-      .forRoutes({ path: '*', method: RequestMethod.ALL });
-  }
-}
+export class AppModule {}
