@@ -11,6 +11,7 @@ services:
   financial-advisor-nestjs:
     container_name: financial-advisor-nestjs
     environment:
+      - NODE_ENV=${NODE_ENV}
       - CORS_BASE_URL=${CORS_BASE_URL}
       - EXCHANGE_RATES_PROVIDER_APP_ID=${EXCHANGE_RATES_PROVIDER_APP_ID}
       - HTTP_SERVER_PORT=${HTTP_SERVER_PORT}
