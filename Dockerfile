@@ -9,6 +9,7 @@ COPY --chown=node:node package.json yarn.lock .yarnrc.yml tsconfig*.json migrate
 COPY --chown=node:node .yarn/releases ./.yarn/releases
 COPY --chown=node:node migrations ./migrations
 RUN yarn install --immutable 
+RUN touch /var/log/fa.log && chown node:node /var/log/fa.log
 COPY --chown=node:node . .
 RUN yarn run build
 
