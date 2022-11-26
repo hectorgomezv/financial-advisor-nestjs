@@ -1,6 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { isDate, isNumber } from 'lodash';
+import { isValid } from 'date-fns';
+import { isNumber } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { AddPortfolioContributionDto } from './dto/add-portfolio-contribution.dto';
@@ -124,7 +125,7 @@ export class PortfoliosService {
     // TODO: implement validation
     const { timestamp: inputTS, amountEUR } = addPortfolioContributionDto;
     const timestamp = new Date(inputTS);
-    if (!isNumber(amountEUR) || !isDate(timestamp)) {
+    if (!isNumber(amountEUR) || !isValid(timestamp)) {
       throw new Error('Invalid contribution');
     }
 
