@@ -12,6 +12,7 @@ import { UpsertPositionDto } from './dto/upsert-position.dto';
 import { PositionDetailDto } from './dto/position-detail.dto';
 import { Position } from './entities/position.entity';
 import { PortfolioStatesService } from './portfolio-states.service';
+import { Portfolio } from './entities/portfolio.entity';
 
 @Injectable()
 export class PositionsService {
@@ -58,7 +59,7 @@ export class PositionsService {
     });
 
     const created = await this.repository.findByUuid(uuid);
-    await this.updatePortfolioState(portfolioUuid);
+    await this.updatePortfolioState(portfolio);
 
     return created;
   }
@@ -93,7 +94,7 @@ export class PositionsService {
     });
 
     const updated = await this.repository.findByUuid(existentPosition.uuid);
-    await this.updatePortfolioState(portfolioUuid);
+    await this.updatePortfolioState(portfolio);
 
     return updated;
   }
@@ -115,21 +116,23 @@ export class PositionsService {
       }),
     );
 
-    return this.addWeights(positionStates)
+    return this.addWeightsAndDeltas(positionStates)
       .sort((a, b) => a.value - b.value)
       .reverse();
   }
 
   async deleteByPortfolioUuid(portfolioUuid: string) {
+    const portfolio = await this.portfoliosRepository.findOne(portfolioUuid);
     const result = await this.repository.deleteByPortfolioUuid(portfolioUuid);
-    await this.updatePortfolioState(portfolioUuid);
+    await this.updatePortfolioState(portfolio);
     return result;
   }
 
   async deleteByUuidAndPortfolioUuid(portfolioUuid: string, uuid: string) {
     const position = await this.repository.findByUuid(uuid);
+    const portfolio = await this.portfoliosRepository.findOne(portfolioUuid);
     await this.repository.deleteByUuidAndPortfolioUuid(portfolioUuid, uuid);
-    await this.updatePortfolioState(portfolioUuid);
+    await this.updatePortfolioState(portfolio);
     return position;
   }
 
@@ -149,31 +152,33 @@ export class PositionsService {
     };
   }
 
-  private addWeights(positionsStates): PositionDetailDto[] {
+  private addWeightsAndDeltas(
+    positionsStates: PositionDetailDto[],
+  ): PositionDetailDto[] {
     const totalValue = positionsStates.reduce((sum, it) => sum + it.value, 0);
 
     return positionsStates.map((positionState) => {
-      const currentWeight = Number((positionState.value / totalValue) * 100);
-      const deltaWeight = Number(
-        (currentWeight - positionState.targetWeight) /
-          positionState.targetWeight,
-      );
+      const { value, shares, targetWeight } = positionState;
+      const currentWeight = (value / totalValue) * 100;
+      const deltaWeight = (currentWeight - targetWeight) / targetWeight;
+      const deltaShares = (shares * targetWeight) / currentWeight - shares;
 
       return <PositionDetailDto>{
         ...positionState,
         currentWeight,
         deltaWeight,
+        deltaShares,
       };
     });
   }
 
-  async updatePortfolioState(portfolioUuid: string) {
+  async updatePortfolioState(portfolio: Portfolio) {
     const positions = await this.getPositionDetailsByPortfolioUuid(
-      portfolioUuid,
+      portfolio.uuid,
     );
     await this.portfolioStatesService.createPortfolioState(
-      portfolioUuid,
-      this.mapToPositions(positions, portfolioUuid), // TODO: refactor when implementing PositionState
+      portfolio,
+      this.mapToPositions(positions, portfolio.uuid), // TODO: refactor when implementing PositionState
     );
   }
 

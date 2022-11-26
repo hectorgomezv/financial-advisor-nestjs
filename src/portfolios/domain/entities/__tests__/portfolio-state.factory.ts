@@ -8,6 +8,7 @@ export function portfolioStateFactory(
   isValid?: boolean,
   sumWeights?: number,
   totalValueEUR?: number,
+  roicEUR?: number,
 ): PortfolioState {
   return <PortfolioState>{
     uuid: uuid || faker.datatype.uuid(),
@@ -16,5 +17,6 @@ export function portfolioStateFactory(
     isValid: isValid || faker.datatype.boolean(),
     sumWeights: sumWeights || faker.datatype.number(),
     totalValueEUR: totalValueEUR || faker.datatype.number(),
+    roicEUR: roicEUR || faker.datatype.number(),
   };
 }

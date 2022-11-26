@@ -81,3 +81,4 @@ services:
 volumes:
   mongo_data:
   redis_data:
+  fa_logs:

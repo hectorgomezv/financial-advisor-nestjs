@@ -42,7 +42,7 @@ describe('PortfolioStatesService', () => {
           .mockReturnValue({ to: jest.fn().mockReturnValue(totalValueEUR) }),
       }));
 
-      await service.createPortfolioState(portfolio.uuid, positions);
+      await service.createPortfolioState(portfolio, positions);
 
       expect(portfolioStatesRepository.create).toHaveBeenCalledTimes(1);
       expect(portfolioStatesRepository.create).toHaveBeenCalledWith(
@@ -50,6 +50,11 @@ describe('PortfolioStatesService', () => {
           portfolioUuid: portfolio.uuid,
           isValid: sumWeights === 100,
           totalValueEUR,
+          roicEUR:
+            totalValueEUR +
+            portfolio.cash -
+            (portfolio.seed +
+              portfolio.contributions.reduce((sum, i) => sum + i.amountEUR, 0)),
         }),
       );
     });

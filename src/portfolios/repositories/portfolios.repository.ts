@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
+import { PortfolioContribution } from '../domain/entities/portfolio-contribution.entity';
 import { Portfolio } from '../domain/entities/portfolio.entity';
 import { PortfolioDocument, PortfolioModel } from './schemas/portfolio.schema';
 
@@ -31,5 +32,32 @@ export class PortfoliosRepository {
 
   async deleteOne(uuid: string): Promise<void> {
     await this.model.deleteOne({ uuid });
+  }
+
+  async updateCash(uuid: string, cash: number): Promise<void> {
+    await this.model.updateOne({ uuid }, { $set: { cash } });
+  }
+
+  async addContribution(
+    uuid: string,
+    contribution: PortfolioContribution,
+  ): Promise<void> {
+    const portfolio = await this.model.findOne({ uuid });
+    portfolio.contributions.push({
+      uuid: contribution.uuid,
+      timestamp: contribution.timestamp,
+      amountEUR: contribution.amountEUR,
+    });
+    await portfolio.save();
+  }
+
+  async deleteContribution(
+    portfolioUuid: string,
+    contributionUuid: string,
+  ): Promise<void> {
+    await this.model.updateOne(
+      { uuid: portfolioUuid },
+      { $pull: { contributions: { uuid: contributionUuid } } },
+    );
   }
 }

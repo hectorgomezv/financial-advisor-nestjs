@@ -8,7 +8,7 @@ export function upsertPositionDtoFactory(
 ): UpsertPositionDto {
   return <UpsertPositionDto>{
     symbol: symbol ?? faker.random.words(),
-    targetWeight: targetWeight ?? faker.datatype.number(),
-    shares: shares ?? faker.datatype.number(),
+    targetWeight: targetWeight ?? faker.datatype.number({ min: 5, max: 10 }),
+    shares: shares ?? faker.datatype.number({ min: 10, max: 100 }),
   };
 }
