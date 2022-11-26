@@ -9,7 +9,6 @@ COPY --chown=node:node package.json yarn.lock .yarnrc.yml tsconfig*.json migrate
 COPY --chown=node:node .yarn/releases ./.yarn/releases
 COPY --chown=node:node migrations ./migrations
 RUN yarn install --immutable 
-RUN touch /var/log/fa.log && chown node:node /var/log/fa.log
 COPY --chown=node:node . .
 RUN yarn run build
 
@@ -24,4 +23,5 @@ COPY --chown=node:node --from=base /app/migrate-mongo-config.js ./migrate-mongo-
 COPY --chown=node:node --from=base /app/node_modules ./node_modules
 COPY --chown=node:node --from=base /app/migrations ./migrations
 COPY --chown=node:node --from=base /app/dist ./dist
+RUN touch /var/log/fa.log && chown node:node /var/log/fa.log
 CMD [ "node", "dist/main.js" ]
