@@ -16,6 +16,7 @@ RUN yarn run build
 # PRODUCTION CONTAINER
 #
 FROM node:18-alpine as production
+RUN touch /var/log/fa.log && chown node:node /var/log/fa.log
 USER node
 ARG GITHUB_RUN_NUMBER
 COPY --chown=node:node --from=base /app/package.json ./package.json
@@ -23,5 +24,4 @@ COPY --chown=node:node --from=base /app/migrate-mongo-config.js ./migrate-mongo-
 COPY --chown=node:node --from=base /app/node_modules ./node_modules
 COPY --chown=node:node --from=base /app/migrations ./migrations
 COPY --chown=node:node --from=base /app/dist ./dist
-RUN touch /var/log/fa.log && chown node:node /var/log/fa.log
 CMD [ "node", "dist/main.js" ]
