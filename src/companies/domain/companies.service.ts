@@ -103,7 +103,7 @@ export class CompaniesService {
     return this.refreshAllStates();
   }
 
-  @Cron('0 02 4 * * *', { timeZone: 'America/New_York' })
+  @Cron('0 02 16 * * *', { timeZone: 'America/New_York' })
   private refreshAllStatesAtMarketClose() {
     return this.refreshAllStates();
   }
