@@ -44,6 +44,12 @@ describe('PortfoliosService', () => {
     role: UserRole.ADMIN,
   };
 
+  const adminUserPortfolio = portfolioFactory(
+    faker.datatype.uuid(),
+    faker.random.word(),
+    adminUser.id,
+  );
+
   const service: PortfoliosService = new PortfoliosService(
     portfoliosRepository,
     new AuthService(),
@@ -100,19 +106,29 @@ describe('PortfoliosService', () => {
     it("should fail if the portfolio don't exist", async () => {
       portfoliosRepository.findOne.mockResolvedValueOnce(null);
 
-      await expect(service.findOne(faker.datatype.uuid())).rejects.toThrow(
-        'Portfolio not found',
-      );
+      await expect(
+        service.findOne(adminUser, faker.datatype.uuid()),
+      ).rejects.toThrow('Portfolio not found');
+    });
+
+    it("should fail if the user doesn't owns the portfolio", async () => {
+      portfoliosRepository.findOne.mockResolvedValueOnce({
+        ...adminUserPortfolio,
+        ownerId: faker.datatype.uuid(),
+      });
+
+      await expect(
+        service.findOne(adminUser, faker.datatype.uuid()),
+      ).rejects.toThrow('Access denied');
     });
 
     it('should call repository for retrieving one portfolio with its positions', async () => {
-      const portfolio = portfolioFactory();
       const positions = [
         positionDetailDtoFactory(),
         positionDetailDtoFactory(),
       ];
       const state = portfolioStateFactory();
-      portfoliosRepository.findOne.mockResolvedValueOnce(portfolio);
+      portfoliosRepository.findOne.mockResolvedValueOnce(adminUserPortfolio);
       positionsService.getPositionDetailsByPortfolioUuid.mockResolvedValueOnce(
         positions,
       );
@@ -120,15 +136,18 @@ describe('PortfoliosService', () => {
         state,
       );
 
-      const retrieved = await service.findOne(portfolio.uuid);
+      const retrieved = await service.findOne(
+        adminUser,
+        adminUserPortfolio.uuid,
+      );
 
       expect(retrieved).toEqual(<PortfolioDetailDto>{
-        uuid: portfolio.uuid,
-        name: portfolio.name,
-        seed: portfolio.seed,
-        cash: portfolio.cash,
-        created: portfolio.created,
-        contributions: portfolio.contributions,
+        uuid: adminUserPortfolio.uuid,
+        name: adminUserPortfolio.name,
+        seed: adminUserPortfolio.seed,
+        cash: adminUserPortfolio.cash,
+        created: adminUserPortfolio.created,
+        contributions: adminUserPortfolio.contributions,
         positions,
         state,
       });
@@ -138,22 +157,26 @@ describe('PortfoliosService', () => {
       portfoliosRepository.findOne.mockResolvedValueOnce(null);
 
       await expect(
-        service.getAverageBalances(faker.datatype.uuid(), faker.random.word()),
+        service.getAverageBalances(
+          adminUser,
+          faker.datatype.uuid(),
+          faker.random.word(),
+        ),
       ).rejects.toThrow('Portfolio not found');
     });
 
     it('should call repository to get portfolio metrics', async () => {
-      const portfolio = portfolioFactory();
       const portfolioAverageBalances = [
         portfolioAverageBalanceFactory(),
         portfolioAverageBalanceFactory(),
       ];
-      portfoliosRepository.findOne.mockResolvedValueOnce(portfolio);
+      portfoliosRepository.findOne.mockResolvedValueOnce(adminUserPortfolio);
       portfolioStatesService.getAverageBalancesForRange.mockResolvedValueOnce(
         portfolioAverageBalances,
       );
 
       const metrics = await service.getAverageBalances(
+        adminUser,
         faker.datatype.uuid(),
         faker.random.word(),
       );
@@ -168,25 +191,24 @@ describe('PortfoliosService', () => {
       portfoliosRepository.findOne.mockResolvedValueOnce(null);
 
       await expect(
-        service.updateCash(faker.datatype.uuid(), dto),
+        service.updateCash(adminUser, faker.datatype.uuid(), dto),
       ).rejects.toThrow('Portfolio not found');
     });
 
     it('should call repo to update cash', async () => {
       const uuid = faker.datatype.uuid();
       const dto = updatePortfolioCashDtoFactory();
-      const portfolio = portfolioFactory();
-      portfoliosRepository.findOne.mockResolvedValueOnce(portfolio);
+      portfoliosRepository.findOne.mockResolvedValueOnce(adminUserPortfolio);
 
-      const actual = await service.updateCash(uuid, dto);
+      const actual = await service.updateCash(adminUser, uuid, dto);
 
-      expect(actual).toEqual({ ...portfolio, cash: dto.cash });
+      expect(actual).toEqual({ ...adminUserPortfolio, cash: dto.cash });
       expect(portfoliosRepository.updateCash).toHaveBeenCalledWith(
         uuid,
         dto.cash,
       );
       expect(positionsService.updatePortfolioState).toBeCalledWith({
-        ...portfolio,
+        ...adminUserPortfolio,
         cash: dto.cash,
       });
     });
@@ -196,16 +218,15 @@ describe('PortfoliosService', () => {
       portfoliosRepository.findOne.mockResolvedValueOnce(null);
 
       await expect(
-        service.addContribution(faker.datatype.uuid(), dto),
+        service.addContribution(adminUser, faker.datatype.uuid(), dto),
       ).rejects.toThrow('Portfolio not found');
     });
 
     it('should call repo to add a contribution', async () => {
       const uuid = faker.datatype.uuid();
       const dto = addPortfolioContributionDtoFactory();
-      const portfolio = portfolioFactory();
       const expected = {
-        ...portfolio,
+        ...adminUserPortfolio,
         contributions: [
           expect.objectContaining({
             uuid: expect.any(String),
@@ -214,10 +235,10 @@ describe('PortfoliosService', () => {
           }),
         ],
       };
-      portfoliosRepository.findOne.mockResolvedValueOnce(portfolio);
+      portfoliosRepository.findOne.mockResolvedValueOnce(adminUserPortfolio);
       portfoliosRepository.findOne.mockResolvedValueOnce(expected);
 
-      const actual = await service.addContribution(uuid, dto);
+      const actual = await service.addContribution(adminUser, uuid, dto);
 
       expect(actual).toEqual(expected);
       expect(portfoliosRepository.addContribution).toHaveBeenCalledWith(uuid, {
@@ -231,12 +252,12 @@ describe('PortfoliosService', () => {
     it('should call repo to delete a contribution', async () => {
       const portfolioUuid = faker.datatype.uuid();
       const contributionUuid = faker.datatype.uuid();
-      const portfolio = portfolioFactory();
-      const expected = { ...portfolio, contributions: [] };
-      portfoliosRepository.findOne.mockResolvedValueOnce(portfolio);
+      const expected = { ...adminUserPortfolio, contributions: [] };
+      portfoliosRepository.findOne.mockResolvedValueOnce(adminUserPortfolio);
       portfoliosRepository.findOne.mockResolvedValueOnce(expected);
 
       const actual = await service.deleteContribution(
+        adminUser,
         portfolioUuid,
         contributionUuid,
       );
@@ -254,16 +275,15 @@ describe('PortfoliosService', () => {
     it("should fail if the portfolio don't exist", async () => {
       portfoliosRepository.findOne.mockResolvedValueOnce(null);
 
-      await expect(service.deleteOne(faker.datatype.uuid())).rejects.toThrow(
-        'Portfolio not found',
-      );
+      await expect(
+        service.deleteOne(adminUser, faker.datatype.uuid()),
+      ).rejects.toThrow('Portfolio not found');
     });
 
     it('should delete the portfolio and its positions and states', async () => {
-      const portfolio = portfolioFactory();
-      portfoliosRepository.findOne.mockResolvedValueOnce(portfolio);
+      portfoliosRepository.findOne.mockResolvedValueOnce(adminUserPortfolio);
 
-      await service.deleteOne(portfolio.uuid);
+      await service.deleteOne(adminUser, adminUserPortfolio.uuid);
 
       expect(positionsService.deleteByPortfolioUuid).toHaveBeenCalledTimes(1);
       expect(

@@ -2,17 +2,19 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
+import { User } from '../../common/auth/entities/user.entity';
 import { CompaniesRepository } from '../../companies/repositories/companies.repository';
 import { CompanyStatesRepository } from '../../companies/repositories/company-states.repository';
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { PositionsRepository } from '../repositories/positions.repository';
-import { UpsertPositionDto } from './dto/upsert-position.dto';
 import { PositionDetailDto } from './dto/position-detail.dto';
+import { UpsertPositionDto } from './dto/upsert-position.dto';
+import { Portfolio } from './entities/portfolio.entity';
 import { Position } from './entities/position.entity';
 import { PortfolioStatesService } from './portfolio-states.service';
-import { Portfolio } from './entities/portfolio.entity';
 
 @Injectable()
 export class PositionsService {
@@ -25,10 +27,12 @@ export class PositionsService {
   ) {}
 
   async create(
+    user: User,
     portfolioUuid: string,
     upsertPositionDto: UpsertPositionDto,
   ): Promise<Position> {
     const portfolio = await this.portfoliosRepository.findOne(portfolioUuid);
+    this.checkOwner(user, portfolio);
     const company = await this.companiesRepository.findBySymbol(
       upsertPositionDto.symbol,
     );
@@ -64,7 +68,11 @@ export class PositionsService {
     return created;
   }
 
-  async update(portfolioUuid: string, upsertPositionDto: UpsertPositionDto) {
+  async update(
+    user: User,
+    portfolioUuid: string,
+    upsertPositionDto: UpsertPositionDto,
+  ) {
     const portfolio = await this.portfoliosRepository.findOne(portfolioUuid);
     const company = await this.companiesRepository.findBySymbol(
       upsertPositionDto.symbol,
@@ -73,6 +81,8 @@ export class PositionsService {
     if (!portfolio || !company) {
       throw new NotFoundException('Invalid reference for position');
     }
+
+    this.checkOwner(user, portfolio);
 
     const existentPosition =
       await this.repository.findByCompanyUuidAndPortfolioUuid(
@@ -100,9 +110,9 @@ export class PositionsService {
   }
 
   async getPositionDetailsByPortfolioUuid(
-    portfolioUuid: string,
+    portfolio: Portfolio,
   ): Promise<PositionDetailDto[]> {
-    const positions = await this.repository.findByPortfolioUuid(portfolioUuid);
+    const positions = await this.repository.findByPortfolioUuid(portfolio.uuid);
     const companies = await this.companiesRepository.findByUuidIn(
       positions.map((p) => p.companyUuid),
     );
@@ -121,16 +131,22 @@ export class PositionsService {
       .reverse();
   }
 
-  async deleteByPortfolioUuid(portfolioUuid: string) {
+  async deleteByPortfolioUuid(user: User, portfolioUuid: string) {
     const portfolio = await this.portfoliosRepository.findOne(portfolioUuid);
+    this.checkOwner(user, portfolio);
     const result = await this.repository.deleteByPortfolioUuid(portfolioUuid);
     await this.updatePortfolioState(portfolio);
     return result;
   }
 
-  async deleteByUuidAndPortfolioUuid(portfolioUuid: string, uuid: string) {
+  async deleteByUuidAndPortfolioUuid(
+    user: User,
+    portfolioUuid: string,
+    uuid: string,
+  ) {
     const position = await this.repository.findByUuid(uuid);
     const portfolio = await this.portfoliosRepository.findOne(portfolioUuid);
+    this.checkOwner(user, portfolio);
     await this.repository.deleteByUuidAndPortfolioUuid(portfolioUuid, uuid);
     await this.updatePortfolioState(portfolio);
     return position;
@@ -173,13 +189,17 @@ export class PositionsService {
   }
 
   async updatePortfolioState(portfolio: Portfolio) {
-    const positions = await this.getPositionDetailsByPortfolioUuid(
-      portfolio.uuid,
-    );
+    const positions = await this.getPositionDetailsByPortfolioUuid(portfolio);
     await this.portfolioStatesService.createPortfolioState(
       portfolio,
       this.mapToPositions(positions, portfolio.uuid), // TODO: refactor when implementing PositionState
     );
+  }
+
+  private checkOwner(user: User, portfolio: Portfolio): void {
+    if (portfolio.ownerId !== user.id) {
+      throw new UnauthorizedException('Access denied');
+    }
   }
 
   private mapToPositions(
