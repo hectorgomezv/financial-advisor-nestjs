@@ -14,6 +14,9 @@ export class PortfolioModel {
   name: string;
 
   @Prop({ required: true })
+  ownerId: string;
+
+  @Prop({ required: true })
   created: number;
 
   @Prop({ required: true })

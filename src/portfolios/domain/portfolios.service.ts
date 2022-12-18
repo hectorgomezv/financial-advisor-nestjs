@@ -3,6 +3,8 @@ import { Cron } from '@nestjs/schedule';
 import { isValid } from 'date-fns';
 import { isNumber } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
+import { AuthService } from '../../common/auth/auth-service';
+import { User } from '../../common/auth/entities/user.entity';
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { AddPortfolioContributionDto } from './dto/add-portfolio-contribution.dto';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
@@ -19,14 +21,19 @@ export class PortfoliosService {
 
   constructor(
     private readonly repository: PortfoliosRepository,
+    private readonly authService: AuthService,
     private readonly portfolioStatesService: PortfolioStatesService,
     private readonly positionService: PositionsService,
   ) {}
 
-  create(createPortfolioDto: CreatePortfolioDto): Promise<Portfolio> {
+  create(
+    user: User,
+    createPortfolioDto: CreatePortfolioDto,
+  ): Promise<Portfolio> {
     return this.repository.create(<Portfolio>{
       uuid: uuidv4(),
       name: createPortfolioDto.name,
+      ownerId: user.id,
       created: Date.now(),
       positions: [],
       seed: createPortfolioDto.seed,
@@ -36,11 +43,14 @@ export class PortfoliosService {
     });
   }
 
-  findAll() {
-    return this.repository.findAll();
+  findByOwnerId(user: User) {
+    return this.authService.isAdmin(user)
+      ? this.repository.findAll()
+      : this.repository.findByOwnerId(user.id);
   }
 
   async findOne(uuid: string): Promise<PortfolioDetailDto> {
+    //TODO: check ownership
     const portfolio = await this.repository.findOne(uuid);
 
     if (!portfolio) {
@@ -66,6 +76,7 @@ export class PortfoliosService {
   }
 
   async deleteOne(uuid: string) {
+    //TODO: check ownership
     const portfolio = await this.repository.findOne(uuid);
 
     if (!portfolio) {
@@ -80,6 +91,7 @@ export class PortfoliosService {
   }
 
   async getAverageBalances(uuid: string, range: string) {
+    //TODO: check ownership
     const portfolio = await this.repository.findOne(uuid);
 
     if (!portfolio) {
@@ -96,6 +108,7 @@ export class PortfoliosService {
     portfolioUuid: string,
     updatePortfolioCashDto: UpdatePortfolioCashDto,
   ): Promise<Portfolio> {
+    //TODO: check ownership
     const portfolio = await this.repository.findOne(portfolioUuid);
     if (!portfolio) {
       throw new NotFoundException(`Portfolio not found`);
@@ -117,6 +130,7 @@ export class PortfoliosService {
     uuid: string,
     addPortfolioContributionDto: AddPortfolioContributionDto,
   ): Promise<Portfolio> {
+    //TODO: check ownership
     const portfolio = await this.repository.findOne(uuid);
     if (!portfolio) {
       throw new NotFoundException(`Portfolio not found`);
@@ -143,6 +157,7 @@ export class PortfoliosService {
     portfolioUuid: string,
     contributionUuid: string,
   ): Promise<Portfolio> {
+    //TODO: check ownership
     const portfolio = await this.repository.findOne(portfolioUuid);
     if (!portfolio) {
       throw new NotFoundException(`Portfolio not found`);

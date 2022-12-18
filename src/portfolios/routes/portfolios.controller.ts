@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  Request,
   UseFilters,
   UseGuards,
   UseInterceptors,
@@ -16,6 +17,7 @@ import {
   ApiNotFoundResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { User } from '../../common/auth/entities/user.entity';
 import { JwtAuthGuard } from '../../common/auth/jwt-auth.guard';
 import { CreatedResponse } from '../../common/routes/entities/created-response.entity';
 import { OkArrayResponse } from '../../common/routes/entities/ok-array-response.entity';
@@ -49,14 +51,14 @@ export class PortfoliosController {
   @Post()
   @CreatedResponse(Portfolio)
   @ApiBadRequestResponse()
-  create(@Body() createPortfolioDto: CreatePortfolioDto) {
-    return this.portfoliosService.create(createPortfolioDto);
+  create(@Request() req, @Body() createPortfolioDto: CreatePortfolioDto) {
+    return this.portfoliosService.create(req.user as User, createPortfolioDto);
   }
 
   @Get()
   @OkArrayResponse(Portfolio)
-  findAll() {
-    return this.portfoliosService.findAll();
+  findAll(@Request() req) {
+    return this.portfoliosService.findByOwnerId(req.user as User);
   }
 
   @Get(':uuid')
