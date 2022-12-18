@@ -10,6 +10,8 @@ export class Portfolio implements DomainPortfolio {
   @ApiProperty()
   name: string;
   @ApiProperty()
+  ownerId: string;
+  @ApiProperty()
   created: number;
   @ApiProperty()
   positions: Position[];

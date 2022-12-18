@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Request,
   UseFilters,
   UseGuards,
   UseInterceptors,
@@ -15,6 +16,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { omit } from 'lodash';
+import { User } from '../../common/auth/entities/user.entity';
 import { JwtAuthGuard } from '../../common/auth/jwt-auth.guard';
 import { CreatedResponse } from '../../common/routes/entities/created-response.entity';
 import { OkArrayResponse } from '../../common/routes/entities/ok-array-response.entity';
@@ -39,8 +41,8 @@ export class CompaniesController {
   @Post()
   @CreatedResponse(CompanyWithState)
   @ApiBadRequestResponse()
-  create(@Body() createCompanyDto: CreateCompanyDto) {
-    return this.companiesService.create(createCompanyDto);
+  create(@Request() req, @Body() createCompanyDto: CreateCompanyDto) {
+    return this.companiesService.create(req.user as User, createCompanyDto);
   }
 
   @Get()
@@ -67,7 +69,7 @@ export class CompaniesController {
   @Delete(':uuid')
   @OkResponse(Company)
   @ApiNotFoundResponse()
-  remove(@Param('uuid') uuid: string) {
-    return this.companiesService.remove(uuid);
+  remove(@Request() req, @Param('uuid') uuid: string) {
+    return this.companiesService.remove(req.user as User, uuid);
   }
 }

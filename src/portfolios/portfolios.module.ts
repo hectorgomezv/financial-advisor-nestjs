@@ -1,29 +1,30 @@
+import { HttpModule } from '@nestjs/axios';
 import { forwardRef, Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { AuthService } from '../common/auth/auth-service';
+import { CompaniesModule } from '../companies/companies.module';
+import { CurrencyExchangeClient } from './datasources/currency-exchange.client';
+import { OpenExchangeRatesClient } from './datasources/open-exchange-rates.client';
+import { PortfolioStatesService } from './domain/portfolio-states.service';
 import { PortfoliosService } from './domain/portfolios.service';
-import { PortfoliosController } from './routes/portfolios.controller';
-import { PortfoliosRepository } from './repositories/portfolios.repository';
-import {
-  PortfolioModel,
-  PortfolioSchema,
-} from './repositories/schemas/portfolio.schema';
+import { PositionsService } from './domain/positions.service';
 import { PortfolioStatesRepository } from './repositories/portfolio-states.repository';
+import { PortfoliosRepository } from './repositories/portfolios.repository';
+import { PositionsRepository } from './repositories/positions.repository';
 import {
   PortfolioStateModel,
   PortfolioStateSchema,
 } from './repositories/schemas/portfolio-state.schema';
-import { PositionsService } from './domain/positions.service';
+import {
+  PortfolioModel,
+  PortfolioSchema,
+} from './repositories/schemas/portfolio.schema';
 import {
   PositionModel,
   PositionSchema,
 } from './repositories/schemas/position.schema';
-import { PositionsRepository } from './repositories/positions.repository';
-import { CompaniesModule } from '../companies/companies.module';
-import { CurrencyExchangeClient } from './datasources/currency-exchange.client';
-import { PortfolioStatesService } from './domain/portfolio-states.service';
-import { ConfigModule } from '@nestjs/config';
-import { OpenExchangeRatesClient } from './datasources/open-exchange-rates.client';
-import { HttpModule } from '@nestjs/axios';
+import { PortfoliosController } from './routes/portfolios.controller';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { HttpModule } from '@nestjs/axios';
   ],
   controllers: [PortfoliosController],
   providers: [
+    AuthService,
     CurrencyExchangeClient,
     OpenExchangeRatesClient,
     PortfoliosRepository,

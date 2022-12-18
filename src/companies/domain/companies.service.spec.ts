@@ -1,13 +1,15 @@
 import { faker } from '@faker-js/faker';
+import { sortBy } from 'lodash';
+import { AuthService } from '../../common/auth/auth-service';
+import { User, UserRole } from '../../common/auth/entities/user.entity';
 import { positionFactory } from '../../portfolios/domain/entities/__tests__/position.factory';
 import { PositionsRepository } from '../../portfolios/repositories/positions.repository';
-import { companyStateFactory } from './entities/__tests__/company-state.factory';
-import { companyFactory } from './entities/__tests__/company.factory';
 import { CompaniesRepository } from '../repositories/companies.repository';
+import { CreateCompanyDto } from '../routes/dto/create-company.dto';
 import { CompaniesService } from './companies.service';
 import { CompanyStatesService } from './company-states.service';
-import { CreateCompanyDto } from '../routes/dto/create-company.dto';
-import { sortBy } from 'lodash';
+import { companyStateFactory } from './entities/__tests__/company-state.factory';
+import { companyFactory } from './entities/__tests__/company.factory';
 
 describe('CompaniesService', () => {
   const mockedCompaniesRepository = jest.mocked({
@@ -34,12 +36,29 @@ describe('CompaniesService', () => {
   const service = new CompaniesService(
     mockedCompaniesRepository,
     mockedPositionsRepository,
+    new AuthService(),
     mockedCompanyStateService,
   );
+
+  const adminUser = <User>{
+    id: faker.datatype.uuid(),
+    email: faker.internet.email(),
+    role: UserRole.ADMIN,
+  };
 
   beforeEach(() => jest.resetAllMocks());
 
   describe('creation', () => {
+    it('should fail if the requestor is not an admin', async () => {
+      const user = { ...adminUser, role: UserRole.USER };
+      const dto = <CreateCompanyDto>{
+        symbol: faker.finance.currencyCode(),
+        name: faker.company.name(),
+      };
+
+      await expect(service.create(user, dto)).rejects.toThrow(`Access denied`);
+    });
+
     it('should fail if the symbol exists', async () => {
       const company = companyFactory();
       const dto = <CreateCompanyDto>{
@@ -48,7 +67,7 @@ describe('CompaniesService', () => {
       };
       mockedCompaniesRepository.findBySymbol.mockResolvedValue(company);
 
-      await expect(service.create(dto)).rejects.toThrow(
+      await expect(service.create(adminUser, dto)).rejects.toThrow(
         `Company ${company.symbol} already exists`,
       );
     });
@@ -64,7 +83,7 @@ describe('CompaniesService', () => {
       mockedCompaniesRepository.create.mockResolvedValue(company);
       mockedCompanyStateService.createCompanyState.mockResolvedValue(state);
 
-      const actual = await service.create(dto);
+      const actual = await service.create(adminUser, dto);
 
       expect(actual).toEqual({ ...company, state });
       expect(mockedCompanyStateService.createCompanyState).toBeCalledTimes(1);
@@ -150,11 +169,20 @@ describe('CompaniesService', () => {
   });
 
   describe('deletion', () => {
+    it('should fail if the requestor is not an admin', async () => {
+      const user = { ...adminUser, role: UserRole.USER };
+      const companyUuid = faker.datatype.uuid();
+
+      await expect(service.remove(user, companyUuid)).rejects.toThrow(
+        'Access denied',
+      );
+    });
+
     it('should fail if a company cannot be found by uuid', async () => {
       const companyUuid = faker.datatype.uuid();
       mockedCompaniesRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.remove(companyUuid)).rejects.toThrow(
+      await expect(service.remove(adminUser, companyUuid)).rejects.toThrow(
         'Company not found',
       );
 
@@ -167,7 +195,7 @@ describe('CompaniesService', () => {
       mockedCompaniesRepository.findOne.mockResolvedValue(company);
       mockedPositionsRepository.findByCompanyUuid.mockResolvedValue([position]);
 
-      await expect(service.remove(company.uuid)).rejects.toThrow(
+      await expect(service.remove(adminUser, company.uuid)).rejects.toThrow(
         `Positions for company ${company.symbol} still exist`,
       );
     });
@@ -177,7 +205,7 @@ describe('CompaniesService', () => {
       mockedCompaniesRepository.findOne.mockResolvedValue(company);
       mockedPositionsRepository.findByCompanyUuid.mockResolvedValue([]);
 
-      const deleted = await service.remove(company.uuid);
+      const deleted = await service.remove(adminUser, company.uuid);
 
       expect(deleted).toEqual(company);
       expect(

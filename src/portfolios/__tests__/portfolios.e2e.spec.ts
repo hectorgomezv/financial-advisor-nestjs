@@ -8,11 +8,13 @@ import { upsertPositionDtoFactory } from '../domain/dto/test/upsert-position-dto
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { MongoDBClient } from '../../common/__tests__/database/mongodb.client';
 import { AuthClient } from '../../common/__tests__/auth/auth.client';
+import { User } from '../../common/auth/entities/user.entity';
 
 describe('Portfolios e2e tests', () => {
   let app: INestApplication;
   let mongoClient: MongoDBClient;
   let accessToken: string;
+  let user: User;
   let createdPortfolioUuid: string;
   let createdCompanyUuid: string;
   let createdPositionUuid: string;
@@ -25,6 +27,11 @@ describe('Portfolios e2e tests', () => {
     const authClient = new AuthClient();
     const { data } = await authClient.getAuth();
     accessToken = data.accessToken;
+    user = {
+      id: data.user._id,
+      email: data.user.email,
+      role: data.user.role,
+    };
 
     mongoClient = new MongoDBClient();
     const collection = await mongoClient.getCollection('portfolios');
@@ -67,6 +74,7 @@ describe('Portfolios e2e tests', () => {
           data: expect.objectContaining({
             uuid: createdPortfolioUuid,
             name: createPortfolioDto.name,
+            ownerId: user.id,
           }),
         });
       });

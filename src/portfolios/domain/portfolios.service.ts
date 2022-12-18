@@ -1,8 +1,15 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { isValid } from 'date-fns';
 import { isNumber } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
+import { AuthService } from '../../common/auth/auth-service';
+import { User } from '../../common/auth/entities/user.entity';
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { AddPortfolioContributionDto } from './dto/add-portfolio-contribution.dto';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
@@ -19,14 +26,19 @@ export class PortfoliosService {
 
   constructor(
     private readonly repository: PortfoliosRepository,
+    private readonly authService: AuthService,
     private readonly portfolioStatesService: PortfolioStatesService,
     private readonly positionService: PositionsService,
   ) {}
 
-  create(createPortfolioDto: CreatePortfolioDto): Promise<Portfolio> {
+  create(
+    user: User,
+    createPortfolioDto: CreatePortfolioDto,
+  ): Promise<Portfolio> {
     return this.repository.create(<Portfolio>{
       uuid: uuidv4(),
       name: createPortfolioDto.name,
+      ownerId: user.id,
       created: Date.now(),
       positions: [],
       seed: createPortfolioDto.seed,
@@ -36,19 +48,21 @@ export class PortfoliosService {
     });
   }
 
-  findAll() {
-    return this.repository.findAll();
+  findByOwnerId(user: User) {
+    return this.authService.isAdmin(user)
+      ? this.repository.findAll()
+      : this.repository.findByOwnerId(user.id);
   }
 
-  async findOne(uuid: string): Promise<PortfolioDetailDto> {
+  async findOne(user: User, uuid: string): Promise<PortfolioDetailDto> {
     const portfolio = await this.repository.findOne(uuid);
-
     if (!portfolio) {
       throw new NotFoundException('Portfolio not found');
     }
+    this.checkOwner(user, portfolio);
 
     const positions =
-      await this.positionService.getPositionDetailsByPortfolioUuid(uuid);
+      await this.positionService.getPositionDetailsByPortfolioUuid(portfolio);
     const state = await this.portfolioStatesService.getLastByPortfolioUuid(
       uuid,
     );
@@ -65,26 +79,26 @@ export class PortfoliosService {
     };
   }
 
-  async deleteOne(uuid: string) {
+  async deleteOne(user: User, uuid: string) {
     const portfolio = await this.repository.findOne(uuid);
-
     if (!portfolio) {
       throw new NotFoundException('Portfolio not found');
     }
+    this.checkOwner(user, portfolio);
 
-    await this.positionService.deleteByPortfolioUuid(uuid);
+    await this.positionService.deleteByPortfolioUuid(user, uuid);
     await this.portfolioStatesService.deleteByPortfolioUuid(uuid);
     await this.repository.deleteOne(uuid);
 
     return portfolio;
   }
 
-  async getAverageBalances(uuid: string, range: string) {
+  async getAverageBalances(user: User, uuid: string, range: string) {
     const portfolio = await this.repository.findOne(uuid);
-
     if (!portfolio) {
       throw new NotFoundException('Portfolio not found');
     }
+    this.checkOwner(user, portfolio);
 
     return this.portfolioStatesService.getAverageBalancesForRange(
       uuid,
@@ -93,6 +107,7 @@ export class PortfoliosService {
   }
 
   async updateCash(
+    user: User,
     portfolioUuid: string,
     updatePortfolioCashDto: UpdatePortfolioCashDto,
   ): Promise<Portfolio> {
@@ -100,6 +115,7 @@ export class PortfoliosService {
     if (!portfolio) {
       throw new NotFoundException(`Portfolio not found`);
     }
+    this.checkOwner(user, portfolio);
 
     // TODO: implement validation
     const { cash } = updatePortfolioCashDto;
@@ -114,6 +130,7 @@ export class PortfoliosService {
   }
 
   async addContribution(
+    user: User,
     uuid: string,
     addPortfolioContributionDto: AddPortfolioContributionDto,
   ): Promise<Portfolio> {
@@ -121,6 +138,7 @@ export class PortfoliosService {
     if (!portfolio) {
       throw new NotFoundException(`Portfolio not found`);
     }
+    this.checkOwner(user, portfolio);
 
     // TODO: implement validation
     const { timestamp: inputTS, amountEUR } = addPortfolioContributionDto;
@@ -140,18 +158,27 @@ export class PortfoliosService {
   }
 
   async deleteContribution(
+    user: User,
     portfolioUuid: string,
     contributionUuid: string,
   ): Promise<Portfolio> {
     const portfolio = await this.repository.findOne(portfolioUuid);
+
     if (!portfolio) {
       throw new NotFoundException(`Portfolio not found`);
     }
+    this.checkOwner(user, portfolio);
 
     await this.repository.deleteContribution(portfolioUuid, contributionUuid);
     const updated = await this.repository.findOne(portfolioUuid);
     await this.positionService.updatePortfolioState(updated);
     return updated;
+  }
+
+  private checkOwner(user: User, portfolio: Portfolio): void {
+    if (portfolio.ownerId !== user.id) {
+      throw new UnauthorizedException('Access denied');
+    }
   }
 
   @Cron('0 0 8 * * *', { timeZone: 'Europe/Madrid' })

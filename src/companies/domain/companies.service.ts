@@ -7,6 +7,8 @@ import {
 import { Cron } from '@nestjs/schedule';
 import { sortBy } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
+import { AuthService } from '../../common/auth/auth-service';
+import { User } from '../../common/auth/entities/user.entity';
 import { PositionsRepository } from '../../portfolios/repositories/positions.repository';
 import { CreateCompanyDto } from '../domain/dto/create-company.dto';
 import { CompaniesRepository } from '../repositories/companies.repository';
@@ -20,10 +22,16 @@ export class CompaniesService {
   constructor(
     private readonly repository: CompaniesRepository,
     private readonly positionsRepository: PositionsRepository,
+    private readonly authService: AuthService,
     private readonly companyStatesService: CompanyStatesService,
   ) {}
 
-  async create(createCompanyDto: CreateCompanyDto): Promise<CompanyWithState> {
+  async create(
+    user: User,
+    createCompanyDto: CreateCompanyDto,
+  ): Promise<CompanyWithState> {
+    this.authService.checkAdmin(user);
+
     const exists = await this.repository.findBySymbol(createCompanyDto.symbol);
 
     if (exists) {
@@ -72,7 +80,8 @@ export class CompaniesService {
     return <CompanyWithState>{ ...company, state };
   }
 
-  async remove(uuid: string) {
+  async remove(user: User, uuid: string) {
+    this.authService.checkAdmin(user);
     const company = await this.repository.findOne(uuid);
 
     if (!company) {

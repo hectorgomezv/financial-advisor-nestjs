@@ -10,6 +10,7 @@ import { portfolioContributionFactory } from './portfolio-contribution.factory';
 export function portfolioFactory(
   uuid?: string,
   name?: string,
+  ownerId?: string,
   created?: number,
   positions?: Position[],
   seed?: number,
@@ -20,7 +21,8 @@ export function portfolioFactory(
   const portfolioUuid = uuid || faker.datatype.uuid();
   return <Portfolio>{
     uuid: portfolioUuid,
-    name: name || faker.datatype.uuid(),
+    name: name || faker.random.word(),
+    ownerId: ownerId || faker.datatype.uuid(),
     created: created || faker.datatype.number(),
     positions: positions || [positionFactory(), positionFactory()],
     seed: seed || Number(faker.finance.amount()),
