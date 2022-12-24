@@ -17,9 +17,9 @@ import {
 import {
   ApiBadRequestResponse,
   ApiNotFoundResponse,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { off } from 'process';
 import { User } from '../../common/auth/entities/user.entity';
 import { JwtAuthGuard } from '../../common/auth/jwt-auth.guard';
 import { CreatedResponse } from '../../common/routes/entities/created-response.entity';
@@ -35,6 +35,7 @@ import { AddPortfolioContributionDto } from './dto/add-portfolio-contribution.dt
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { UpsertPositionDto } from './dto/upsert-position.dto';
 import { PortfolioAverageMetric as PortfolioAverageBalance } from './entities/portfolio-average-balance.entity';
+import { PortfolioContribution } from './entities/portfolio-contribution.entity';
 import { Portfolio } from './entities/portfolio.entity';
 import { Position } from './entities/position.entity';
 
@@ -82,6 +83,7 @@ export class PortfoliosController {
   @Get(':uuid/metrics/average-balances')
   @OkArrayResponse(PortfolioAverageBalance)
   @ApiNotFoundResponse()
+  @ApiQuery({ name: 'range', type: String, required: false })
   getPortfolioMetrics(
     @Request() req,
     @Param('uuid') uuid: string,
@@ -144,6 +146,9 @@ export class PortfoliosController {
   @Get(':uuid/contributions')
   @ApiBadRequestResponse()
   @ApiNotFoundResponse()
+  @OkArrayResponse(PortfolioContribution)
+  @ApiQuery({ name: 'offset', type: Number, required: false })
+  @ApiQuery({ name: 'limit', type: Number, required: false })
   getContributions(
     @Request() req,
     @Param('uuid') uuid: string,
