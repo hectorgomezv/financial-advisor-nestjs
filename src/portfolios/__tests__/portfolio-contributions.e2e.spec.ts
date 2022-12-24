@@ -36,7 +36,7 @@ describe('Portfolio contributions e2e tests', () => {
     await app.init();
   });
 
-  it('/POST portfolio', async () => {
+  it('POST portfolio', async () => {
     await request(app.getHttpServer())
       .post('/portfolios')
       .set('Authorization', `Bearer ${accessToken}`)
@@ -58,7 +58,7 @@ describe('Portfolio contributions e2e tests', () => {
       });
   });
 
-  it('/POST portfolio contributions', () => {
+  it('POST portfolio contributions', () => {
     return request(app.getHttpServer())
       .post(`/portfolios/${createdPortfolioUuid}/contributions`)
       .set('Authorization', `Bearer ${accessToken}`)
@@ -85,7 +85,28 @@ describe('Portfolio contributions e2e tests', () => {
       });
   });
 
-  it('/DELETE portfolio contributions', () => {
+  it('GET portfolio contributions', () => {
+    return request(app.getHttpServer())
+      .get(`/portfolios/${createdPortfolioUuid}/contributions`)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          success: true,
+          status: 200,
+          path: `/portfolios/${createdPortfolioUuid}/contributions`,
+          data: expect.arrayContaining([
+            expect.objectContaining({
+              uuid: expect.any(String),
+              timestamp: addContributionDto.timestamp.toISOString(),
+              amountEUR: addContributionDto.amountEUR,
+            }),
+          ]),
+        });
+      });
+  });
+
+  it('DELETE portfolio contributions', () => {
     return request(app.getHttpServer())
       .delete(
         `/portfolios/${createdPortfolioUuid}/contributions/${createdContributionUuid}`,
@@ -106,7 +127,7 @@ describe('Portfolio contributions e2e tests', () => {
       });
   });
 
-  it('/DELETE portfolio', async () => {
+  it('DELETE portfolio', async () => {
     return request(app.getHttpServer())
       .delete(`/portfolios/${createdPortfolioUuid}`)
       .set('Authorization', `Bearer ${accessToken}`)

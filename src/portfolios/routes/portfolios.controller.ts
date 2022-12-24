@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -17,6 +19,7 @@ import {
   ApiNotFoundResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { off } from 'process';
 import { User } from '../../common/auth/entities/user.entity';
 import { JwtAuthGuard } from '../../common/auth/jwt-auth.guard';
 import { CreatedResponse } from '../../common/routes/entities/created-response.entity';
@@ -24,6 +27,7 @@ import { OkArrayResponse } from '../../common/routes/entities/ok-array-response.
 import { OkResponse } from '../../common/routes/entities/ok-response.entity';
 import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
 import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
+import { PortfolioDetailDto } from '../domain/dto/portfolio-detail.dto';
 import { UpdatePortfolioCashDto } from '../domain/dto/update-portfolio-cash.dto';
 import { PortfoliosService } from '../domain/portfolios.service';
 import { PositionsService } from '../domain/positions.service';
@@ -62,7 +66,7 @@ export class PortfoliosController {
   }
 
   @Get(':uuid')
-  @OkResponse(Portfolio)
+  @OkResponse(PortfolioDetailDto)
   @ApiNotFoundResponse()
   findOne(@Request() req, @Param('uuid') uuid: string) {
     return this.portfoliosService.findOne(req.user as User, uuid);
@@ -134,6 +138,33 @@ export class PortfoliosController {
       req.user as User,
       uuid,
       updatePortfolioCash,
+    );
+  }
+
+  @Get(':uuid/contributions')
+  @ApiBadRequestResponse()
+  @ApiNotFoundResponse()
+  getContributions(
+    @Request() req,
+    @Param('uuid') uuid: string,
+    @Query(
+      'offset',
+      new DefaultValuePipe(PortfoliosService.DEFAULT_OFFSET),
+      ParseIntPipe,
+    )
+    offset?: number,
+    @Query(
+      'limit',
+      new DefaultValuePipe(PortfoliosService.DEFAULT_LIMIT),
+      ParseIntPipe,
+    )
+    limit?: number,
+  ) {
+    return this.portfoliosService.getContributions(
+      req.user as User,
+      uuid,
+      offset,
+      limit,
     );
   }
 

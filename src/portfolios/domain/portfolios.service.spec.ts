@@ -9,6 +9,7 @@ import { positionDetailDtoFactory } from './dto/test/position-detail-dto.factory
 import { updatePortfolioCashDtoFactory } from './dto/test/update-portfolio-cash.dto.factory';
 import { portfolioFactory } from './entities/__tests__/porfolio.factory';
 import { portfolioAverageBalanceFactory } from './entities/__tests__/portfolio-average-metric.factory';
+import { portfolioContributionFactory } from './entities/__tests__/portfolio-contribution.factory';
 import { portfolioStateFactory } from './entities/__tests__/portfolio-state.factory';
 import { PortfolioStatesService } from './portfolio-states.service';
 import { PortfoliosService } from './portfolios.service';
@@ -22,6 +23,7 @@ describe('PortfoliosService', () => {
     findOne: jest.fn(),
     deleteOne: jest.fn(),
     updateCash: jest.fn(),
+    getContributions: jest.fn(),
     addContribution: jest.fn(),
     deleteContribution: jest.fn(),
   } as unknown as PortfoliosRepository);
@@ -147,7 +149,6 @@ describe('PortfoliosService', () => {
         seed: adminUserPortfolio.seed,
         cash: adminUserPortfolio.cash,
         created: adminUserPortfolio.created,
-        contributions: adminUserPortfolio.contributions,
         positions,
         state,
       });
@@ -182,6 +183,39 @@ describe('PortfoliosService', () => {
       );
 
       expect(metrics).toEqual(portfolioAverageBalances);
+    });
+
+    it("should fail if the portfolio don't exist when getting contributions from repository", async () => {
+      portfoliosRepository.findOne.mockResolvedValueOnce(null);
+
+      await expect(
+        service.getContributions(
+          adminUser,
+          faker.datatype.uuid(),
+          faker.datatype.number(),
+          faker.datatype.number(),
+        ),
+      ).rejects.toThrow('Portfolio not found');
+    });
+
+    it('should call repository to get portfolio contributions', async () => {
+      const portfolioContributions = [
+        portfolioContributionFactory(adminUserPortfolio.uuid),
+        portfolioContributionFactory(adminUserPortfolio.uuid),
+      ];
+      portfoliosRepository.findOne.mockResolvedValueOnce(adminUserPortfolio);
+      portfoliosRepository.getContributions.mockResolvedValueOnce(
+        portfolioContributions,
+      );
+
+      const metrics = await service.getContributions(
+        adminUser,
+        faker.datatype.uuid(),
+        faker.datatype.number(),
+        faker.datatype.number(),
+      );
+
+      expect(metrics).toEqual(portfolioContributions);
     });
   });
 
