@@ -32,10 +32,10 @@ import { UpdatePortfolioCashDto } from '../domain/dto/update-portfolio-cash.dto'
 import { PortfoliosService } from '../domain/portfolios.service';
 import { PositionsService } from '../domain/positions.service';
 import { AddPortfolioContributionDto } from './dto/add-portfolio-contribution.dto';
+import { ContributionsPage } from './dto/contributions-page.dto';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { UpsertPositionDto } from './dto/upsert-position.dto';
 import { PortfolioAverageMetric as PortfolioAverageBalance } from './entities/portfolio-average-balance.entity';
-import { PortfolioContribution } from './entities/portfolio-contribution.entity';
 import { Portfolio } from './entities/portfolio.entity';
 import { Position } from './entities/position.entity';
 
@@ -146,10 +146,10 @@ export class PortfoliosController {
   @Get(':uuid/contributions')
   @ApiBadRequestResponse()
   @ApiNotFoundResponse()
-  @OkArrayResponse(PortfolioContribution)
+  @OkResponse(ContributionsPage)
   @ApiQuery({ name: 'offset', type: Number, required: false })
   @ApiQuery({ name: 'limit', type: Number, required: false })
-  getContributions(
+  async getContributions(
     @Request() req,
     @Param('uuid') uuid: string,
     @Query(
@@ -164,13 +164,25 @@ export class PortfoliosController {
       ParseIntPipe,
     )
     limit?: number,
-  ) {
-    return this.portfoliosService.getContributions(
+  ): Promise<ContributionsPage> {
+    const count = await this.portfoliosService.getContributionsCount(
+      req.user as User,
+      uuid,
+    );
+    const contributions = await this.portfoliosService.getContributions(
       req.user as User,
       uuid,
       offset,
       limit,
     );
+
+    return <ContributionsPage>{
+      uuid,
+      count,
+      offset,
+      limit,
+      items: contributions,
+    };
   }
 
   @Post(':uuid/contributions')

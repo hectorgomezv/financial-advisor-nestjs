@@ -27,6 +27,11 @@ export class PortfolioModel {
 
   @Prop({ required: true, schema: PortfolioContributionSchema })
   contributions: PortfolioContribution[];
+
+  // Transient properties
+
+  @Prop({ required: false })
+  contributionsCount: number;
 }
 
 export const PortfolioSchema = SchemaFactory.createForClass(PortfolioModel);

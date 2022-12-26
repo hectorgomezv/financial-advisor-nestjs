@@ -24,6 +24,7 @@ describe('PortfoliosService', () => {
     deleteOne: jest.fn(),
     updateCash: jest.fn(),
     getContributions: jest.fn(),
+    getContributionsCount: jest.fn(),
     addContribution: jest.fn(),
     deleteContribution: jest.fn(),
   } as unknown as PortfoliosRepository);
@@ -208,14 +209,27 @@ describe('PortfoliosService', () => {
         portfolioContributions,
       );
 
-      const metrics = await service.getContributions(
+      const actual = await service.getContributions(
         adminUser,
         faker.datatype.uuid(),
         faker.datatype.number(),
         faker.datatype.number(),
       );
 
-      expect(metrics).toEqual(portfolioContributions);
+      expect(actual).toEqual(portfolioContributions);
+    });
+
+    it('should call repository to get portfolio contributions count', async () => {
+      const count = faker.datatype.number();
+      portfoliosRepository.findOne.mockResolvedValueOnce(adminUserPortfolio);
+      portfoliosRepository.getContributionsCount.mockResolvedValueOnce(count);
+
+      const actual = await service.getContributionsCount(
+        adminUser,
+        faker.datatype.uuid(),
+      );
+
+      expect(actual).toEqual(count);
     });
   });
 

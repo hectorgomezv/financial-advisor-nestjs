@@ -145,6 +145,15 @@ export class PortfoliosService {
     return this.repository.getContributions(uuid, offset, limit);
   }
 
+  async getContributionsCount(user: User, uuid: string): Promise<number> {
+    const portfolio = await this.repository.findOne(uuid);
+    if (!portfolio) {
+      throw new NotFoundException(`Portfolio not found`);
+    }
+    this.checkOwner(user, portfolio);
+    return this.repository.getContributionsCount(uuid);
+  }
+
   async addContribution(
     user: User,
     uuid: string,

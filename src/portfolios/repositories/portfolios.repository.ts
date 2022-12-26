@@ -54,6 +54,14 @@ export class PortfoliosRepository {
     return portfolio.contributions ?? [];
   }
 
+  async getContributionsCount(uuid: string): Promise<number> {
+    const results = await this.model
+      .find({ uuid }, { contributionsCount: { $size: '$contributions' } })
+      .lean();
+
+    return results[0]?.contributionsCount ?? null;
+  }
+
   async addContribution(
     uuid: string,
     contribution: PortfolioContribution,
