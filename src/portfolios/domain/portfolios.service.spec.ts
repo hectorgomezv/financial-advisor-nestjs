@@ -7,6 +7,7 @@ import { PortfolioDetailDto } from './dto/portfolio-detail.dto';
 import { addPortfolioContributionDtoFactory } from './dto/test/add-portfolio-contribution.dto.factory';
 import { positionDetailDtoFactory } from './dto/test/position-detail-dto.factory';
 import { updatePortfolioCashDtoFactory } from './dto/test/update-portfolio-cash.dto.factory';
+import { ContributionsMetadata } from './entities/contributions-metadata';
 import { portfolioFactory } from './entities/__tests__/porfolio.factory';
 import { portfolioAverageBalanceFactory } from './entities/__tests__/portfolio-average-metric.factory';
 import { portfolioContributionFactory } from './entities/__tests__/portfolio-contribution.factory';
@@ -24,7 +25,7 @@ describe('PortfoliosService', () => {
     deleteOne: jest.fn(),
     updateCash: jest.fn(),
     getContributions: jest.fn(),
-    getContributionsCount: jest.fn(),
+    getContributionsMetadata: jest.fn(),
     addContribution: jest.fn(),
     deleteContribution: jest.fn(),
   } as unknown as PortfoliosRepository);
@@ -221,15 +222,19 @@ describe('PortfoliosService', () => {
 
     it('should call repository to get portfolio contributions count', async () => {
       const count = faker.datatype.number();
+      const sum = faker.datatype.number();
+      const contributionsMetadata = new ContributionsMetadata(count, sum);
       portfoliosRepository.findOne.mockResolvedValueOnce(adminUserPortfolio);
-      portfoliosRepository.getContributionsCount.mockResolvedValueOnce(count);
+      portfoliosRepository.getContributionsMetadata.mockResolvedValueOnce(
+        contributionsMetadata,
+      );
 
-      const actual = await service.getContributionsCount(
+      const actual = await service.getContributionsMetadata(
         adminUser,
         faker.datatype.uuid(),
       );
 
-      expect(actual).toEqual(count);
+      expect(actual).toEqual(contributionsMetadata);
     });
   });
 

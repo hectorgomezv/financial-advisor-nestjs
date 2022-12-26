@@ -15,6 +15,7 @@ import { AddPortfolioContributionDto } from './dto/add-portfolio-contribution.dt
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { PortfolioDetailDto } from './dto/portfolio-detail.dto';
 import { UpdatePortfolioCashDto } from './dto/update-portfolio-cash.dto';
+import { ContributionsMetadata } from './entities/contributions-metadata';
 import { PortfolioContribution } from './entities/portfolio-contribution.entity';
 import { Portfolio } from './entities/portfolio.entity';
 import { timeRangeFromStr } from './entities/time-range.enum';
@@ -145,13 +146,16 @@ export class PortfoliosService {
     return this.repository.getContributions(uuid, offset, limit);
   }
 
-  async getContributionsCount(user: User, uuid: string): Promise<number> {
+  async getContributionsMetadata(
+    user: User,
+    uuid: string,
+  ): Promise<ContributionsMetadata> {
     const portfolio = await this.repository.findOne(uuid);
     if (!portfolio) {
       throw new NotFoundException(`Portfolio not found`);
     }
     this.checkOwner(user, portfolio);
-    return this.repository.getContributionsCount(uuid);
+    return this.repository.getContributionsMetadata(uuid);
   }
 
   async addContribution(

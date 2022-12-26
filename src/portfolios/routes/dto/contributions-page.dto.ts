@@ -7,6 +7,8 @@ export class ContributionsPage {
   @ApiProperty()
   count: number;
   @ApiProperty()
+  sum: number;
+  @ApiProperty()
   offset: number;
   @ApiProperty()
   limit: number;

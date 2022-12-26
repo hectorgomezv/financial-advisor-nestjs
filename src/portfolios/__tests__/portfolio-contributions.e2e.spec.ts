@@ -128,6 +128,7 @@ describe('Portfolio contributions e2e tests', () => {
           data: {
             uuid: createdPortfolioUuid,
             count: 2,
+            sum: addContributionDto.amountEUR * 2,
             offset: PortfoliosService.DEFAULT_OFFSET,
             limit: PortfoliosService.DEFAULT_LIMIT,
             items: expect.arrayContaining([
@@ -159,6 +160,7 @@ describe('Portfolio contributions e2e tests', () => {
           data: {
             uuid: createdPortfolioUuid,
             count: 2,
+            sum: addContributionDto.amountEUR * 2,
             offset,
             limit,
             items: expect.arrayContaining([
