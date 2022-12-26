@@ -43,6 +43,25 @@ export class PortfoliosRepository {
     await this.model.updateOne({ uuid }, { $set: { cash } });
   }
 
+  async getContributions(
+    uuid: string,
+    offset: number,
+    limit: number,
+  ): Promise<PortfolioContribution[]> {
+    const portfolio = await this.model
+      .findOne({ uuid }, { contributions: { $slice: [offset, limit] } })
+      .lean();
+    return portfolio.contributions ?? [];
+  }
+
+  async getContributionsCount(uuid: string): Promise<number> {
+    const results = await this.model
+      .find({ uuid }, { contributionsCount: { $size: '$contributions' } })
+      .lean();
+
+    return results[0]?.contributionsCount ?? null;
+  }
+
   async addContribution(
     uuid: string,
     contribution: PortfolioContribution,

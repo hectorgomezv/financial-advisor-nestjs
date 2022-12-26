@@ -15,6 +15,7 @@ import { AddPortfolioContributionDto } from './dto/add-portfolio-contribution.dt
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { PortfolioDetailDto } from './dto/portfolio-detail.dto';
 import { UpdatePortfolioCashDto } from './dto/update-portfolio-cash.dto';
+import { PortfolioContribution } from './entities/portfolio-contribution.entity';
 import { Portfolio } from './entities/portfolio.entity';
 import { timeRangeFromStr } from './entities/time-range.enum';
 import { PortfolioStatesService } from './portfolio-states.service';
@@ -22,6 +23,8 @@ import { PositionsService } from './positions.service';
 
 @Injectable()
 export class PortfoliosService {
+  public static readonly DEFAULT_OFFSET = 0;
+  public static readonly DEFAULT_LIMIT = 10;
   private readonly logger = new Logger(PortfoliosService.name);
 
   constructor(
@@ -73,7 +76,6 @@ export class PortfoliosService {
       created: portfolio.created,
       seed: portfolio.seed,
       cash: portfolio.cash,
-      contributions: portfolio.contributions,
       positions,
       state,
     };
@@ -127,6 +129,29 @@ export class PortfoliosService {
     await this.repository.updateCash(portfolioUuid, cash);
     await this.positionService.updatePortfolioState(updated);
     return updated;
+  }
+
+  async getContributions(
+    user: User,
+    uuid: string,
+    offset: number,
+    limit: number,
+  ): Promise<PortfolioContribution[]> {
+    const portfolio = await this.repository.findOne(uuid);
+    if (!portfolio) {
+      throw new NotFoundException(`Portfolio not found`);
+    }
+    this.checkOwner(user, portfolio);
+    return this.repository.getContributions(uuid, offset, limit);
+  }
+
+  async getContributionsCount(user: User, uuid: string): Promise<number> {
+    const portfolio = await this.repository.findOne(uuid);
+    if (!portfolio) {
+      throw new NotFoundException(`Portfolio not found`);
+    }
+    this.checkOwner(user, portfolio);
+    return this.repository.getContributionsCount(uuid);
   }
 
   async addContribution(

@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -15,6 +17,7 @@ import {
 import {
   ApiBadRequestResponse,
   ApiNotFoundResponse,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { User } from '../../common/auth/entities/user.entity';
@@ -24,10 +27,12 @@ import { OkArrayResponse } from '../../common/routes/entities/ok-array-response.
 import { OkResponse } from '../../common/routes/entities/ok-response.entity';
 import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
 import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
+import { PortfolioDetailDto } from '../domain/dto/portfolio-detail.dto';
 import { UpdatePortfolioCashDto } from '../domain/dto/update-portfolio-cash.dto';
 import { PortfoliosService } from '../domain/portfolios.service';
 import { PositionsService } from '../domain/positions.service';
 import { AddPortfolioContributionDto } from './dto/add-portfolio-contribution.dto';
+import { ContributionsPage } from './dto/contributions-page.dto';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { UpsertPositionDto } from './dto/upsert-position.dto';
 import { PortfolioAverageMetric as PortfolioAverageBalance } from './entities/portfolio-average-balance.entity';
@@ -62,7 +67,7 @@ export class PortfoliosController {
   }
 
   @Get(':uuid')
-  @OkResponse(Portfolio)
+  @OkResponse(PortfolioDetailDto)
   @ApiNotFoundResponse()
   findOne(@Request() req, @Param('uuid') uuid: string) {
     return this.portfoliosService.findOne(req.user as User, uuid);
@@ -78,6 +83,7 @@ export class PortfoliosController {
   @Get(':uuid/metrics/average-balances')
   @OkArrayResponse(PortfolioAverageBalance)
   @ApiNotFoundResponse()
+  @ApiQuery({ name: 'range', type: String, required: false })
   getPortfolioMetrics(
     @Request() req,
     @Param('uuid') uuid: string,
@@ -135,6 +141,48 @@ export class PortfoliosController {
       uuid,
       updatePortfolioCash,
     );
+  }
+
+  @Get(':uuid/contributions')
+  @ApiBadRequestResponse()
+  @ApiNotFoundResponse()
+  @OkResponse(ContributionsPage)
+  @ApiQuery({ name: 'offset', type: Number, required: false })
+  @ApiQuery({ name: 'limit', type: Number, required: false })
+  async getContributions(
+    @Request() req,
+    @Param('uuid') uuid: string,
+    @Query(
+      'offset',
+      new DefaultValuePipe(PortfoliosService.DEFAULT_OFFSET),
+      ParseIntPipe,
+    )
+    offset?: number,
+    @Query(
+      'limit',
+      new DefaultValuePipe(PortfoliosService.DEFAULT_LIMIT),
+      ParseIntPipe,
+    )
+    limit?: number,
+  ): Promise<ContributionsPage> {
+    const count = await this.portfoliosService.getContributionsCount(
+      req.user as User,
+      uuid,
+    );
+    const contributions = await this.portfoliosService.getContributions(
+      req.user as User,
+      uuid,
+      offset,
+      limit,
+    );
+
+    return <ContributionsPage>{
+      uuid,
+      count,
+      offset,
+      limit,
+      items: contributions,
+    };
   }
 
   @Post(':uuid/contributions')

@@ -7,13 +7,16 @@ import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { MongoDBClient } from '../../common/__tests__/database/mongodb.client';
 import { AuthClient } from '../../common/__tests__/auth/auth.client';
 import { addPortfolioContributionDtoFactory } from '../domain/dto/test/add-portfolio-contribution.dto.factory';
+import { PortfoliosService } from '../domain/portfolios.service';
+import { faker } from '@faker-js/faker';
 
 describe('Portfolio contributions e2e tests', () => {
   let app: INestApplication;
   let mongoClient: MongoDBClient;
   let accessToken: string;
   let createdPortfolioUuid: string;
-  let createdContributionUuid: string;
+  let firstContributionUuid: string;
+  let secondContributionUuid: string;
 
   const createPortfolioDto = createPortfolioDtoFactory();
   const addContributionDto = addPortfolioContributionDtoFactory();
@@ -36,7 +39,7 @@ describe('Portfolio contributions e2e tests', () => {
     await app.init();
   });
 
-  it('/POST portfolio', async () => {
+  it('POST portfolio', async () => {
     await request(app.getHttpServer())
       .post('/portfolios')
       .set('Authorization', `Bearer ${accessToken}`)
@@ -58,14 +61,14 @@ describe('Portfolio contributions e2e tests', () => {
       });
   });
 
-  it('/POST portfolio contributions', () => {
+  it('POST portfolio contributions', () => {
     return request(app.getHttpServer())
       .post(`/portfolios/${createdPortfolioUuid}/contributions`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send(addContributionDto)
       .expect(201)
       .then(({ body }) => {
-        createdContributionUuid = body.data.contributions[0].uuid;
+        firstContributionUuid = body.data.contributions[0].uuid;
         expect(body).toEqual({
           success: true,
           status: 201,
@@ -85,10 +88,66 @@ describe('Portfolio contributions e2e tests', () => {
       });
   });
 
-  it('/DELETE portfolio contributions', () => {
+  it('POST portfolio contributions', () => {
     return request(app.getHttpServer())
-      .delete(
-        `/portfolios/${createdPortfolioUuid}/contributions/${createdContributionUuid}`,
+      .post(`/portfolios/${createdPortfolioUuid}/contributions`)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send(addContributionDto)
+      .expect(201)
+      .then(({ body }) => {
+        secondContributionUuid = body.data.contributions[1].uuid;
+        expect(body).toEqual({
+          success: true,
+          status: 201,
+          path: `/portfolios/${createdPortfolioUuid}/contributions`,
+          data: expect.objectContaining({
+            uuid: createdPortfolioUuid,
+            name: createPortfolioDto.name,
+            contributions: expect.arrayContaining([
+              expect.objectContaining({
+                uuid: expect.any(String),
+                timestamp: addContributionDto.timestamp.toISOString(),
+                amountEUR: addContributionDto.amountEUR,
+              }),
+            ]),
+          }),
+        });
+      });
+  });
+
+  it('GET portfolio contributions', () => {
+    return request(app.getHttpServer())
+      .get(`/portfolios/${createdPortfolioUuid}/contributions`)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          success: true,
+          status: 200,
+          path: `/portfolios/${createdPortfolioUuid}/contributions`,
+          data: {
+            uuid: createdPortfolioUuid,
+            count: 2,
+            offset: PortfoliosService.DEFAULT_OFFSET,
+            limit: PortfoliosService.DEFAULT_LIMIT,
+            items: expect.arrayContaining([
+              expect.objectContaining({
+                uuid: expect.any(String),
+                timestamp: addContributionDto.timestamp.toISOString(),
+                amountEUR: addContributionDto.amountEUR,
+              }),
+            ]),
+          },
+        });
+      });
+  });
+
+  it('GET portfolio contributions page', () => {
+    const offset = 1;
+    const limit = faker.datatype.number({ min: 0, max: 100 });
+    return request(app.getHttpServer())
+      .get(
+        `/portfolios/${createdPortfolioUuid}/contributions?offset=${offset}&limit=${limit}`,
       )
       .set('Authorization', `Bearer ${accessToken}`)
       .expect(200)
@@ -96,7 +155,57 @@ describe('Portfolio contributions e2e tests', () => {
         expect(body).toEqual({
           success: true,
           status: 200,
-          path: `/portfolios/${createdPortfolioUuid}/contributions/${createdContributionUuid}`,
+          path: `/portfolios/${createdPortfolioUuid}/contributions?offset=${offset}&limit=${limit}`,
+          data: {
+            uuid: createdPortfolioUuid,
+            count: 2,
+            offset,
+            limit,
+            items: expect.arrayContaining([
+              expect.objectContaining({
+                uuid: expect.any(String),
+                timestamp: addContributionDto.timestamp.toISOString(),
+                amountEUR: addContributionDto.amountEUR,
+              }),
+            ]),
+          },
+        });
+      });
+  });
+
+  it('DELETE portfolio contributions', () => {
+    return request(app.getHttpServer())
+      .delete(
+        `/portfolios/${createdPortfolioUuid}/contributions/${firstContributionUuid}`,
+      )
+      .set('Authorization', `Bearer ${accessToken}`)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          success: true,
+          status: 200,
+          path: `/portfolios/${createdPortfolioUuid}/contributions/${firstContributionUuid}`,
+          data: expect.objectContaining({
+            uuid: createdPortfolioUuid,
+            name: createPortfolioDto.name,
+            contributions: expect.any(Array),
+          }),
+        });
+      });
+  });
+
+  it('DELETE portfolio contributions', () => {
+    return request(app.getHttpServer())
+      .delete(
+        `/portfolios/${createdPortfolioUuid}/contributions/${secondContributionUuid}`,
+      )
+      .set('Authorization', `Bearer ${accessToken}`)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          success: true,
+          status: 200,
+          path: `/portfolios/${createdPortfolioUuid}/contributions/${secondContributionUuid}`,
           data: expect.objectContaining({
             uuid: createdPortfolioUuid,
             name: createPortfolioDto.name,
@@ -106,7 +215,7 @@ describe('Portfolio contributions e2e tests', () => {
       });
   });
 
-  it('/DELETE portfolio', async () => {
+  it('DELETE portfolio', async () => {
     return request(app.getHttpServer())
       .delete(`/portfolios/${createdPortfolioUuid}`)
       .set('Authorization', `Bearer ${accessToken}`)
