@@ -32,6 +32,9 @@ export class PortfolioModel {
 
   @Prop({ required: false })
   contributionsCount: number;
+
+  @Prop({ required: false })
+  contributionsSum: number;
 }
 
 export const PortfolioSchema = SchemaFactory.createForClass(PortfolioModel);

@@ -165,10 +165,11 @@ export class PortfoliosController {
     )
     limit?: number,
   ): Promise<ContributionsPage> {
-    const count = await this.portfoliosService.getContributionsCount(
-      req.user as User,
-      uuid,
-    );
+    const contributionsMetadata =
+      await this.portfoliosService.getContributionsMetadata(
+        req.user as User,
+        uuid,
+      );
     const contributions = await this.portfoliosService.getContributions(
       req.user as User,
       uuid,
@@ -178,7 +179,8 @@ export class PortfoliosController {
 
     return <ContributionsPage>{
       uuid,
-      count,
+      count: contributionsMetadata.count,
+      sum: contributionsMetadata.sum,
       offset,
       limit,
       items: contributions,

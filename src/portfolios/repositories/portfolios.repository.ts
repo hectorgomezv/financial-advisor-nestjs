@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
+import { ContributionsMetadata } from '../domain/entities/contributions-metadata';
 import { PortfolioContribution } from '../domain/entities/portfolio-contribution.entity';
 import { Portfolio } from '../domain/entities/portfolio.entity';
 import { PortfolioDocument, PortfolioModel } from './schemas/portfolio.schema';
@@ -54,12 +55,21 @@ export class PortfoliosRepository {
     return portfolio.contributions ?? [];
   }
 
-  async getContributionsCount(uuid: string): Promise<number> {
+  async getContributionsMetadata(uuid: string): Promise<ContributionsMetadata> {
     const results = await this.model
-      .find({ uuid }, { contributionsCount: { $size: '$contributions' } })
+      .find(
+        { uuid },
+        {
+          contributionsCount: { $size: '$contributions' },
+          contributionsSum: { $sum: '$contributions.amountEUR' },
+        },
+      )
       .lean();
 
-    return results[0]?.contributionsCount ?? null;
+    return new ContributionsMetadata(
+      results[0]?.contributionsCount ?? null,
+      results[0]?.contributionsSum ?? null,
+    );
   }
 
   async addContribution(
