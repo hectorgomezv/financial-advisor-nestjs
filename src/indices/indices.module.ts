@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthService } from '../common/auth/auth-service';
+import { IndicesService } from './domain/indices.service';
 import { IndicesRepository } from './repositories/indices.repository';
 import {
   IndexValueModel,
@@ -20,7 +21,7 @@ import { IndexModel, IndexSchema } from './repositories/schemas/index.schema';
     HttpModule,
   ],
   controllers: [],
-  providers: [AuthService, IndicesRepository],
+  providers: [AuthService, IndicesService, IndicesRepository],
   exports: [],
 })
-export class PortfoliosModule {}
+export class IndicesModule {}
