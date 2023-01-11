@@ -8,6 +8,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { AxiosError } from 'axios';
 import { v4 as uuidv4 } from 'uuid';
+import { DataPoint } from '../../common/domain/entities/data-point.entity';
 import { QuoteSummary } from '../domain/entities/quote-summary.entity';
 import { IFinancialDataClient } from './financial-data.client.interface';
 
@@ -21,21 +22,39 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,
   ) {
-    this.baseUrl = `${this.configService.get<string>(
-      'PROVIDER_BASE_URL',
-    )}/finance/quoteSummary`;
-
+    this.baseUrl = this.configService.get<string>('PROVIDER_BASE_URL');
     this.defaultModules = '?modules=summaryDetail,defaultKeyStatistics';
-
     this.providerApiToken =
       this.configService.get<string>('PROVIDER_API_TOKEN');
+  }
+
+  async getChartDataPoints(symbol: string): Promise<DataPoint[]> {
+    let response;
+    try {
+      response = await this.httpService.axiosRef.get(
+        `${this.baseUrl}/v8/finance/chart/${symbol}?range=5y&interval=1d`,
+        { headers: { 'x-api-key': this.providerApiToken } },
+      );
+    } catch (err) {
+      return this.mapYahooErrorResponse(err);
+    }
+
+    const result = response?.chart?.result?.timestamp;
+
+    if (!result) {
+      throw new NotFoundException(
+        `Chart data points cannot be retrieved for ${symbol}`,
+      );
+    }
+
+    return null;
   }
 
   async getQuoteSummary(symbol: string): Promise<QuoteSummary> {
     let response;
     try {
       response = await this.httpService.axiosRef.get(
-        `${this.baseUrl}/${symbol}${this.defaultModules}`,
+        `${this.baseUrl}/v11/finance/quoteSummary/${symbol}${this.defaultModules}`,
         { headers: { 'x-api-key': this.providerApiToken } },
       );
     } catch (err) {

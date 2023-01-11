@@ -1,11 +1,8 @@
+import { DataPoint } from '../../../common/domain/entities/data-point.entity';
+
 export class Index {
   uuid: string;
   name: string;
   symbol: string;
-  values: IndexValue[];
-}
-
-export class IndexValue {
-  timestamp: number;
-  value: number;
+  values: DataPoint[];
 }

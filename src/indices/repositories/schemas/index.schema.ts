@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { IndexValue } from '../../domain/entities/index.entity';
-import { IndexValueSchema } from './index-value.schema';
+import { DataPoint } from '../../../common/domain/entities/data-point.entity';
+import { DataPointSchema } from '../../../common/domain/schemas/data-point.schema';
 
 export type IndexDocument = IndexModel & Document;
 
@@ -15,8 +15,8 @@ export class IndexModel {
   @Prop({ required: true })
   symbol: string;
 
-  @Prop({ required: true, schema: IndexValueSchema })
-  values: IndexValue[];
+  @Prop({ required: true, schema: DataPointSchema })
+  values: DataPoint[];
 }
 
 export const IndexSchema = SchemaFactory.createForClass(IndexModel);

@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-export type IndexValueDocument = IndexValueModel & Document;
+export type DataPointDocument = DataPointModel & Document;
 
 @Schema()
-export class IndexValueModel {
+export class DataPointModel {
   @Prop({ required: true })
   timestamp: number;
 
@@ -11,4 +11,4 @@ export class IndexValueModel {
   value: number;
 }
 
-export const IndexValueSchema = SchemaFactory.createForClass(IndexValueModel);
+export const DataPointSchema = SchemaFactory.createForClass(DataPointModel);
