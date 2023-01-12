@@ -39,7 +39,17 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
       return this.mapYahooErrorResponse(err);
     }
 
-    const result = response?.chart?.result?.timestamp;
+    // TODO: test, simplify with lodash and get/defaults
+    const result = response.data.chart.result
+      .at(0)
+      .indicators.quote.at(0)
+      .close.map(
+        (value, idx) =>
+          new DataPoint(
+            response.data.chart.result.at(0).timestamp.at(idx),
+            value,
+          ),
+      );
 
     if (!result) {
       throw new NotFoundException(
@@ -47,7 +57,7 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
       );
     }
 
-    return null;
+    return result;
   }
 
   async getQuoteSummary(symbol: string): Promise<QuoteSummary> {

@@ -21,26 +21,21 @@ export class IndicesService {
     return this.repository.findAll();
   }
 
-  @Cron('0 34 9 * * *', { timeZone: 'America/New_York' })
-  private refreshIndicesAtMarketOpen() {
-    return this.refreshIndices();
-  }
-
-  @Cron('0 32 12 * * *', { timeZone: 'America/New_York' })
-  private refreshIndicesAtMidday() {
-    return this.refreshIndices();
+  async reloadAll(user: User) {
+    this.authService.checkAdmin(user);
+    await this.refreshIndices();
+    return this.repository.findAll();
   }
 
   @Cron('0 04 16 * * *', { timeZone: 'America/New_York' })
-  private refreshIndicesAtMarketClose() {
-    return this.refreshIndices();
-  }
-
   private async refreshIndices() {
     const indices = await this.repository.findAll();
     await Promise.all(
-      indices.map((i) => {
-        this.financialDataClient.getChartDataPoints(i.symbol);
+      indices.map(async (index) => {
+        const dataPoints = await this.financialDataClient.getChartDataPoints(
+          index.symbol,
+        );
+        await this.repository.persistDataPoints(index.uuid, dataPoints);
       }),
     );
   }

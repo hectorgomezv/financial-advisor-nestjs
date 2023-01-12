@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 export type DataPointDocument = DataPointModel & Document;
 
-@Schema()
+@Schema({ autoCreate: false })
 export class DataPointModel {
   @Prop({ required: true })
   timestamp: number;

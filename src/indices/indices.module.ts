@@ -8,6 +8,7 @@ import { YahooFinancialDataClient } from '../companies/datasources/yahoo-financi
 import { IndicesService } from './domain/indices.service';
 import { IndicesRepository } from './repositories/indices.repository';
 import { IndexModel, IndexSchema } from './repositories/schemas/index.schema';
+import { IndicesController } from './routes/indices.controller';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { IndexModel, IndexSchema } from './repositories/schemas/index.schema';
     ConfigModule,
     HttpModule,
   ],
-  controllers: [],
+  controllers: [IndicesController],
   providers: [
     { provide: IFinancialDataClient, useClass: YahooFinancialDataClient },
     AuthService,
