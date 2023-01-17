@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { AxiosError } from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { DataPoint } from '../../common/domain/entities/data-point.entity';
+import { Chart, Quote } from '../domain/entities/chart.entity';
 import { QuoteSummary } from '../domain/entities/quote-summary.entity';
 import { IFinancialDataClient } from './financial-data.client.interface';
 
@@ -39,25 +40,15 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
       return this.mapYahooErrorResponse(err);
     }
 
-    // TODO: test, simplify with lodash and get/defaults
-    const result = response.data.chart.result
-      .at(0)
-      .indicators.quote.at(0)
-      .close.map(
-        (value, idx) =>
-          new DataPoint(
-            response.data.chart.result.at(0).timestamp.at(idx),
-            value,
-          ),
-      );
-
-    if (!result) {
-      throw new NotFoundException(
-        `Chart data points cannot be retrieved for ${symbol}`,
-      );
-    }
-
-    return result;
+    const chart: Chart = response.data.chart.result.at(0);
+    const quote: Quote = chart.indicators.quote.at(0);
+    return quote.close.map(
+      (value, idx) =>
+        new DataPoint(
+          response.data.chart.result.at(0).timestamp.at(idx),
+          value,
+        ),
+    );
   }
 
   async getQuoteSummary(symbol: string): Promise<QuoteSummary> {

@@ -14,7 +14,7 @@ import { OkArrayResponse } from '../../common/routes/entities/ok-array-response.
 import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
 import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
 import { IndicesService } from '../domain/indices.service';
-import { Index } from './index.entity';
+import { Index } from './entities/index.entity';
 
 @UseInterceptors(DataInterceptor)
 @UseFilters(MainExceptionFilter)
