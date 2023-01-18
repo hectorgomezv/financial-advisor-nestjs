@@ -52,7 +52,7 @@ export class PortfoliosRepository {
     const portfolio = await this.model
       .findOne({ uuid }, { contributions: { $slice: [offset, limit] } })
       .lean();
-    return portfolio.contributions ?? [];
+    return portfolio.contributions.reverse() ?? [];
   }
 
   async getContributionsMetadata(uuid: string): Promise<ContributionsMetadata> {
