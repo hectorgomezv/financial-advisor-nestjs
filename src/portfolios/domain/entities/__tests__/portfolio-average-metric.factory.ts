@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { PortfolioAverageBalance } from '../portfolio-average-balanace.entity';
+import { PortfolioAverageBalance } from '../portfolio-average-balance.entity';
 
 export function portfolioAverageBalanceFactory(
   timestamp?: number,

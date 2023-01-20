@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { isValid } from 'date-fns';
-import { isNumber } from 'lodash';
+import { head, isNumber, sortBy } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthService } from '../../common/auth/auth-service';
 import { User } from '../../common/auth/entities/user.entity';
@@ -17,6 +17,7 @@ import { PortfolioDetailDto } from './dto/portfolio-detail.dto';
 import { UpdatePortfolioCashDto } from './dto/update-portfolio-cash.dto';
 import { ContributionsMetadata } from './entities/contributions-metadata';
 import { PortfolioContribution } from './entities/portfolio-contribution.entity';
+import { PortfolioPerformance } from './entities/portfolio-performance.entity';
 import { Portfolio } from './entities/portfolio.entity';
 import { timeRangeFromStr } from './entities/time-range.enum';
 import { PortfolioStatesService } from './portfolio-states.service';
@@ -97,15 +98,45 @@ export class PortfoliosService {
   }
 
   async getAverageBalances(user: User, uuid: string, range: string) {
+    // TODO: add 2/3/6 months and 2/3/5 years ranges
     const portfolio = await this.repository.findOne(uuid);
     if (!portfolio) {
       throw new NotFoundException('Portfolio not found');
     }
     this.checkOwner(user, portfolio);
 
-    return this.portfolioStatesService.getAverageBalancesForRange(
-      uuid,
-      timeRangeFromStr(range),
+    const balances =
+      await this.portfolioStatesService.getAverageBalancesForRange(
+        uuid,
+        timeRangeFromStr(range),
+      );
+
+    return sortBy(balances, ['timestamp']);
+  }
+
+  async getPerformance(user: User, uuid: string, range: string) {
+    // TODO: add 2/3/6 months and 2/3/5 years ranges
+    const portfolio = await this.repository.findOne(uuid);
+    if (!portfolio) {
+      throw new NotFoundException('Portfolio not found');
+    }
+    this.checkOwner(user, portfolio);
+
+    const balances =
+      await this.portfolioStatesService.getAverageBalancesForRange(
+        uuid,
+        timeRangeFromStr(range),
+      );
+
+    const sortedBalances = sortBy(balances, ['timestamp']);
+    const initialValue = head(sortedBalances);
+
+    return sortedBalances.map(
+      ({ timestamp, average }, idx) =>
+        <PortfolioPerformance>{
+          timestamp,
+          value: idx === 0 ? 0 : (average * 100) / initialValue.average - 100,
+        },
     );
   }
 

@@ -36,6 +36,7 @@ import { ContributionsPage } from './dto/contributions-page.dto';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { UpsertPositionDto } from './dto/upsert-position.dto';
 import { PortfolioAverageMetric as PortfolioAverageBalance } from './entities/portfolio-average-balance.entity';
+import { PortfolioPerformance } from './entities/portfolio-performance.entity';
 import { Portfolio } from './entities/portfolio.entity';
 import { Position } from './entities/position.entity';
 
@@ -94,6 +95,17 @@ export class PortfoliosController {
       uuid,
       range,
     );
+  }
+  @Get(':uuid/metrics/performance')
+  @OkArrayResponse(PortfolioPerformance)
+  @ApiNotFoundResponse()
+  @ApiQuery({ name: 'range', type: String, required: false })
+  getPortfolioPerformance(
+    @Request() req,
+    @Param('uuid') uuid: string,
+    @Query('range') range?: string,
+  ) {
+    return this.portfoliosService.getPerformance(req.user as User, uuid, range);
   }
 
   @Post(':uuid/positions')

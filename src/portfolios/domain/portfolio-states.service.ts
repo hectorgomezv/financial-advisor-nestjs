@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { CurrencyExchangeClient } from '../datasources/currency-exchange.client';
 import { PortfolioStatesRepository } from '../repositories/portfolio-states.repository';
-import { PortfolioAverageBalance } from './entities/portfolio-average-balanace.entity';
+import { PortfolioAverageBalance } from './entities/portfolio-average-balance.entity';
 import { PortfolioState } from './entities/portfolio-state.entity';
 import { Portfolio } from './entities/portfolio.entity';
 import { Position } from './entities/position.entity';

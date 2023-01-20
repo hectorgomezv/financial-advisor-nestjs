@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
-import { PortfolioAverageBalance } from '../domain/entities/portfolio-average-balanace.entity';
+import { PortfolioAverageBalance } from '../domain/entities/portfolio-average-balance.entity';
 import { PortfolioState } from '../domain/entities/portfolio-state.entity';
 import { TimeRange } from '../domain/entities/time-range.enum';
 import {
