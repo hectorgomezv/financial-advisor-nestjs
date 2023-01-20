@@ -22,7 +22,7 @@ export class PortfolioStatesService {
     );
     const isValid = sumWeights === 100;
     const totalValueEUR = await this.getTotalValueEUR(positions);
-    const cash = portfolio.cash || 0;
+    const cash = portfolio.cash ?? 0;
     const contributionsAmount = portfolio.contributions
       ? portfolio.contributions.reduce(
           (sum, contribution) => sum + contribution.amountEUR,

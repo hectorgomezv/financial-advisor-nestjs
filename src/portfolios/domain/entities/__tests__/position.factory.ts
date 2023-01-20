@@ -11,12 +11,12 @@ export function positionFactory(
   value?: number,
 ): Position {
   return <Position>{
-    uuid: uuid || faker.datatype.uuid(),
-    portfolioUuid: portfolioUuid || faker.datatype.uuid(),
-    companyUuid: companyUuid || faker.datatype.uuid(),
-    targetWeight: targetWeight || faker.datatype.number(),
-    shares: shares || faker.datatype.number(),
-    symbol: symbol || faker.random.word(),
-    value: value || faker.datatype.number(),
+    uuid: uuid ?? faker.datatype.uuid(),
+    portfolioUuid: portfolioUuid ?? faker.datatype.uuid(),
+    companyUuid: companyUuid ?? faker.datatype.uuid(),
+    targetWeight: targetWeight ?? faker.datatype.number(),
+    shares: shares ?? faker.datatype.number(),
+    symbol: symbol ?? faker.random.word(),
+    value: value ?? faker.datatype.number(),
   };
 }

@@ -7,8 +7,8 @@ export function portfolioContributionFactory(
   amountEUR?: number,
 ): PortfolioContribution {
   return <PortfolioContribution>{
-    uuid: uuid || faker.datatype.uuid(),
-    timestamp: timestamp || Date.now(),
-    amountEUR: amountEUR || Number(faker.finance.amount()),
+    uuid: uuid ?? faker.datatype.uuid(),
+    timestamp: timestamp ?? Date.now(),
+    amountEUR: amountEUR ?? Number(faker.finance.amount()),
   };
 }

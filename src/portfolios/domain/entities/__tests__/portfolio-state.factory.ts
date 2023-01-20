@@ -11,12 +11,12 @@ export function portfolioStateFactory(
   roicEUR?: number,
 ): PortfolioState {
   return <PortfolioState>{
-    uuid: uuid || faker.datatype.uuid(),
-    portfolioUuid: portfolioUuid || faker.datatype.uuid(),
-    timestamp: timestamp || faker.datatype.number(),
-    isValid: isValid || faker.datatype.boolean(),
-    sumWeights: sumWeights || faker.datatype.number(),
-    totalValueEUR: totalValueEUR || faker.datatype.number(),
-    roicEUR: roicEUR || faker.datatype.number(),
+    uuid: uuid ?? faker.datatype.uuid(),
+    portfolioUuid: portfolioUuid ?? faker.datatype.uuid(),
+    timestamp: timestamp ?? faker.datatype.number(),
+    isValid: isValid ?? faker.datatype.boolean(),
+    sumWeights: sumWeights ?? faker.datatype.number(),
+    totalValueEUR: totalValueEUR ?? faker.datatype.number(),
+    roicEUR: roicEUR ?? faker.datatype.number(),
   };
 }

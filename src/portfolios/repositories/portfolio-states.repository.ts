@@ -110,7 +110,7 @@ export class PortfolioStatesRepository {
       case TimeRange.Month:
       case TimeRange.Week:
         return {
-          timestamp: new Date(_id.year, 0, _id.day, _id.hour || 0).getTime(),
+          timestamp: new Date(_id.year, 0, _id.day, _id.hour ?? 0).getTime(),
           average,
         };
     }

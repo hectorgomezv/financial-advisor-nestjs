@@ -7,8 +7,8 @@ export function companyFactory(
   symbol?: string,
 ): Company {
   return <Company>{
-    uuid: uuid || faker.datatype.uuid(),
-    name: name || faker.random.words(),
-    symbol: symbol || faker.random.word(),
+    uuid: uuid ?? faker.datatype.uuid(),
+    name: name ?? faker.random.words(),
+    symbol: symbol ?? faker.random.word(),
   };
 }

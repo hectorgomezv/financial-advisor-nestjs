@@ -6,7 +6,7 @@ export function portfolioAverageBalanceFactory(
   average?: number,
 ): PortfolioAverageBalance {
   return <PortfolioAverageBalance>{
-    timestamp: timestamp || faker.datatype.number(),
-    average: average || faker.datatype.number(),
+    timestamp: timestamp ?? faker.datatype.number(),
+    average: average ?? faker.datatype.number(),
   };
 }

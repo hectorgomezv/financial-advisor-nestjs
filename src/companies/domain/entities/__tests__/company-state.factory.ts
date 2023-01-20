@@ -9,10 +9,10 @@ export function companyStateFactory(
   companyUuid?: string,
 ): CompanyState {
   return <CompanyState>{
-    uuid: uuid || faker.datatype.uuid(),
-    timestamp: timestamp || Date.now(),
-    price: price || faker.datatype.number(),
-    peg: peg || faker.datatype.number(),
-    companyUuid: companyUuid || faker.datatype.uuid(),
+    uuid: uuid ?? faker.datatype.uuid(),
+    timestamp: timestamp ?? Date.now(),
+    price: price ?? faker.datatype.number(),
+    peg: peg ?? faker.datatype.number(),
+    companyUuid: companyUuid ?? faker.datatype.uuid(),
   };
 }

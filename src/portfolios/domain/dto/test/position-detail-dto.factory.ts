@@ -13,14 +13,14 @@ export function positionDetailDtoFactory(
   deltaShares?: number,
 ): PositionDetailDto {
   return <PositionDetailDto>{
-    uuid: uuid || faker.datatype.uuid(),
-    companyName: companyName || faker.datatype.uuid(),
-    symbol: symbol || faker.random.word(),
-    shares: shares || faker.datatype.number(),
-    value: value || faker.datatype.number(),
-    targetWeight: targetWeight || faker.datatype.number(),
-    currentWeight: currentWeight || faker.datatype.number(),
-    deltaWeight: deltaWeight || faker.datatype.number(),
-    deltaShares: deltaShares || faker.datatype.number(),
+    uuid: uuid ?? faker.datatype.uuid(),
+    companyName: companyName ?? faker.datatype.uuid(),
+    symbol: symbol ?? faker.random.word(),
+    shares: shares ?? faker.datatype.number(),
+    value: value ?? faker.datatype.number(),
+    targetWeight: targetWeight ?? faker.datatype.number(),
+    currentWeight: currentWeight ?? faker.datatype.number(),
+    deltaWeight: deltaWeight ?? faker.datatype.number(),
+    deltaShares: deltaShares ?? faker.datatype.number(),
   };
 }
