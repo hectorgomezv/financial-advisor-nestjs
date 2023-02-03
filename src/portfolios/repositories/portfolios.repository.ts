@@ -49,10 +49,17 @@ export class PortfoliosRepository {
     offset: number,
     limit: number,
   ): Promise<PortfolioContribution[]> {
-    const portfolio = await this.model
-      .findOne({ uuid }, { contributions: { $slice: [offset, limit] } })
-      .lean();
-    return portfolio.contributions.reverse() ?? [];
+    const result = await this.model
+      .aggregate()
+      .match({ uuid })
+      .project({ contributions: 1 })
+      .unwind({ path: '$contributions' })
+      .sort({ 'contributions.timestamp': -1 })
+      .skip(offset)
+      .limit(limit)
+      .exec();
+
+    return result.map((i) => i.contributions);
   }
 
   async getContributionsMetadata(uuid: string): Promise<ContributionsMetadata> {
