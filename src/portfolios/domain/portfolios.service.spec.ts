@@ -11,6 +11,7 @@ import { ContributionsMetadata } from './entities/contributions-metadata';
 import { portfolioFactory } from './entities/__tests__/porfolio.factory';
 import { portfolioAverageBalanceFactory } from './entities/__tests__/portfolio-average-metric.factory';
 import { portfolioContributionFactory } from './entities/__tests__/portfolio-contribution.factory';
+import { portfolioPerformanceFactory } from './entities/__tests__/portfolio-performance.factory';
 import { portfolioStateFactory } from './entities/__tests__/portfolio-state.factory';
 import { PortfolioStatesService } from './portfolio-states.service';
 import { PortfoliosService } from './portfolios.service';
@@ -168,10 +169,10 @@ describe('PortfoliosService', () => {
       ).rejects.toThrow('Portfolio not found');
     });
 
-    it('should call repository to get portfolio metrics', async () => {
+    it('should call repository to get portfolio metrics and sort result', async () => {
       const portfolioAverageBalances = [
-        portfolioAverageBalanceFactory(),
-        portfolioAverageBalanceFactory(),
+        portfolioAverageBalanceFactory(2, 200),
+        portfolioAverageBalanceFactory(1, 100),
       ];
       portfoliosRepository.findOne.mockResolvedValueOnce(adminUserPortfolio);
       portfolioStatesService.getAverageBalancesForRange.mockResolvedValueOnce(
@@ -184,7 +185,43 @@ describe('PortfoliosService', () => {
         faker.random.word(),
       );
 
-      expect(metrics).toEqual(portfolioAverageBalances);
+      const expected = [
+        portfolioAverageBalances[1],
+        portfolioAverageBalances[0],
+      ];
+      expect(metrics).toEqual(expected);
+    });
+
+    it('should call repository to get portfolio metrics', async () => {
+      const portfolioAverageBalances = [
+        portfolioAverageBalanceFactory(1, 60),
+        portfolioAverageBalanceFactory(3, 90),
+        portfolioAverageBalanceFactory(4, 60),
+        portfolioAverageBalanceFactory(6, 90),
+        portfolioAverageBalanceFactory(5, 45),
+        portfolioAverageBalanceFactory(2, 120),
+      ];
+      portfoliosRepository.findOne.mockResolvedValueOnce(adminUserPortfolio);
+      portfolioStatesService.getAverageBalancesForRange.mockResolvedValueOnce(
+        portfolioAverageBalances,
+      );
+
+      const performance = await service.getPerformance(
+        adminUser,
+        faker.datatype.uuid(),
+        faker.random.word(),
+      );
+
+      const expected = [
+        portfolioPerformanceFactory(1, 0),
+        portfolioPerformanceFactory(2, 100),
+        portfolioPerformanceFactory(3, 50),
+        portfolioPerformanceFactory(4, 0),
+        portfolioPerformanceFactory(5, -25),
+        portfolioPerformanceFactory(6, 50),
+      ];
+
+      expect(performance).toEqual(expected);
     });
 
     it("should fail if the portfolio don't exist when getting contributions from repository", async () => {

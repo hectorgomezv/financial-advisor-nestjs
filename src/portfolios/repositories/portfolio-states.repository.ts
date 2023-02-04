@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
-import { PortfolioAverageBalance } from '../domain/entities/portfolio-average-balanace.entity';
+import { PortfolioAverageBalance } from '../domain/entities/portfolio-average-balance.entity';
 import { PortfolioState } from '../domain/entities/portfolio-state.entity';
 import { TimeRange } from '../domain/entities/time-range.enum';
 import {
@@ -67,8 +67,20 @@ export class PortfolioStatesRepository {
     switch (range) {
       case TimeRange.Year:
         return new Date(Date.now() - 365 * oneDayInMs);
+      case TimeRange.TwoYears:
+        return new Date(Date.now() - 365 * 2 * oneDayInMs);
+      case TimeRange.ThreeYears:
+        return new Date(Date.now() - 365 * 3 * oneDayInMs);
+      case TimeRange.FiveYears:
+        return new Date(Date.now() - 365 * 5 * oneDayInMs);
       case TimeRange.Month:
         return new Date(Date.now() - 30 * oneDayInMs);
+      case TimeRange.TwoMonths:
+        return new Date(Date.now() - 60 * oneDayInMs);
+      case TimeRange.ThreeMonths:
+        return new Date(Date.now() - 90 * oneDayInMs);
+      case TimeRange.SixMonths:
+        return new Date(Date.now() - 180 * oneDayInMs);
       case TimeRange.Week:
         return new Date(Date.now() - 7 * oneDayInMs);
     }
@@ -77,11 +89,17 @@ export class PortfolioStatesRepository {
   private getGroupingForRange(range: TimeRange) {
     switch (range) {
       case TimeRange.Year:
+      case TimeRange.TwoYears:
+      case TimeRange.ThreeYears:
+      case TimeRange.FiveYears:
         return {
           year: { $year: '$parsedDate' },
           week: { $week: '$parsedDate' },
         };
       case TimeRange.Month:
+      case TimeRange.TwoMonths:
+      case TimeRange.ThreeMonths:
+      case TimeRange.SixMonths:
         return {
           year: { $year: '$parsedDate' },
           day: { $dayOfYear: '$parsedDate' },
@@ -103,11 +121,17 @@ export class PortfolioStatesRepository {
 
     switch (range) {
       case TimeRange.Year:
+      case TimeRange.TwoYears:
+      case TimeRange.ThreeYears:
+      case TimeRange.FiveYears:
         return {
           timestamp: new Date(_id.year, 0, 1 + (_id.week - 1) * 7, 0).getTime(),
           average,
         };
       case TimeRange.Month:
+      case TimeRange.TwoMonths:
+      case TimeRange.ThreeMonths:
+      case TimeRange.SixMonths:
       case TimeRange.Week:
         return {
           timestamp: new Date(_id.year, 0, _id.day, _id.hour ?? 0).getTime(),

@@ -1,6 +1,12 @@
 export enum TimeRange {
   Year = 'year',
+  TwoYears = 'twoYears',
+  ThreeYears = 'threeYears',
+  FiveYears = 'fiveYears',
   Month = 'month',
+  TwoMonths = 'twoMonths',
+  ThreeMonths = 'threeMonths',
+  SixMonths = 'sixMonths',
   Week = 'week',
 }
 
