@@ -197,6 +197,8 @@ describe('PortfoliosService', () => {
         portfolioAverageBalanceFactory(1, 60),
         portfolioAverageBalanceFactory(3, 90),
         portfolioAverageBalanceFactory(4, 60),
+        portfolioAverageBalanceFactory(6, 90),
+        portfolioAverageBalanceFactory(5, 45),
         portfolioAverageBalanceFactory(2, 120),
       ];
       portfoliosRepository.findOne.mockResolvedValueOnce(adminUserPortfolio);
@@ -215,6 +217,8 @@ describe('PortfoliosService', () => {
         portfolioPerformanceFactory(2, 100),
         portfolioPerformanceFactory(3, 50),
         portfolioPerformanceFactory(4, 0),
+        portfolioPerformanceFactory(5, -25),
+        portfolioPerformanceFactory(6, 50),
       ];
 
       expect(performance).toEqual(expected);

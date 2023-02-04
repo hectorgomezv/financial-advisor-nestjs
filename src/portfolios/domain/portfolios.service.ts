@@ -98,7 +98,6 @@ export class PortfoliosService {
   }
 
   async getAverageBalances(user: User, uuid: string, range: string) {
-    // TODO: add 2/3/6 months and 2/3/5 years ranges
     const portfolio = await this.repository.findOne(uuid);
     if (!portfolio) {
       throw new NotFoundException('Portfolio not found');
@@ -115,7 +114,6 @@ export class PortfoliosService {
   }
 
   async getPerformance(user: User, uuid: string, range: string) {
-    // TODO: add 2/3/6 months and 2/3/5 years ranges
     const portfolio = await this.repository.findOne(uuid);
     if (!portfolio) {
       throw new NotFoundException('Portfolio not found');
