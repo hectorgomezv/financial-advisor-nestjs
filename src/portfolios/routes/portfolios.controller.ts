@@ -104,7 +104,7 @@ export class PortfoliosController {
     @Request() req,
     @Param('uuid') uuid: string,
     @Query('range') range?: string,
-  ) {
+  ): Promise<PortfolioPerformance[]> {
     return this.portfoliosService.getPerformance(req.user as User, uuid, range);
   }
 

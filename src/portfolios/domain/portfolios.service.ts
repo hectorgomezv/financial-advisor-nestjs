@@ -10,6 +10,7 @@ import { head, isNumber, sortBy } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthService } from '../../common/auth/auth-service';
 import { User } from '../../common/auth/entities/user.entity';
+import { IndicesService } from '../../indices/domain/indices.service';
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { AddPortfolioContributionDto } from './dto/add-portfolio-contribution.dto';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
@@ -34,6 +35,7 @@ export class PortfoliosService {
     private readonly authService: AuthService,
     private readonly portfolioStatesService: PortfolioStatesService,
     private readonly positionService: PositionsService,
+    private readonly indicesService: IndicesService,
   ) {}
 
   create(
@@ -113,7 +115,11 @@ export class PortfoliosService {
     return sortBy(balances, ['timestamp']);
   }
 
-  async getPerformance(user: User, uuid: string, range: string) {
+  async getPerformance(
+    user: User,
+    uuid: string,
+    range: string,
+  ): Promise<PortfolioPerformance[]> {
     const portfolio = await this.repository.findOne(uuid);
     if (!portfolio) {
       throw new NotFoundException('Portfolio not found');
@@ -128,12 +134,30 @@ export class PortfoliosService {
 
     const sortedBalances = sortBy(balances, ['timestamp']);
     const initialValue = head(sortedBalances);
+    const indices = await this.indicesService.findAll(user);
+
+    // TODO: refactor
+    const sp500Performance =
+      await this.indicesService.getIndexPerformanceForTimestamps(
+        indices[0],
+        initialValue.timestamp,
+        sortedBalances.map((i) => i.timestamp),
+      );
+
+    const nasdaqPerformance =
+      await this.indicesService.getIndexPerformanceForTimestamps(
+        indices[1],
+        initialValue.timestamp,
+        sortedBalances.map((i) => i.timestamp),
+      );
 
     return sortedBalances.map(
       ({ timestamp, average }, idx) =>
         <PortfolioPerformance>{
           timestamp,
           value: idx === 0 ? 0 : (average * 100) / initialValue.average - 100,
+          sp500Performance: sp500Performance[idx],
+          nasdaqPerformance: nasdaqPerformance[idx],
         },
     );
   }

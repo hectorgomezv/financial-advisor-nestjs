@@ -1,6 +1,10 @@
 import { faker } from '@faker-js/faker';
+import { random, range } from 'lodash';
 import { AuthService } from '../../common/auth/auth-service';
 import { User, UserRole } from '../../common/auth/entities/user.entity';
+import { indexPerformanceFactory } from '../../indices/domain/entities/__tests__/index-performance.factory';
+import { indexFactory } from '../../indices/domain/entities/__tests__/index.factory';
+import { IndicesService } from '../../indices/domain/indices.service';
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { PortfolioDetailDto } from './dto/portfolio-detail.dto';
@@ -43,6 +47,11 @@ describe('PortfoliosService', () => {
     updatePortfolioState: jest.fn(),
   } as unknown as PositionsService);
 
+  const indicesService = jest.mocked({
+    findAll: jest.fn(),
+    getIndexPerformanceForTimestamps: jest.fn(),
+  } as unknown as IndicesService);
+
   const adminUser = <User>{
     id: faker.datatype.uuid(),
     email: faker.internet.email(),
@@ -60,6 +69,7 @@ describe('PortfoliosService', () => {
     new AuthService(),
     portfolioStatesService,
     positionsService,
+    indicesService,
   );
 
   describe('creation', () => {
@@ -205,6 +215,14 @@ describe('PortfoliosService', () => {
       portfolioStatesService.getAverageBalancesForRange.mockResolvedValueOnce(
         portfolioAverageBalances,
       );
+      const indices = [indexFactory(), indexFactory()];
+      const indexPerformance = range(random(5, 10)).map(() =>
+        indexPerformanceFactory(),
+      );
+      indicesService.findAll.mockResolvedValueOnce(indices);
+      indicesService.getIndexPerformanceForTimestamps.mockResolvedValue(
+        indexPerformance,
+      );
 
       const performance = await service.getPerformance(
         adminUser,
@@ -213,12 +231,12 @@ describe('PortfoliosService', () => {
       );
 
       const expected = [
-        portfolioPerformanceFactory(1, 0),
-        portfolioPerformanceFactory(2, 100),
-        portfolioPerformanceFactory(3, 50),
-        portfolioPerformanceFactory(4, 0),
-        portfolioPerformanceFactory(5, -25),
-        portfolioPerformanceFactory(6, 50),
+        expect.objectContaining(portfolioPerformanceFactory(1, 0)),
+        expect.objectContaining(portfolioPerformanceFactory(2, 100)),
+        expect.objectContaining(portfolioPerformanceFactory(3, 50)),
+        expect.objectContaining(portfolioPerformanceFactory(4, 0)),
+        expect.objectContaining(portfolioPerformanceFactory(5, -25)),
+        expect.objectContaining(portfolioPerformanceFactory(6, 50)),
       ];
 
       expect(performance).toEqual(expected);

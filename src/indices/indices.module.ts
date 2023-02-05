@@ -23,6 +23,6 @@ import { IndicesController } from './routes/indices.controller';
     IndicesService,
     IndicesRepository,
   ],
-  exports: [],
+  exports: [IndicesService, IndicesRepository],
 })
 export class IndicesModule {}
