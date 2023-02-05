@@ -35,18 +35,13 @@ export class IndicesService {
         initialTimestamp / 1000,
       ),
       'timestamp',
+      // TODO: normalize timestamp units in yahoo client instead of here
     ).map((item) => ({ ...item, timestamp: item.timestamp * 1000 }));
 
-    // For each timestamp, get the previous and next timestamps into result.
-    // Calculate the average of the values of these previous and next items.
-    // Return this average mapped to the passed timestamp value.
     const averageValues = timestamps.map((ts) => {
       return {
         timestamp: ts,
-        avgValue:
-          (this.getPreviousDataPointValue(performanceItems, ts) +
-            this.getNextDataPointValue(performanceItems, ts)) /
-          2,
+        avgValue: this.getAvgPerformance(performanceItems, ts),
       };
     });
     const firstValue = first(averageValues).avgValue;
@@ -58,7 +53,7 @@ export class IndicesService {
     }));
   }
 
-  private getPreviousDataPointValue(
+  private getAvgPerformance(
     items: IndexPerformance[],
     timestamp: number,
   ): number {
@@ -66,18 +61,7 @@ export class IndicesService {
     if (items[0].timestamp >= timestamp) return items[0].value;
     if (last(items).timestamp <= timestamp) return last(items).value;
     const nextIndex = items.findIndex((i) => i.timestamp >= timestamp);
-    return items[nextIndex - 1].value;
-  }
-
-  private getNextDataPointValue(
-    items: IndexPerformance[],
-    timestamp: number,
-  ): number {
-    if (isEmpty(items)) return 0;
-    if (items[0].timestamp >= timestamp) return items[0].value;
-    if (last(items).timestamp <= timestamp) return last(items).value;
-    const nextIndex = items.findIndex((i) => i.timestamp >= timestamp);
-    return items[nextIndex].value;
+    return (items[nextIndex - 1].value + items[nextIndex].value) / 2;
   }
 
   async reloadAll(user: User) {
