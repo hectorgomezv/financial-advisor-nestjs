@@ -1,5 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
+import { first, isEmpty, last, sortBy } from 'lodash';
 import { AuthService } from '../../common/auth/auth-service';
 import { User } from '../../common/auth/entities/user.entity';
 import { IFinancialDataClient } from '../../companies/datasources/financial-data.client.interface';
@@ -28,28 +29,55 @@ export class IndicesService {
     initialTimestamp: number,
     timestamps: number[],
   ): Promise<IndexPerformance[]> {
-    const performanceItems: IndexPerformance[] =
+    const performanceItems = sortBy(
       await this.repository.getIndexPerformanceFrom(
         index.uuid,
-        initialTimestamp,
-      );
+        initialTimestamp / 1000,
+      ),
+      'timestamp',
+    ).map((item) => ({ ...item, timestamp: item.timestamp * 1000 }));
 
     // For each timestamp, get the previous and next timestamps into result.
     // Calculate the average of the values of these previous and next items.
     // Return this average mapped to the passed timestamp value.
-    const result = timestamps.map((ts) => {
-      const previousIndex = performanceItems.findIndex(
-        (i) => i.timestamp >= ts,
-      );
-      const previous = performanceItems[previousIndex];
-      const next = performanceItems[previousIndex + 1];
+    const averageValues = timestamps.map((ts) => {
       return {
         timestamp: ts,
-        value: (previous.value + next.value) / 2,
+        avgValue:
+          (this.getPreviousDataPointValue(performanceItems, ts) +
+            this.getNextDataPointValue(performanceItems, ts)) /
+          2,
       };
     });
+    const firstValue = first(averageValues).avgValue;
 
-    return result;
+    return averageValues.map(({ timestamp, avgValue }, idx) => ({
+      timestamp,
+      value:
+        idx === 0 || firstValue === 0 ? 0 : (avgValue * 100) / firstValue - 100,
+    }));
+  }
+
+  private getPreviousDataPointValue(
+    items: IndexPerformance[],
+    timestamp: number,
+  ): number {
+    if (isEmpty(items)) return 0;
+    if (items[0].timestamp >= timestamp) return items[0].value;
+    if (last(items).timestamp <= timestamp) return last(items).value;
+    const nextIndex = items.findIndex((i) => i.timestamp >= timestamp);
+    return items[nextIndex - 1].value;
+  }
+
+  private getNextDataPointValue(
+    items: IndexPerformance[],
+    timestamp: number,
+  ): number {
+    if (isEmpty(items)) return 0;
+    if (items[0].timestamp >= timestamp) return items[0].value;
+    if (last(items).timestamp <= timestamp) return last(items).value;
+    const nextIndex = items.findIndex((i) => i.timestamp >= timestamp);
+    return items[nextIndex].value;
   }
 
   async reloadAll(user: User) {

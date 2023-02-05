@@ -42,7 +42,7 @@ export class IndicesRepository {
       .match({ uuid })
       .unwind({ path: '$values' })
       .match({ 'values.timestamp': { $gte: timestamp } })
-      .replaceRoot({ newRoot: '$values' })
+      .replaceRoot('$values')
       .exec();
 
     return result as IndexPerformance[];

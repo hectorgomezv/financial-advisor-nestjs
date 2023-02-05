@@ -6,10 +6,11 @@ import {
 } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { isValid } from 'date-fns';
-import { head, isNumber, sortBy } from 'lodash';
+import { first, head, isNumber, sortBy } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthService } from '../../common/auth/auth-service';
 import { User } from '../../common/auth/entities/user.entity';
+import { Index } from '../../indices/domain/entities/index.entity';
 import { IndicesService } from '../../indices/domain/indices.service';
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { AddPortfolioContributionDto } from './dto/add-portfolio-contribution.dto';
@@ -17,6 +18,7 @@ import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { PortfolioDetailDto } from './dto/portfolio-detail.dto';
 import { UpdatePortfolioCashDto } from './dto/update-portfolio-cash.dto';
 import { ContributionsMetadata } from './entities/contributions-metadata';
+import { PortfolioAverageBalance } from './entities/portfolio-average-balance.entity';
 import { PortfolioContribution } from './entities/portfolio-contribution.entity';
 import { PortfolioPerformance } from './entities/portfolio-performance.entity';
 import { Portfolio } from './entities/portfolio.entity';
@@ -126,40 +128,47 @@ export class PortfoliosService {
     }
     this.checkOwner(user, portfolio);
 
-    const balances =
+    const balances = sortBy(
       await this.portfolioStatesService.getAverageBalancesForRange(
         uuid,
         timeRangeFromStr(range),
-      );
-
-    const sortedBalances = sortBy(balances, ['timestamp']);
-    const initialValue = head(sortedBalances);
+      ),
+      ['timestamp'],
+    );
     const indices = await this.indicesService.findAll(user);
+    const initialValue = first(balances);
+    const indicesPerformance = await Promise.all(
+      indices.map(async (index) => ({
+        name: index.name,
+        values: await this.getIndexPerformanceValues(index, balances),
+      })),
+    );
 
-    // TODO: refactor
-    const sp500Performance =
-      await this.indicesService.getIndexPerformanceForTimestamps(
-        indices[0],
-        initialValue.timestamp,
-        sortedBalances.map((i) => i.timestamp),
-      );
-
-    const nasdaqPerformance =
-      await this.indicesService.getIndexPerformanceForTimestamps(
-        indices[1],
-        initialValue.timestamp,
-        sortedBalances.map((i) => i.timestamp),
-      );
-
-    return sortedBalances.map(
+    return balances.map(
       ({ timestamp, average }, idx) =>
         <PortfolioPerformance>{
           timestamp,
           value: idx === 0 ? 0 : (average * 100) / initialValue.average - 100,
-          sp500Performance: sp500Performance[idx],
-          nasdaqPerformance: nasdaqPerformance[idx],
+          ...indicesPerformance.reduce(
+            (_, item) => ({ ..._, [item.name]: item.values[idx] }),
+            {},
+          ),
         },
     );
+  }
+
+  private async getIndexPerformanceValues(
+    index: Index,
+    balances: PortfolioAverageBalance[],
+  ): Promise<number[]> {
+    const initialValue = head(balances);
+    const indexPerformance =
+      await this.indicesService.getIndexPerformanceForTimestamps(
+        index,
+        initialValue.timestamp,
+        balances.map((i) => i.timestamp),
+      );
+    return indexPerformance.map((ip) => ip.value);
   }
 
   async updateCash(
