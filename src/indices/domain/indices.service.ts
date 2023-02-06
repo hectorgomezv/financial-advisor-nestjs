@@ -1,9 +1,12 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
+import { first, isEmpty, last, sortBy } from 'lodash';
 import { AuthService } from '../../common/auth/auth-service';
 import { User } from '../../common/auth/entities/user.entity';
+import { DataPoint } from '../../common/domain/entities/data-point.entity';
 import { IFinancialDataClient } from '../../companies/datasources/financial-data.client.interface';
 import { IndicesRepository } from '../repositories/indices.repository';
+import { Index } from './entities/index.entity';
 
 @Injectable()
 export class IndicesService {
@@ -19,6 +22,40 @@ export class IndicesService {
   findAll(user: User) {
     this.authService.checkAdmin(user);
     return this.repository.findAll();
+  }
+
+  async getIndexPerformanceForTimestamps(
+    index: Index,
+    initialTimestamp: number,
+    timestamps: number[],
+  ): Promise<DataPoint[]> {
+    const indexValues = sortBy(
+      await this.repository.getIndexValuesFrom(index.uuid, initialTimestamp),
+      'timestamp',
+    );
+
+    const averageValues = timestamps.map((ts) => {
+      return {
+        timestamp: ts,
+        avgValue: this.getAvgValue(indexValues, ts),
+      };
+    });
+    const firstValue = first(averageValues).avgValue;
+
+    return averageValues.map(({ timestamp, avgValue }, idx) => ({
+      timestamp,
+      value:
+        idx === 0 || firstValue === 0 ? 0 : (avgValue * 100) / firstValue - 100,
+    }));
+  }
+
+  private getAvgValue(dataPoints: DataPoint[], timestamp: number): number {
+    if (isEmpty(dataPoints)) return 0;
+    if (dataPoints[0].timestamp >= timestamp) return dataPoints[0].value;
+    if (last(dataPoints).timestamp <= timestamp) return last(dataPoints).value;
+
+    const nextIndex = dataPoints.findIndex((i) => i.timestamp >= timestamp);
+    return (dataPoints[nextIndex - 1].value + dataPoints[nextIndex].value) / 2;
   }
 
   async reloadAll(user: User) {

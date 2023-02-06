@@ -31,4 +31,19 @@ export class IndicesRepository {
   ): Promise<void> {
     await this.model.updateOne({ uuid }, { $set: { values: dataPoints } });
   }
+
+  async getIndexValuesFrom(
+    uuid: string,
+    timestamp: number,
+  ): Promise<DataPoint[]> {
+    const result = await this.model
+      .aggregate()
+      .match({ uuid })
+      .unwind({ path: '$values' })
+      .match({ 'values.timestamp': { $gte: timestamp } })
+      .replaceRoot('$values')
+      .exec();
+
+    return result as DataPoint[];
+  }
 }

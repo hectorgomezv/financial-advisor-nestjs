@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { DataPoint as DomainDataPoint } from '../../../common/domain/entities/data-point.entity';
+import { DataPoint as DomainDataPoint } from '../../domain/entities/data-point.entity';
 
 export class DataPoint implements DomainDataPoint {
   @ApiProperty()

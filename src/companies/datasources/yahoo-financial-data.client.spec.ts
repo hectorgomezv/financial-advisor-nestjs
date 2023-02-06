@@ -38,7 +38,7 @@ describe('YahooFinancialDataClient', () => {
         faker.random.word(),
       );
       res.forEach((dataPoint, idx) => {
-        expect(dataPoint.timestamp).toEqual(chart.timestamp[idx]);
+        expect(dataPoint.timestamp).toEqual(chart.timestamp[idx] * 1000);
         expect(dataPoint.value).toEqual(
           chart.indicators.quote.at(0).close.at(idx),
         );

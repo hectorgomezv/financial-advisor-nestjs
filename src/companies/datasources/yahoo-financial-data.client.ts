@@ -45,7 +45,7 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
     return quote.close.map(
       (value, idx) =>
         new DataPoint(
-          response.data.chart.result.at(0).timestamp.at(idx),
+          response.data.chart.result.at(0).timestamp.at(idx) * 1000,
           value,
         ),
     );
