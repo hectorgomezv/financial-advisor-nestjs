@@ -1,7 +1,6 @@
-import { faker } from '@faker-js/faker';
 import { random, range } from 'lodash';
 import { AuthService } from '../../common/auth/auth-service';
-import { User, UserRole } from '../../common/auth/entities/user.entity';
+import { userFactory } from '../../common/auth/entities/__tests__/user.factory';
 import { dataPointFactory } from '../../common/domain/entities/__tests__/data-point.factory';
 import { IFinancialDataClient } from '../../companies/datasources/financial-data.client.interface';
 import { IndicesRepository } from '../repositories/indices.repository';
@@ -28,13 +27,6 @@ describe('IndicesService', () => {
     mockedFinancialDataClient,
   );
 
-  // TODO: userFactory
-  const user = <User>{
-    id: faker.datatype.uuid(),
-    email: faker.internet.email(),
-    role: UserRole.ADMIN,
-  };
-
   beforeEach(() => jest.resetAllMocks());
 
   describe('retrieving indices', () => {
@@ -42,7 +34,7 @@ describe('IndicesService', () => {
       const indices = range(random(2, 5)).map(() => indexFactory());
       mockedIndicesRepository.findAll.mockResolvedValueOnce(indices);
 
-      const actual = await service.findAll(user);
+      const actual = await service.findAll(userFactory());
 
       expect(actual).toEqual(indices);
     });

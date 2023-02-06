@@ -3,9 +3,9 @@ import { Cron } from '@nestjs/schedule';
 import { first, isEmpty, last, sortBy } from 'lodash';
 import { AuthService } from '../../common/auth/auth-service';
 import { User } from '../../common/auth/entities/user.entity';
+import { DataPoint } from '../../common/domain/entities/data-point.entity';
 import { IFinancialDataClient } from '../../companies/datasources/financial-data.client.interface';
 import { IndicesRepository } from '../repositories/indices.repository';
-import { DataPoint } from '../routes/entities/data-point.entity';
 import { Index } from './entities/index.entity';
 
 @Injectable()

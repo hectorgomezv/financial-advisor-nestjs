@@ -27,7 +27,7 @@ import { OkArrayResponse } from '../../common/routes/entities/ok-array-response.
 import { OkResponse } from '../../common/routes/entities/ok-response.entity';
 import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
 import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
-import { DataPoint } from '../../indices/routes/entities/data-point.entity';
+import { DataPoint } from '../../common/routes/entities/data-point.entity';
 import { PortfolioDetailDto } from '../domain/dto/portfolio-detail.dto';
 import { UpdatePortfolioCashDto } from '../domain/dto/update-portfolio-cash.dto';
 import { PortfoliosService } from '../domain/portfolios.service';
