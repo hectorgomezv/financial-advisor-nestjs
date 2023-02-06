@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
 import { DataPoint } from '../../common/domain/entities/data-point.entity';
-import { IndexPerformance } from '../domain/entities/index-performance.entity';
 import { Index } from '../domain/entities/index.entity';
 import { IndexDocument, IndexModel } from './schemas/index.schema';
 
@@ -33,10 +32,10 @@ export class IndicesRepository {
     await this.model.updateOne({ uuid }, { $set: { values: dataPoints } });
   }
 
-  async getIndexPerformanceFrom(
+  async getIndexValuesFrom(
     uuid: string,
     timestamp: number,
-  ): Promise<IndexPerformance[]> {
+  ): Promise<DataPoint[]> {
     const result = await this.model
       .aggregate()
       .match({ uuid })
@@ -45,6 +44,6 @@ export class IndicesRepository {
       .replaceRoot('$values')
       .exec();
 
-    return result as IndexPerformance[];
+    return result as DataPoint[];
   }
 }

@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { random, range } from 'lodash';
 import { AuthService } from '../../common/auth/auth-service';
 import { User, UserRole } from '../../common/auth/entities/user.entity';
-import { indexPerformanceFactory } from '../../indices/domain/entities/__tests__/index-performance.factory';
+import { dataPointFactory } from '../../common/domain/entities/__tests__/data-point.factory';
 import { indexFactory } from '../../indices/domain/entities/__tests__/index.factory';
 import { IndicesService } from '../../indices/domain/indices.service';
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
@@ -15,7 +15,6 @@ import { ContributionsMetadata } from './entities/contributions-metadata';
 import { portfolioFactory } from './entities/__tests__/porfolio.factory';
 import { portfolioAverageBalanceFactory } from './entities/__tests__/portfolio-average-metric.factory';
 import { portfolioContributionFactory } from './entities/__tests__/portfolio-contribution.factory';
-import { portfolioPerformanceFactory } from './entities/__tests__/portfolio-performance.factory';
 import { portfolioStateFactory } from './entities/__tests__/portfolio-state.factory';
 import { PortfolioStatesService } from './portfolio-states.service';
 import { PortfoliosService } from './portfolios.service';
@@ -217,7 +216,7 @@ describe('PortfoliosService', () => {
       );
       const indices = [indexFactory(), indexFactory()];
       const indexPerformance = range(random(5, 10)).map(() =>
-        indexPerformanceFactory(),
+        dataPointFactory(),
       );
       indicesService.findAll.mockResolvedValueOnce(indices);
       indicesService.getIndexPerformanceForTimestamps.mockResolvedValue(
@@ -231,12 +230,12 @@ describe('PortfoliosService', () => {
       );
 
       const expected = [
-        expect.objectContaining(portfolioPerformanceFactory(1, 0)),
-        expect.objectContaining(portfolioPerformanceFactory(2, 100)),
-        expect.objectContaining(portfolioPerformanceFactory(3, 50)),
-        expect.objectContaining(portfolioPerformanceFactory(4, 0)),
-        expect.objectContaining(portfolioPerformanceFactory(5, -25)),
-        expect.objectContaining(portfolioPerformanceFactory(6, 50)),
+        expect.objectContaining(dataPointFactory(1, 0)),
+        expect.objectContaining(dataPointFactory(2, 100)),
+        expect.objectContaining(dataPointFactory(3, 50)),
+        expect.objectContaining(dataPointFactory(4, 0)),
+        expect.objectContaining(dataPointFactory(5, -25)),
+        expect.objectContaining(dataPointFactory(6, 50)),
       ];
 
       expect(performance).toEqual(expected);

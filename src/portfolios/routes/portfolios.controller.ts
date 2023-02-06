@@ -27,6 +27,7 @@ import { OkArrayResponse } from '../../common/routes/entities/ok-array-response.
 import { OkResponse } from '../../common/routes/entities/ok-response.entity';
 import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
 import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
+import { DataPoint } from '../../indices/routes/entities/data-point.entity';
 import { PortfolioDetailDto } from '../domain/dto/portfolio-detail.dto';
 import { UpdatePortfolioCashDto } from '../domain/dto/update-portfolio-cash.dto';
 import { PortfoliosService } from '../domain/portfolios.service';
@@ -36,7 +37,6 @@ import { ContributionsPage } from './dto/contributions-page.dto';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { UpsertPositionDto } from './dto/upsert-position.dto';
 import { PortfolioAverageMetric as PortfolioAverageBalance } from './entities/portfolio-average-balance.entity';
-import { PortfolioPerformance } from './entities/portfolio-performance.entity';
 import { Portfolio } from './entities/portfolio.entity';
 import { Position } from './entities/position.entity';
 
@@ -97,14 +97,14 @@ export class PortfoliosController {
     );
   }
   @Get(':uuid/metrics/performance')
-  @OkArrayResponse(PortfolioPerformance)
+  @OkArrayResponse(DataPoint)
   @ApiNotFoundResponse()
   @ApiQuery({ name: 'range', type: String, required: false })
-  getPortfolioPerformance(
+  getDataPoint(
     @Request() req,
     @Param('uuid') uuid: string,
     @Query('range') range?: string,
-  ): Promise<PortfolioPerformance[]> {
+  ): Promise<DataPoint[]> {
     return this.portfoliosService.getPerformance(req.user as User, uuid, range);
   }
 

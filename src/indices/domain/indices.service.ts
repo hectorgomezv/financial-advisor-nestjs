@@ -5,7 +5,7 @@ import { AuthService } from '../../common/auth/auth-service';
 import { User } from '../../common/auth/entities/user.entity';
 import { IFinancialDataClient } from '../../companies/datasources/financial-data.client.interface';
 import { IndicesRepository } from '../repositories/indices.repository';
-import { IndexPerformance } from './entities/index-performance.entity';
+import { DataPoint } from '../routes/entities/data-point.entity';
 import { Index } from './entities/index.entity';
 
 @Injectable()
@@ -28,20 +28,16 @@ export class IndicesService {
     index: Index,
     initialTimestamp: number,
     timestamps: number[],
-  ): Promise<IndexPerformance[]> {
-    const performanceItems = sortBy(
-      await this.repository.getIndexPerformanceFrom(
-        index.uuid,
-        initialTimestamp / 1000,
-      ),
+  ): Promise<DataPoint[]> {
+    const indexValues = sortBy(
+      await this.repository.getIndexValuesFrom(index.uuid, initialTimestamp),
       'timestamp',
-      // TODO: normalize timestamp units in yahoo client instead of here
-    ).map((item) => ({ ...item, timestamp: item.timestamp * 1000 }));
+    );
 
     const averageValues = timestamps.map((ts) => {
       return {
         timestamp: ts,
-        avgValue: this.getAvgPerformance(performanceItems, ts),
+        avgValue: this.getAvgValue(indexValues, ts),
       };
     });
     const firstValue = first(averageValues).avgValue;
@@ -53,15 +49,13 @@ export class IndicesService {
     }));
   }
 
-  private getAvgPerformance(
-    items: IndexPerformance[],
-    timestamp: number,
-  ): number {
-    if (isEmpty(items)) return 0;
-    if (items[0].timestamp >= timestamp) return items[0].value;
-    if (last(items).timestamp <= timestamp) return last(items).value;
-    const nextIndex = items.findIndex((i) => i.timestamp >= timestamp);
-    return (items[nextIndex - 1].value + items[nextIndex].value) / 2;
+  private getAvgValue(dataPoints: DataPoint[], timestamp: number): number {
+    if (isEmpty(dataPoints)) return 0;
+    if (dataPoints[0].timestamp >= timestamp) return dataPoints[0].value;
+    if (last(dataPoints).timestamp <= timestamp) return last(dataPoints).value;
+
+    const nextIndex = dataPoints.findIndex((i) => i.timestamp >= timestamp);
+    return (dataPoints[nextIndex - 1].value + dataPoints[nextIndex].value) / 2;
   }
 
   async reloadAll(user: User) {

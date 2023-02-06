@@ -5,14 +5,13 @@ import { User, UserRole } from '../../common/auth/entities/user.entity';
 import { dataPointFactory } from '../../common/domain/entities/__tests__/data-point.factory';
 import { IFinancialDataClient } from '../../companies/datasources/financial-data.client.interface';
 import { IndicesRepository } from '../repositories/indices.repository';
-import { indexPerformanceFactory } from './entities/__tests__/index-performance.factory';
 import { indexFactory } from './entities/__tests__/index.factory';
 import { IndicesService } from './indices.service';
 
 describe('IndicesService', () => {
   const mockedIndicesRepository = jest.mocked({
     findAll: jest.fn(),
-    getIndexPerformanceFrom: jest.fn(),
+    getIndexValuesFrom: jest.fn(),
   } as unknown as IndicesRepository);
 
   const mockedAuthService = jest.mocked({
@@ -59,7 +58,7 @@ describe('IndicesService', () => {
         dataPointFactory(39, 150),
       ];
       const index = indexFactory(null, null, null, dataPoints);
-      mockedIndicesRepository.getIndexPerformanceFrom.mockResolvedValueOnce(
+      mockedIndicesRepository.getIndexValuesFrom.mockResolvedValueOnce(
         dataPoints,
       );
 
@@ -70,16 +69,16 @@ describe('IndicesService', () => {
       );
 
       const expected = [
-        indexPerformanceFactory(0, 0),
-        indexPerformanceFactory(5, 0),
-        indexPerformanceFactory(10, 0),
-        indexPerformanceFactory(15, 15),
-        indexPerformanceFactory(20, 15),
-        indexPerformanceFactory(25, 20),
-        indexPerformanceFactory(30, -2.5),
-        indexPerformanceFactory(35, 17.5),
-        indexPerformanceFactory(40, 50),
-        indexPerformanceFactory(45, 50),
+        dataPointFactory(0, 0),
+        dataPointFactory(5, 0),
+        dataPointFactory(10, 0),
+        dataPointFactory(15, 15),
+        dataPointFactory(20, 15),
+        dataPointFactory(25, 20),
+        dataPointFactory(30, -2.5),
+        dataPointFactory(35, 17.5),
+        dataPointFactory(40, 50),
+        dataPointFactory(45, 50),
       ];
 
       expect(actual).toEqual(expected);

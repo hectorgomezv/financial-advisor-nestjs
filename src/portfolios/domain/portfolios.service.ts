@@ -10,6 +10,7 @@ import { first, head, isNumber, sortBy } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthService } from '../../common/auth/auth-service';
 import { User } from '../../common/auth/entities/user.entity';
+import { DataPoint } from '../../common/domain/entities/data-point.entity';
 import { Index } from '../../indices/domain/entities/index.entity';
 import { IndicesService } from '../../indices/domain/indices.service';
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
@@ -20,7 +21,6 @@ import { UpdatePortfolioCashDto } from './dto/update-portfolio-cash.dto';
 import { ContributionsMetadata } from './entities/contributions-metadata';
 import { PortfolioAverageBalance } from './entities/portfolio-average-balance.entity';
 import { PortfolioContribution } from './entities/portfolio-contribution.entity';
-import { PortfolioPerformance } from './entities/portfolio-performance.entity';
 import { Portfolio } from './entities/portfolio.entity';
 import { timeRangeFromStr } from './entities/time-range.enum';
 import { PortfolioStatesService } from './portfolio-states.service';
@@ -121,7 +121,7 @@ export class PortfoliosService {
     user: User,
     uuid: string,
     range: string,
-  ): Promise<PortfolioPerformance[]> {
+  ): Promise<DataPoint[]> {
     const portfolio = await this.repository.findOne(uuid);
     if (!portfolio) {
       throw new NotFoundException('Portfolio not found');
@@ -146,7 +146,7 @@ export class PortfoliosService {
 
     return balances.map(
       ({ timestamp, average }, idx) =>
-        <PortfolioPerformance>{
+        <DataPoint>{
           timestamp,
           value: idx === 0 ? 0 : (average * 100) / initialValue.average - 100,
           ...indicesPerformance.reduce(
