@@ -3,7 +3,7 @@ import { PortfolioContribution } from '../portfolio-contribution.entity';
 
 export function portfolioContributionFactory(
   uuid: string,
-  timestamp?: Date,
+  timestamp?: number,
   amountEUR?: number,
 ): PortfolioContribution {
   return <PortfolioContribution>{

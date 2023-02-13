@@ -6,4 +6,6 @@ export class PortfolioAverageMetric implements DomainPortfolioAverageBalance {
   timestamp: number;
   @ApiProperty()
   average: number;
+  @ApiProperty()
+  contributions: number;
 }

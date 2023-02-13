@@ -178,12 +178,22 @@ describe('PortfoliosService', () => {
       ).rejects.toThrow('Portfolio not found');
     });
 
-    it('should call repository to get portfolio metrics and sort result', async () => {
+    it('should call repository to get portfolio metrics, sum contributions, and sort result', async () => {
       const portfolioAverageBalances = [
         portfolioAverageBalanceFactory(2, 200),
         portfolioAverageBalanceFactory(1, 100),
+        portfolioAverageBalanceFactory(5, 300),
+        portfolioAverageBalanceFactory(6, 200),
+        portfolioAverageBalanceFactory(8, 400),
       ];
-      portfoliosRepository.findOne.mockResolvedValueOnce(adminUserPortfolio);
+      portfoliosRepository.findOne.mockResolvedValueOnce({
+        ...adminUserPortfolio,
+        contributions: [
+          portfolioContributionFactory(faker.datatype.uuid(), 2, 100),
+          portfolioContributionFactory(faker.datatype.uuid(), 4, 100),
+          portfolioContributionFactory(faker.datatype.uuid(), 7, 200),
+        ],
+      });
       portfolioStatesService.getAverageBalancesForRange.mockResolvedValueOnce(
         portfolioAverageBalances,
       );
@@ -195,8 +205,26 @@ describe('PortfoliosService', () => {
       );
 
       const expected = [
-        portfolioAverageBalances[1],
-        portfolioAverageBalances[0],
+        {
+          ...portfolioAverageBalances[1],
+          contributions: adminUserPortfolio.seed,
+        },
+        {
+          ...portfolioAverageBalances[0],
+          contributions: adminUserPortfolio.seed + 100,
+        },
+        {
+          ...portfolioAverageBalances[2],
+          contributions: adminUserPortfolio.seed + 200,
+        },
+        {
+          ...portfolioAverageBalances[3],
+          contributions: adminUserPortfolio.seed + 200,
+        },
+        {
+          ...portfolioAverageBalances[4],
+          contributions: adminUserPortfolio.seed + 400,
+        },
       ];
       expect(metrics).toEqual(expected);
     });
