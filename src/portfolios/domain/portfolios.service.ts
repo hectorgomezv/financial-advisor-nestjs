@@ -200,12 +200,7 @@ export class PortfoliosService {
     }
     this.checkOwner(user, portfolio);
 
-    // TODO: implement validation
     const { cash } = updatePortfolioCashDto;
-    if (!isNumber(cash)) {
-      throw new Error('Invalid cash value');
-    }
-
     const updated = { ...portfolio, cash };
     await this.repository.updateCash(portfolioUuid, cash);
     await this.positionService.updatePortfolioState(updated);
@@ -249,12 +244,7 @@ export class PortfoliosService {
     }
     this.checkOwner(user, portfolio);
 
-    // TODO: implement validation
     const { timestamp, amountEUR } = addPortfolioContributionDto;
-    if (!isNumber(amountEUR) || !isValid(new Date(timestamp))) {
-      throw new Error('Invalid contribution');
-    }
-
     await this.repository.addContribution(uuid, {
       uuid: uuidv4(),
       timestamp,
