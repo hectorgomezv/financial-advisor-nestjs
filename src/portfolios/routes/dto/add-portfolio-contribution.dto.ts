@@ -5,7 +5,7 @@ export class AddPortfolioContributionDto
   implements DomainAddPortfolioContributionDto
 {
   @ApiProperty()
-  timestamp: Date;
+  timestamp: number;
   @ApiProperty()
   amountEUR: number;
 }

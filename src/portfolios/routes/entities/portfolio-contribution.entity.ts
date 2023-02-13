@@ -5,7 +5,7 @@ export class PortfolioContribution implements DomainPortfolioContribution {
   @ApiProperty()
   uuid: string;
   @ApiProperty()
-  timestamp: Date;
+  timestamp: number;
   @ApiProperty()
   amountEUR: number;
 }

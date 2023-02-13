@@ -49,7 +49,7 @@ export class PortfolioStatesService {
   getAverageBalancesForRange(
     uuid: string,
     range: TimeRange,
-  ): Promise<PortfolioAverageBalance[]> {
+  ): Promise<Partial<PortfolioAverageBalance>[]> {
     return this.repository.getAverageBalancesForRange(uuid, range);
   }
 

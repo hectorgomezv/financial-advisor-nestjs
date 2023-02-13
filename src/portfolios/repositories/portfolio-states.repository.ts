@@ -43,7 +43,7 @@ export class PortfolioStatesRepository {
   async getAverageBalancesForRange(
     portfolioUuid: string,
     range: TimeRange,
-  ): Promise<PortfolioAverageBalance[]> {
+  ): Promise<Partial<PortfolioAverageBalance>[]> {
     const result = await this.model
       .aggregate()
       .match({
@@ -88,7 +88,6 @@ export class PortfolioStatesRepository {
 
   private getGroupingForRange(range: TimeRange) {
     switch (range) {
-      case TimeRange.Year:
       case TimeRange.TwoYears:
       case TimeRange.ThreeYears:
       case TimeRange.FiveYears:
@@ -100,6 +99,7 @@ export class PortfolioStatesRepository {
       case TimeRange.TwoMonths:
       case TimeRange.ThreeMonths:
       case TimeRange.SixMonths:
+      case TimeRange.Year:
         return {
           year: { $year: '$parsedDate' },
           day: { $dayOfYear: '$parsedDate' },
@@ -116,11 +116,10 @@ export class PortfolioStatesRepository {
   private mapToPortfolioAverageBalance(
     item: any,
     range: TimeRange,
-  ): PortfolioAverageBalance {
+  ): Partial<PortfolioAverageBalance> {
     const { _id, average } = item;
 
     switch (range) {
-      case TimeRange.Year:
       case TimeRange.TwoYears:
       case TimeRange.ThreeYears:
       case TimeRange.FiveYears:
@@ -128,11 +127,12 @@ export class PortfolioStatesRepository {
           timestamp: new Date(_id.year, 0, 1 + (_id.week - 1) * 7, 0).getTime(),
           average,
         };
+      case TimeRange.Week:
       case TimeRange.Month:
       case TimeRange.TwoMonths:
       case TimeRange.ThreeMonths:
       case TimeRange.SixMonths:
-      case TimeRange.Week:
+      case TimeRange.Year:
         return {
           timestamp: new Date(_id.year, 0, _id.day, _id.hour ?? 0).getTime(),
           average,

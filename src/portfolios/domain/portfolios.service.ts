@@ -114,7 +114,25 @@ export class PortfoliosService {
         timeRangeFromStr(range),
       );
 
-    return sortBy(balances, ['timestamp']);
+    return sortBy(balances, ['timestamp']).map((balance) => ({
+      ...balance,
+      contributions: this.getContributionsSumForTimestamp(
+        balance.timestamp,
+        portfolio,
+      ),
+    }));
+  }
+
+  private getContributionsSumForTimestamp(
+    timestamp: number,
+    portfolio: Portfolio,
+  ): number {
+    return (
+      portfolio.seed +
+      portfolio.contributions
+        .filter((c) => c.timestamp <= timestamp)
+        .reduce((acc, c) => acc + c.amountEUR, 0)
+    );
   }
 
   async getPerformance(
@@ -159,7 +177,7 @@ export class PortfoliosService {
 
   private async getIndexPerformanceValues(
     index: Index,
-    balances: PortfolioAverageBalance[],
+    balances: Partial<PortfolioAverageBalance>[],
   ): Promise<number[]> {
     const initialValue = head(balances);
     const indexPerformance =
@@ -232,9 +250,8 @@ export class PortfoliosService {
     this.checkOwner(user, portfolio);
 
     // TODO: implement validation
-    const { timestamp: inputTS, amountEUR } = addPortfolioContributionDto;
-    const timestamp = new Date(inputTS);
-    if (!isNumber(amountEUR) || !isValid(timestamp)) {
+    const { timestamp, amountEUR } = addPortfolioContributionDto;
+    if (!isNumber(amountEUR) || !isValid(new Date(timestamp))) {
       throw new Error('Invalid contribution');
     }
 
