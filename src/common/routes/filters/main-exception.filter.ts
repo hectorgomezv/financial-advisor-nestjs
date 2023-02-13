@@ -30,7 +30,7 @@ export class MainExceptionFilter implements ExceptionFilter {
       status: httpStatus,
       path: httpAdapter.getRequestUrl(ctx.getRequest()),
       data: <ErrorData>{
-        message: exception.message,
+        message: exception?.response?.message ?? exception.message,
       },
     };
 
