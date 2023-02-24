@@ -2,6 +2,7 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  OnApplicationBootstrap,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
@@ -26,7 +27,7 @@ import { PortfolioStatesService } from './portfolio-states.service';
 import { PositionsService } from './positions.service';
 
 @Injectable()
-export class PortfoliosService {
+export class PortfoliosService implements OnApplicationBootstrap {
   public static readonly DEFAULT_OFFSET = 0;
   public static readonly DEFAULT_LIMIT = 10;
   private readonly logger = new Logger(PortfoliosService.name);
@@ -276,6 +277,10 @@ export class PortfoliosService {
     if (portfolio.ownerId !== user.id) {
       throw new UnauthorizedException('Access denied');
     }
+  }
+
+  onApplicationBootstrap() {
+    return this.refreshAllStates();
   }
 
   @Cron('0 0 8 * * *', { timeZone: 'Europe/Madrid' })

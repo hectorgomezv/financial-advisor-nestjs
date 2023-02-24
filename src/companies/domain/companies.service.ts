@@ -3,6 +3,7 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  OnApplicationBootstrap,
 } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { sortBy } from 'lodash';
@@ -16,7 +17,7 @@ import { CompanyStatesService } from './company-states.service';
 import { Company, CompanyWithState } from './entities/company.entity';
 
 @Injectable()
-export class CompaniesService {
+export class CompaniesService implements OnApplicationBootstrap {
   private readonly logger = new Logger(CompaniesService.name);
 
   constructor(
@@ -100,6 +101,10 @@ export class CompaniesService {
     await this.repository.deleteOne(uuid);
 
     return company;
+  }
+
+  onApplicationBootstrap() {
+    return this.refreshAllStates();
   }
 
   @Cron('0 32 9 * * *', { timeZone: 'America/New_York' })
