@@ -2,9 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
+import { TimePeriod } from '../../common/domain/entities/time-period.entity';
 import { PortfolioAverageBalance } from '../domain/entities/portfolio-average-balance.entity';
 import { PortfolioState } from '../domain/entities/portfolio-state.entity';
-import { TimeRange } from '../domain/entities/time-range.enum';
+import {
+  getRangeStartTimestamp,
+  TimeRange,
+} from '../domain/entities/time-range.enum';
 import {
   PortfolioStateDocument,
   PortfolioStateModel,
@@ -48,7 +52,7 @@ export class PortfolioStatesRepository {
       .aggregate()
       .match({
         portfolioUuid,
-        timestamp: { $gte: this.getRangeStartTimestamp(range) },
+        timestamp: { $gte: getRangeStartTimestamp(range) },
       })
       .addFields({ parsedDate: { $toDate: '$timestamp' } })
       .group({
@@ -61,29 +65,21 @@ export class PortfolioStatesRepository {
     return result.map((i) => this.mapToPortfolioAverageBalance(i, range));
   }
 
-  private getRangeStartTimestamp(range: TimeRange) {
-    const oneDayInMs = 24 * 60 * 60 * 1000;
+  async getPortfolioStatesInPeriod(
+    portfolioUuid: string,
+    period: TimePeriod,
+  ): Promise<Partial<PortfolioState>[]> {
+    const result = await this.model
+      .find({
+        portfolioUuid,
+        timestamp: { $gte: new Date(period.start), $lt: new Date(period.end) },
+      })
+      .sort({ timestamp: 1 })
+      .lean();
 
-    switch (range) {
-      case TimeRange.Year:
-        return new Date(Date.now() - 365 * oneDayInMs);
-      case TimeRange.TwoYears:
-        return new Date(Date.now() - 365 * 2 * oneDayInMs);
-      case TimeRange.ThreeYears:
-        return new Date(Date.now() - 365 * 3 * oneDayInMs);
-      case TimeRange.FiveYears:
-        return new Date(Date.now() - 365 * 5 * oneDayInMs);
-      case TimeRange.Month:
-        return new Date(Date.now() - 30 * oneDayInMs);
-      case TimeRange.TwoMonths:
-        return new Date(Date.now() - 60 * oneDayInMs);
-      case TimeRange.ThreeMonths:
-        return new Date(Date.now() - 90 * oneDayInMs);
-      case TimeRange.SixMonths:
-        return new Date(Date.now() - 180 * oneDayInMs);
-      case TimeRange.Week:
-        return new Date(Date.now() - 7 * oneDayInMs);
-    }
+    return plainToInstance(PortfolioState, result, {
+      excludePrefixes: ['_', '__'],
+    });
   }
 
   private getGroupingForRange(range: TimeRange) {

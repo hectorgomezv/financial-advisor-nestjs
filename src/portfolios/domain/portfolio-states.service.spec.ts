@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { CurrencyExchangeClient } from '../datasources/currency-exchange.client';
 import { PortfolioStatesRepository } from '../repositories/portfolio-states.repository';
 import { TimeRange } from './entities/time-range.enum';
-import { portfolioFactory } from './entities/__tests__/porfolio.factory';
+import { portfolioFactory } from './entities/__tests__/portfolio.factory';
 import { positionFactory } from './entities/__tests__/position.factory';
 import { PortfolioStatesService } from './portfolio-states.service';
 

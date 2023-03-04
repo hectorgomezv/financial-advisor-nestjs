@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
+import { TimePeriod } from '../../common/domain/entities/time-period.entity';
 import { CurrencyExchangeClient } from '../datasources/currency-exchange.client';
 import { PortfolioStatesRepository } from '../repositories/portfolio-states.repository';
 import { PortfolioAverageBalance } from './entities/portfolio-average-balance.entity';
@@ -32,7 +33,7 @@ export class PortfolioStatesService {
 
     return this.repository.create(<PortfolioState>{
       uuid: uuidv4(),
-      timestamp: Date.now(),
+      timestamp: new Date(),
       portfolioUuid: portfolio.uuid,
       isValid,
       sumWeights,
@@ -47,10 +48,17 @@ export class PortfolioStatesService {
   }
 
   getAverageBalancesForRange(
-    uuid: string,
+    portfolioUuid: string,
     range: TimeRange,
   ): Promise<Partial<PortfolioAverageBalance>[]> {
-    return this.repository.getAverageBalancesForRange(uuid, range);
+    return this.repository.getAverageBalancesForRange(portfolioUuid, range);
+  }
+
+  getPortfolioStatesInPeriod(
+    portfolioUuid: string,
+    period: TimePeriod,
+  ): Promise<Partial<PortfolioState>[]> {
+    return this.repository.getPortfolioStatesInPeriod(portfolioUuid, period);
   }
 
   deleteByPortfolioUuid(portfolioUuid: string): Promise<void> {

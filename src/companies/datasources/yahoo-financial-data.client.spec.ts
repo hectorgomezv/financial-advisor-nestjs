@@ -37,10 +37,10 @@ describe('YahooFinancialDataClient', () => {
       const res: DataPoint[] = await client.getChartDataPoints(
         faker.random.word(),
       );
-      res.forEach((dataPoint, idx) => {
-        expect(dataPoint.timestamp).toEqual(chart.timestamp[idx] * 1000);
+      res.forEach((dataPoint, n) => {
+        expect(dataPoint.timestamp).toEqual(chart.timestamp[n] * 1000);
         expect(dataPoint.value).toEqual(
-          chart.indicators.quote.at(0).close.at(idx),
+          chart.indicators.quote.at(0).close.at(n),
         );
       });
     });

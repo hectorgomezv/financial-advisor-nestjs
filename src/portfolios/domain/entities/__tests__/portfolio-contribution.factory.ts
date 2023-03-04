@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { PortfolioContribution } from '../portfolio-contribution.entity';
 
 export function portfolioContributionFactory(
-  uuid: string,
+  uuid?: string,
   timestamp?: number,
   amountEUR?: number,
 ): PortfolioContribution {
