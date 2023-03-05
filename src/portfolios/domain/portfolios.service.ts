@@ -6,11 +6,13 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { first, head, sortBy } from 'lodash';
+import { isAfter, isBefore } from 'date-fns';
+import { first, head, last, orderBy, sortBy } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthService } from '../../common/auth/auth-service';
 import { User } from '../../common/auth/entities/user.entity';
 import { DataPoint } from '../../common/domain/entities/data-point.entity';
+import { TimePeriod } from '../../common/domain/entities/time-period.entity';
 import { Index } from '../../indices/domain/entities/index.entity';
 import { IndicesService } from '../../indices/domain/indices.service';
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
@@ -21,6 +23,7 @@ import { UpdatePortfolioCashDto } from './dto/update-portfolio-cash.dto';
 import { ContributionsMetadata } from './entities/contributions-metadata';
 import { PortfolioAverageBalance } from './entities/portfolio-average-balance.entity';
 import { PortfolioContribution } from './entities/portfolio-contribution.entity';
+import { PortfolioState } from './entities/portfolio-state.entity';
 import { Portfolio } from './entities/portfolio.entity';
 import { timeRangeFromStr } from './entities/time-range.enum';
 import { PortfolioStatesService } from './portfolio-states.service';
@@ -135,6 +138,9 @@ export class PortfoliosService implements OnApplicationBootstrap {
     );
   }
 
+  /**
+   * @deprecated
+   */
   async getPerformance(
     user: User,
     uuid: string,
@@ -163,18 +169,100 @@ export class PortfoliosService implements OnApplicationBootstrap {
     );
 
     return balances.map(
-      ({ timestamp, average }, idx) =>
+      ({ timestamp, average }, n) =>
         <DataPoint>{
           timestamp,
-          value: idx === 0 ? 0 : (average * 100) / initialValue.average - 100,
+          value: n === 0 ? 0 : (average * 100) / initialValue.average - 100,
           ...indicesPerformance.reduce(
-            (_, item) => ({ ..._, [item.name]: item.values[idx] }),
+            (_, item) => ({ ..._, [item.name]: item.values[n] }),
             {},
           ),
         },
     );
   }
 
+  async getReturnRates(
+    user: User,
+    uuid: string,
+    period: TimePeriod,
+  ): Promise<DataPoint[]> {
+    const portfolio = await this.repository.findOne(uuid);
+    if (!portfolio) {
+      throw new NotFoundException('Portfolio not found');
+    }
+    this.checkOwner(user, portfolio);
+
+    const portfolioStates =
+      await this.portfolioStatesService.getPortfolioStatesInPeriod(
+        uuid,
+        period,
+      );
+
+    const dates = TimePeriod.dividePeriod(period);
+    const ROICs = await Promise.all(
+      dates.map(async (date, n) => {
+        const next = dates?.[n + 1] ?? last(dates);
+        const previous = dates?.[n - 1] ?? head(dates);
+        const initialValue = this.getBalanceForDate(portfolioStates, date);
+        const endValue = this.getBalanceForDate(portfolioStates, next);
+        const cashFlow = this.getSumContributionsIn(portfolio, previous, date);
+        return new DataPoint(
+          date.getTime(),
+          (endValue - (initialValue + cashFlow)) / (initialValue + cashFlow),
+        );
+      }),
+    );
+
+    const indices = await this.indicesService.findAll(user);
+    const indicesReturns = await Promise.all(
+      indices.map(async (index) => ({
+        name: index.name,
+        values: await this.getIndexReturnsValues(
+          index,
+          ROICs.map((i) => i.timestamp),
+        ),
+      })),
+    );
+
+    return ROICs.slice(1).map(
+      ({ timestamp }, n) =>
+        <DataPoint>{
+          timestamp,
+          value:
+            ROICs.slice(0, n + 1).reduce((acc, i) => acc * (1 + i.value), 1) -
+            1,
+          ...indicesReturns.reduce(
+            (_, item) => ({ ..._, [item.name]: item.values[n] }),
+            {},
+          ),
+        },
+    );
+  }
+
+  private getBalanceForDate(
+    states: Partial<PortfolioState>[],
+    date: Date,
+  ): number {
+    const targetState = orderBy(states, 'timestamp', 'desc').find((s) =>
+      isBefore(s.timestamp, date),
+    );
+
+    return targetState?.totalValueEUR ?? states[0].totalValueEUR ?? 0;
+  }
+
+  private getSumContributionsIn(
+    portfolio: Portfolio,
+    start: Date,
+    end: Date,
+  ): number {
+    return portfolio.contributions
+      .filter((c) => isAfter(c.timestamp, start) && isBefore(c.timestamp, end))
+      .reduce((acc, c) => acc + c.amountEUR, 0);
+  }
+
+  /**
+   * @deprecated
+   */
   private async getIndexPerformanceValues(
     index: Index,
     balances: Partial<PortfolioAverageBalance>[],
@@ -187,6 +275,19 @@ export class PortfoliosService implements OnApplicationBootstrap {
         balances.map((i) => i.timestamp),
       );
     return indexPerformance.map((ip) => ip.value);
+  }
+
+  private async getIndexReturnsValues(
+    index: Index,
+    timestamps: number[],
+  ): Promise<number[]> {
+    const indexReturns =
+      await this.indicesService.getIndexPerformanceForTimestamps(
+        index,
+        head(timestamps),
+        timestamps,
+      );
+    return indexReturns.map((i) => i.value);
   }
 
   async updateCash(

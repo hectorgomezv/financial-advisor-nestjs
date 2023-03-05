@@ -1,6 +1,6 @@
 export class PortfolioState {
   uuid: string;
-  timestamp: number;
+  timestamp: Date;
   portfolioUuid: string;
   isValid: boolean;
   sumWeights: number;

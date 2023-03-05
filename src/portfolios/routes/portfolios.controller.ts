@@ -22,6 +22,7 @@ import {
 } from '@nestjs/swagger';
 import { User } from '../../common/auth/entities/user.entity';
 import { JwtAuthGuard } from '../../common/auth/jwt-auth.guard';
+import { TimePeriod } from '../../common/domain/entities/time-period.entity';
 import { CreatedResponse } from '../../common/routes/entities/created-response.entity';
 import { DataPoint } from '../../common/routes/entities/data-point.entity';
 import { OkArrayResponse } from '../../common/routes/entities/ok-array-response.entity';
@@ -29,6 +30,10 @@ import { OkResponse } from '../../common/routes/entities/ok-response.entity';
 import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
 import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
 import { PortfolioDetailDto } from '../domain/dto/portfolio-detail.dto';
+import {
+  getRangeStartTimestamp,
+  timeRangeFromStr,
+} from '../domain/entities/time-range.enum';
 import { PortfoliosService } from '../domain/portfolios.service';
 import { PositionsService } from '../domain/positions.service';
 import { AddPortfolioContributionDto } from './dto/add-portfolio-contribution.dto';
@@ -100,12 +105,31 @@ export class PortfoliosController {
   @OkArrayResponse(DataPoint)
   @ApiNotFoundResponse()
   @ApiQuery({ name: 'range', type: String, required: false })
-  getDataPoint(
+  getPerformance(
     @Request() req,
     @Param('uuid') uuid: string,
     @Query('range') range?: string,
   ): Promise<DataPoint[]> {
     return this.portfoliosService.getPerformance(req.user as User, uuid, range);
+  }
+
+  @Get(':uuid/metrics/performance/returns')
+  @OkArrayResponse(DataPoint)
+  @ApiNotFoundResponse()
+  @ApiQuery({ name: 'range', type: String, required: false })
+  getReturnRates(
+    @Request() req,
+    @Param('uuid') uuid: string,
+    @Query('range') range?: string,
+  ): Promise<DataPoint[]> {
+    return this.portfoliosService.getReturnRates(
+      req.user as User,
+      uuid,
+      TimePeriod.from(
+        getRangeStartTimestamp(timeRangeFromStr(range)),
+        new Date(),
+      ),
+    );
   }
 
   @Post(':uuid/positions')

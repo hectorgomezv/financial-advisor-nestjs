@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 import { random, range } from 'lodash';
 import { AuthService } from '../../common/auth/auth-service';
 import { User, UserRole } from '../../common/auth/entities/user.entity';
+import { TimePeriod } from '../../common/domain/entities/time-period.entity';
 import { dataPointFactory } from '../../common/domain/entities/__tests__/data-point.factory';
 import { indexFactory } from '../../indices/domain/entities/__tests__/index.factory';
 import { IndicesService } from '../../indices/domain/indices.service';
@@ -12,10 +13,11 @@ import { addPortfolioContributionDtoFactory } from './dto/test/add-portfolio-con
 import { positionDetailDtoFactory } from './dto/test/position-detail-dto.factory';
 import { updatePortfolioCashDtoFactory } from './dto/test/update-portfolio-cash.dto.factory';
 import { ContributionsMetadata } from './entities/contributions-metadata';
-import { portfolioFactory } from './entities/__tests__/porfolio.factory';
+import { Portfolio } from './entities/portfolio.entity';
 import { portfolioAverageBalanceFactory } from './entities/__tests__/portfolio-average-metric.factory';
 import { portfolioContributionFactory } from './entities/__tests__/portfolio-contribution.factory';
 import { portfolioStateFactory } from './entities/__tests__/portfolio-state.factory';
+import { portfolioFactory } from './entities/__tests__/portfolio.factory';
 import { PortfolioStatesService } from './portfolio-states.service';
 import { PortfoliosService } from './portfolios.service';
 import { PositionsService } from './positions.service';
@@ -38,6 +40,7 @@ describe('PortfoliosService', () => {
     getLastByPortfolioUuid: jest.fn(),
     deleteByPortfolioUuid: jest.fn(),
     getAverageBalancesForRange: jest.fn(),
+    getPortfolioStatesInPeriod: jest.fn(),
   } as unknown as PortfolioStatesService);
 
   const positionsService = jest.mocked({
@@ -318,6 +321,273 @@ describe('PortfoliosService', () => {
 
       expect(actual).toEqual(contributionsMetadata);
     });
+
+    it('should get return rates properly with no contributions on monthly intervals', async () => {
+      const portfolio: Portfolio = {
+        ...portfolioFactory(),
+        ownerId: adminUser.id,
+        contributions: [],
+      };
+
+      const portfolioStates = [
+        10000, 10100, 10200, 10300, 10400, 10500, 10400, 10300, 10200, 10000,
+        100000, 50000,
+      ].map((value, n) => ({
+        ...portfolioStateFactory(),
+        timestamp: new Date(2022, n, 1),
+        totalValueEUR: value,
+      }));
+
+      indicesService.findAll.mockResolvedValueOnce([
+        indexFactory(),
+        indexFactory(),
+        indexFactory(),
+      ]);
+      portfoliosRepository.findOne.mockResolvedValueOnce(portfolio);
+      portfolioStatesService.getPortfolioStatesInPeriod.mockResolvedValueOnce(
+        portfolioStates,
+      );
+
+      const expected = expect.arrayContaining([
+        expect.objectContaining({
+          timestamp: new Date(2022, 1, 1).getTime(),
+          value: 0,
+        }),
+        expect.objectContaining({
+          timestamp: new Date(2022, 2, 1).getTime(),
+          value: 0.010000000000000009,
+        }),
+        expect.objectContaining({
+          timestamp: new Date(2022, 3, 1).getTime(),
+          value: 0.020000000000000018,
+        }),
+        expect.objectContaining({
+          timestamp: new Date(2022, 4, 1).getTime(),
+          value: 0.030000000000000027,
+        }),
+        expect.objectContaining({
+          timestamp: new Date(2022, 5, 1).getTime(),
+          value: 0.040000000000000036,
+        }),
+        expect.objectContaining({
+          timestamp: new Date(2022, 6, 1).getTime(),
+          value: 0.050000000000000044,
+        }),
+        expect.objectContaining({
+          timestamp: new Date(2022, 7, 1).getTime(),
+          value: 0.040000000000000036,
+        }),
+        expect.objectContaining({
+          timestamp: new Date(2022, 8, 1).getTime(),
+          value: 0.030000000000000027,
+        }),
+        expect.objectContaining({
+          timestamp: new Date(2022, 9, 1).getTime(),
+          value: 0.020000000000000018,
+        }),
+        expect.objectContaining({
+          timestamp: new Date(2022, 10, 1).getTime(),
+          value: 0,
+        }),
+        expect.objectContaining({
+          timestamp: new Date(2022, 11, 1).getTime(),
+          value: 9,
+        }),
+        expect.objectContaining({
+          timestamp: new Date(2023, 0, 1).getTime(),
+          value: 4,
+        }),
+      ]);
+
+      const actual = await service.getReturnRates(
+        adminUser,
+        portfolio.uuid,
+        TimePeriod.from(new Date(2022, 0, 1), new Date(2023, 0, 5)),
+      );
+
+      expect(actual).toEqual(expected);
+    });
+  });
+
+  it('should get return rates properly with no contributions on weekly intervals', async () => {
+    const portfolio: Portfolio = {
+      ...portfolioFactory(),
+      ownerId: adminUser.id,
+      contributions: [],
+    };
+    const portfolioStates = [10000, 10200, 10200, 10300].map((value, n) => ({
+      ...portfolioStateFactory(),
+      timestamp: new Date(2022, n, 1),
+      totalValueEUR: value,
+    }));
+    const indices = [indexFactory(), indexFactory()];
+
+    portfoliosRepository.findOne.mockResolvedValueOnce(portfolio);
+    portfolioStatesService.getPortfolioStatesInPeriod.mockResolvedValueOnce(
+      portfolioStates,
+    );
+    indicesService.findAll.mockResolvedValueOnce(indices);
+
+    const expected = expect.arrayContaining([
+      expect.objectContaining({
+        timestamp: new Date(2022, 0, 2).getTime(),
+        value: 0,
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 0, 9).getTime(),
+        value: 0,
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 0, 16).getTime(),
+        value: 0,
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 0, 23).getTime(),
+        value: 0,
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 0, 30).getTime(),
+        value: 0,
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 1, 6).getTime(),
+        value: 0.020000000000000018,
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 1, 13).getTime(),
+        value: 0.020000000000000018,
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 1, 20).getTime(),
+        value: 0.020000000000000018,
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 1, 27).getTime(),
+        value: 0.020000000000000018,
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 2, 6).getTime(),
+        value: 0.020000000000000018,
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 2, 13).getTime(),
+        value: 0.020000000000000018,
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 2, 20).getTime(),
+        value: 0.020000000000000018,
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 2, 27).getTime(),
+        value: 0.020000000000000018,
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 3, 3).getTime(),
+        value: 0.030000000000000027,
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 3, 10).getTime(),
+        value: 0.030000000000000027,
+      }),
+    ]);
+
+    const actual = await service.getReturnRates(
+      adminUser,
+      portfolio.uuid,
+      TimePeriod.from(new Date(2022, 0, 1), new Date(2022, 3, 10)),
+    );
+
+    expect(actual).toEqual(expected);
+  });
+
+  it('should get return rates properly with contributions on monthly intervals', async () => {
+    const portfolio: Portfolio = {
+      ...portfolioFactory(),
+      ownerId: adminUser.id,
+      contributions: [
+        new Date(2022, 1, 5),
+        new Date(2022, 2, 5),
+        new Date(2022, 9, 5),
+      ].map((date) => ({
+        ...portfolioContributionFactory(),
+        timestamp: new Date(date).getTime(),
+        amountEUR: 100,
+      })),
+    };
+
+    const portfolioStates = [
+      10000, 10085, 10287, 10339, 10600, 10600, 10600, 10600, 10600, 10600,
+      10600, 10600,
+    ].map((value, n) => ({
+      ...portfolioStateFactory(),
+      timestamp: new Date(2022, n, 1),
+      totalValueEUR: value,
+    }));
+
+    indicesService.findAll.mockResolvedValueOnce([indexFactory()]);
+    portfoliosRepository.findOne.mockResolvedValueOnce(portfolio);
+    portfolioStatesService.getPortfolioStatesInPeriod.mockResolvedValueOnce(
+      portfolioStates,
+    );
+
+    const expected = expect.arrayContaining([
+      expect.objectContaining({
+        timestamp: new Date(2022, 1, 1).getTime(),
+        value: 0,
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 2, 1).getTime(),
+        value: 0.008499999999999952,
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 3, 1).getTime(),
+        value: 0.018599852724594967,
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 4, 1).getTime(),
+        value: 0.013892738742619315,
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 5, 1).getTime(),
+        value: 0.0394876710196117,
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 6, 1).getTime(),
+        value: 0.0394876710196117,
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 7, 1).getTime(),
+        value: 0.0394876710196117,
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 8, 1).getTime(),
+        value: 0.0394876710196117,
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 9, 1).getTime(),
+        value: 0.0394876710196117,
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 10, 1).getTime(),
+        value: 0.0394876710196117,
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 11, 1).getTime(),
+        value: 0.029772832972699392,
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2023, 0, 1).getTime(),
+        value: 0.029772832972699392,
+      }),
+    ]);
+
+    const actual = await service.getReturnRates(
+      adminUser,
+      portfolio.uuid,
+      TimePeriod.from(new Date(2022, 0, 1), new Date(2023, 0, 5)),
+    );
+
+    expect(actual).toEqual(expected);
   });
 
   describe('update', () => {

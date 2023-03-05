@@ -1,9 +1,9 @@
-import { PortfolioState } from '../portfolio-state.entity';
 import { faker } from '@faker-js/faker';
+import { PortfolioState } from '../portfolio-state.entity';
 
 export function portfolioStateFactory(
   uuid?: string,
-  timestamp?: number,
+  timestamp?: Date,
   portfolioUuid?: string,
   isValid?: boolean,
   sumWeights?: number,
@@ -13,7 +13,7 @@ export function portfolioStateFactory(
   return <PortfolioState>{
     uuid: uuid ?? faker.datatype.uuid(),
     portfolioUuid: portfolioUuid ?? faker.datatype.uuid(),
-    timestamp: timestamp ?? faker.datatype.number(),
+    timestamp: timestamp ?? faker.date.recent(),
     isValid: isValid ?? faker.datatype.boolean(),
     sumWeights: sumWeights ?? faker.datatype.number(),
     totalValueEUR: totalValueEUR ?? faker.datatype.number(),

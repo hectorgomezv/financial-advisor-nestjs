@@ -42,10 +42,10 @@ export class IndicesService {
     });
     const firstValue = first(averageValues).avgValue;
 
-    return averageValues.map(({ timestamp, avgValue }, idx) => ({
+    return averageValues.map(({ timestamp, avgValue }, n) => ({
       timestamp,
       value:
-        idx === 0 || firstValue === 0 ? 0 : (avgValue * 100) / firstValue - 100,
+        n === 0 || firstValue === 0 ? 0 : (avgValue * 100) / firstValue - 100,
     }));
   }
 
