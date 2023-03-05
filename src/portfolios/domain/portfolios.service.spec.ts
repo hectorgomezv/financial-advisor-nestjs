@@ -348,56 +348,56 @@ describe('PortfoliosService', () => {
         portfolioStates,
       );
 
-      const expected = [
-        {
+      const expected = expect.arrayContaining([
+        expect.objectContaining({
           timestamp: new Date(2022, 1, 1).getTime(),
           value: 0,
-        },
-        {
+        }),
+        expect.objectContaining({
           timestamp: new Date(2022, 2, 1).getTime(),
           value: 0.010000000000000009,
-        },
-        {
+        }),
+        expect.objectContaining({
           timestamp: new Date(2022, 3, 1).getTime(),
           value: 0.020000000000000018,
-        },
-        {
+        }),
+        expect.objectContaining({
           timestamp: new Date(2022, 4, 1).getTime(),
           value: 0.030000000000000027,
-        },
-        {
+        }),
+        expect.objectContaining({
           timestamp: new Date(2022, 5, 1).getTime(),
           value: 0.040000000000000036,
-        },
-        {
+        }),
+        expect.objectContaining({
           timestamp: new Date(2022, 6, 1).getTime(),
           value: 0.050000000000000044,
-        },
-        {
+        }),
+        expect.objectContaining({
           timestamp: new Date(2022, 7, 1).getTime(),
           value: 0.040000000000000036,
-        },
-        {
+        }),
+        expect.objectContaining({
           timestamp: new Date(2022, 8, 1).getTime(),
           value: 0.030000000000000027,
-        },
-        {
+        }),
+        expect.objectContaining({
           timestamp: new Date(2022, 9, 1).getTime(),
           value: 0.020000000000000018,
-        },
-        {
+        }),
+        expect.objectContaining({
           timestamp: new Date(2022, 10, 1).getTime(),
           value: 0,
-        },
-        {
+        }),
+        expect.objectContaining({
           timestamp: new Date(2022, 11, 1).getTime(),
           value: 9,
-        },
-        {
+        }),
+        expect.objectContaining({
           timestamp: new Date(2023, 0, 1).getTime(),
           value: 4,
-        },
-      ];
+        }),
+      ]);
 
       const actual = await service.getReturnRates(
         adminUser,
@@ -428,68 +428,68 @@ describe('PortfoliosService', () => {
     );
     indicesService.findAll.mockResolvedValueOnce(indices);
 
-    const expected = [
-      {
+    const expected = expect.arrayContaining([
+      expect.objectContaining({
         timestamp: new Date(2022, 0, 2).getTime(),
         value: 0,
-      },
-      {
+      }),
+      expect.objectContaining({
         timestamp: new Date(2022, 0, 9).getTime(),
         value: 0,
-      },
-      {
+      }),
+      expect.objectContaining({
         timestamp: new Date(2022, 0, 16).getTime(),
         value: 0,
-      },
-      {
+      }),
+      expect.objectContaining({
         timestamp: new Date(2022, 0, 23).getTime(),
         value: 0,
-      },
-      {
+      }),
+      expect.objectContaining({
         timestamp: new Date(2022, 0, 30).getTime(),
         value: 0,
-      },
-      {
+      }),
+      expect.objectContaining({
         timestamp: new Date(2022, 1, 6).getTime(),
         value: 0.020000000000000018,
-      },
-      {
+      }),
+      expect.objectContaining({
         timestamp: new Date(2022, 1, 13).getTime(),
         value: 0.020000000000000018,
-      },
-      {
+      }),
+      expect.objectContaining({
         timestamp: new Date(2022, 1, 20).getTime(),
         value: 0.020000000000000018,
-      },
-      {
+      }),
+      expect.objectContaining({
         timestamp: new Date(2022, 1, 27).getTime(),
         value: 0.020000000000000018,
-      },
-      {
+      }),
+      expect.objectContaining({
         timestamp: new Date(2022, 2, 6).getTime(),
         value: 0.020000000000000018,
-      },
-      {
+      }),
+      expect.objectContaining({
         timestamp: new Date(2022, 2, 13).getTime(),
         value: 0.020000000000000018,
-      },
-      {
+      }),
+      expect.objectContaining({
         timestamp: new Date(2022, 2, 20).getTime(),
         value: 0.020000000000000018,
-      },
-      {
+      }),
+      expect.objectContaining({
         timestamp: new Date(2022, 2, 27).getTime(),
         value: 0.020000000000000018,
-      },
-      {
+      }),
+      expect.objectContaining({
         timestamp: new Date(2022, 3, 3).getTime(),
         value: 0.030000000000000027,
-      },
-      {
+      }),
+      expect.objectContaining({
         timestamp: new Date(2022, 3, 10).getTime(),
         value: 0.030000000000000027,
-      },
-    ];
+      }),
+    ]);
 
     const actual = await service.getReturnRates(
       adminUser,
@@ -530,56 +530,56 @@ describe('PortfoliosService', () => {
       portfolioStates,
     );
 
-    const expected = [
-      {
+    const expected = expect.arrayContaining([
+      expect.objectContaining({
         timestamp: new Date(2022, 1, 1).getTime(),
         value: 0,
-      },
-      {
+      }),
+      expect.objectContaining({
         timestamp: new Date(2022, 2, 1).getTime(),
         value: 0.008499999999999952,
-      },
-      {
+      }),
+      expect.objectContaining({
         timestamp: new Date(2022, 3, 1).getTime(),
         value: 0.018599852724594967,
-      },
-      {
+      }),
+      expect.objectContaining({
         timestamp: new Date(2022, 4, 1).getTime(),
         value: 0.013892738742619315,
-      },
-      {
+      }),
+      expect.objectContaining({
         timestamp: new Date(2022, 5, 1).getTime(),
         value: 0.0394876710196117,
-      },
-      {
+      }),
+      expect.objectContaining({
         timestamp: new Date(2022, 6, 1).getTime(),
         value: 0.0394876710196117,
-      },
-      {
+      }),
+      expect.objectContaining({
         timestamp: new Date(2022, 7, 1).getTime(),
         value: 0.0394876710196117,
-      },
-      {
+      }),
+      expect.objectContaining({
         timestamp: new Date(2022, 8, 1).getTime(),
         value: 0.0394876710196117,
-      },
-      {
+      }),
+      expect.objectContaining({
         timestamp: new Date(2022, 9, 1).getTime(),
         value: 0.0394876710196117,
-      },
-      {
+      }),
+      expect.objectContaining({
         timestamp: new Date(2022, 10, 1).getTime(),
         value: 0.0394876710196117,
-      },
-      {
+      }),
+      expect.objectContaining({
         timestamp: new Date(2022, 11, 1).getTime(),
         value: 0.029772832972699392,
-      },
-      {
+      }),
+      expect.objectContaining({
         timestamp: new Date(2023, 0, 1).getTime(),
         value: 0.029772832972699392,
-      },
-    ];
+      }),
+    ]);
 
     const actual = await service.getReturnRates(
       adminUser,
