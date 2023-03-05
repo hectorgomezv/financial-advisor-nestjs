@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AxiosError } from 'axios';
+import { sample } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { DataPoint } from '../../common/domain/entities/data-point.entity';
 import { Chart, Quote } from '../domain/entities/chart.entity';
@@ -17,7 +18,7 @@ import { IFinancialDataClient } from './financial-data.client.interface';
 export class YahooFinancialDataClient implements IFinancialDataClient {
   private baseUrl: string;
   private defaultModules: string;
-  private providerApiToken: string;
+  private providerApiTokens: string[];
 
   constructor(
     private readonly configService: ConfigService,
@@ -25,8 +26,11 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
   ) {
     this.baseUrl = this.configService.get<string>('PROVIDER_BASE_URL');
     this.defaultModules = '?modules=summaryDetail,defaultKeyStatistics';
-    this.providerApiToken =
-      this.configService.get<string>('PROVIDER_API_TOKEN');
+    this.providerApiTokens = [
+      this.configService.get<string>('PROVIDER_API_TOKEN'),
+    ];
+    const altToken = this.configService.get<string>('PROVIDER_API_TOKEN_ALT');
+    if (altToken) this.providerApiTokens.push(altToken);
   }
 
   async getChartDataPoints(symbol: string): Promise<DataPoint[]> {
@@ -34,7 +38,7 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
     try {
       response = await this.httpService.axiosRef.get(
         `${this.baseUrl}/v8/finance/chart/${symbol}?range=5y&interval=1d`,
-        { headers: { 'x-api-key': this.providerApiToken } },
+        { headers: { 'x-api-key': sample(this.providerApiTokens) } },
       );
     } catch (err) {
       return this.mapYahooErrorResponse(err);
@@ -56,7 +60,7 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
     try {
       response = await this.httpService.axiosRef.get(
         `${this.baseUrl}/v11/finance/quoteSummary/${symbol}${this.defaultModules}`,
-        { headers: { 'x-api-key': this.providerApiToken } },
+        { headers: { 'x-api-key': sample(this.providerApiTokens) } },
       );
     } catch (err) {
       return this.mapYahooErrorResponse(err);
