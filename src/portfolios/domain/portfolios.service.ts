@@ -229,8 +229,9 @@ export class PortfoliosService implements OnApplicationBootstrap {
         <DataPoint>{
           timestamp,
           value:
-            ROICs.slice(0, n + 1).reduce((acc, i) => acc * (1 + i.value), 1) -
-            1,
+            (ROICs.slice(0, n + 1).reduce((acc, i) => acc * (1 + i.value), 1) -
+              1) *
+            100,
           ...indicesReturns.reduce(
             (_, item) => ({ ..._, [item.name]: item.values[n] }),
             {},

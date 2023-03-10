@@ -355,35 +355,35 @@ describe('PortfoliosService', () => {
         }),
         expect.objectContaining({
           timestamp: new Date(2022, 2, 1).getTime(),
-          value: 0.010000000000000009,
+          value: expect.closeTo(1),
         }),
         expect.objectContaining({
           timestamp: new Date(2022, 3, 1).getTime(),
-          value: 0.020000000000000018,
+          value: expect.closeTo(2),
         }),
         expect.objectContaining({
           timestamp: new Date(2022, 4, 1).getTime(),
-          value: 0.030000000000000027,
+          value: expect.closeTo(3),
         }),
         expect.objectContaining({
           timestamp: new Date(2022, 5, 1).getTime(),
-          value: 0.040000000000000036,
+          value: expect.closeTo(4),
         }),
         expect.objectContaining({
           timestamp: new Date(2022, 6, 1).getTime(),
-          value: 0.050000000000000044,
+          value: expect.closeTo(5),
         }),
         expect.objectContaining({
           timestamp: new Date(2022, 7, 1).getTime(),
-          value: 0.040000000000000036,
+          value: expect.closeTo(4),
         }),
         expect.objectContaining({
           timestamp: new Date(2022, 8, 1).getTime(),
-          value: 0.030000000000000027,
+          value: expect.closeTo(3),
         }),
         expect.objectContaining({
           timestamp: new Date(2022, 9, 1).getTime(),
-          value: 0.020000000000000018,
+          value: expect.closeTo(2),
         }),
         expect.objectContaining({
           timestamp: new Date(2022, 10, 1).getTime(),
@@ -391,11 +391,11 @@ describe('PortfoliosService', () => {
         }),
         expect.objectContaining({
           timestamp: new Date(2022, 11, 1).getTime(),
-          value: 9,
+          value: 900,
         }),
         expect.objectContaining({
           timestamp: new Date(2023, 0, 1).getTime(),
-          value: 4,
+          value: 400,
         }),
       ]);
 
@@ -451,43 +451,43 @@ describe('PortfoliosService', () => {
       }),
       expect.objectContaining({
         timestamp: new Date(2022, 1, 6).getTime(),
-        value: 0.020000000000000018,
+        value: expect.closeTo(2),
       }),
       expect.objectContaining({
         timestamp: new Date(2022, 1, 13).getTime(),
-        value: 0.020000000000000018,
+        value: expect.closeTo(2),
       }),
       expect.objectContaining({
         timestamp: new Date(2022, 1, 20).getTime(),
-        value: 0.020000000000000018,
+        value: expect.closeTo(2),
       }),
       expect.objectContaining({
         timestamp: new Date(2022, 1, 27).getTime(),
-        value: 0.020000000000000018,
+        value: expect.closeTo(2),
       }),
       expect.objectContaining({
         timestamp: new Date(2022, 2, 6).getTime(),
-        value: 0.020000000000000018,
+        value: expect.closeTo(2),
       }),
       expect.objectContaining({
         timestamp: new Date(2022, 2, 13).getTime(),
-        value: 0.020000000000000018,
+        value: expect.closeTo(2),
       }),
       expect.objectContaining({
         timestamp: new Date(2022, 2, 20).getTime(),
-        value: 0.020000000000000018,
+        value: expect.closeTo(2),
       }),
       expect.objectContaining({
         timestamp: new Date(2022, 2, 27).getTime(),
-        value: 0.020000000000000018,
+        value: expect.closeTo(2),
       }),
       expect.objectContaining({
         timestamp: new Date(2022, 3, 3).getTime(),
-        value: 0.030000000000000027,
+        value: expect.closeTo(3),
       }),
       expect.objectContaining({
         timestamp: new Date(2022, 3, 10).getTime(),
-        value: 0.030000000000000027,
+        value: expect.closeTo(3),
       }),
     ]);
 
@@ -537,47 +537,137 @@ describe('PortfoliosService', () => {
       }),
       expect.objectContaining({
         timestamp: new Date(2022, 2, 1).getTime(),
-        value: 0.008499999999999952,
+        value: expect.closeTo(0.85),
       }),
       expect.objectContaining({
         timestamp: new Date(2022, 3, 1).getTime(),
-        value: 0.018599852724594967,
+        value: expect.closeTo(1.86),
       }),
       expect.objectContaining({
         timestamp: new Date(2022, 4, 1).getTime(),
-        value: 0.013892738742619315,
+        value: expect.closeTo(1.39),
       }),
       expect.objectContaining({
         timestamp: new Date(2022, 5, 1).getTime(),
-        value: 0.0394876710196117,
+        value: expect.closeTo(3.95),
       }),
       expect.objectContaining({
         timestamp: new Date(2022, 6, 1).getTime(),
-        value: 0.0394876710196117,
+        value: expect.closeTo(3.95),
       }),
       expect.objectContaining({
         timestamp: new Date(2022, 7, 1).getTime(),
-        value: 0.0394876710196117,
+        value: expect.closeTo(3.95),
       }),
       expect.objectContaining({
         timestamp: new Date(2022, 8, 1).getTime(),
-        value: 0.0394876710196117,
+        value: expect.closeTo(3.95),
       }),
       expect.objectContaining({
         timestamp: new Date(2022, 9, 1).getTime(),
-        value: 0.0394876710196117,
+        value: expect.closeTo(3.95),
       }),
       expect.objectContaining({
         timestamp: new Date(2022, 10, 1).getTime(),
-        value: 0.0394876710196117,
+        value: expect.closeTo(3.95),
       }),
       expect.objectContaining({
         timestamp: new Date(2022, 11, 1).getTime(),
-        value: 0.029772832972699392,
+        value: expect.closeTo(2.98),
       }),
       expect.objectContaining({
         timestamp: new Date(2023, 0, 1).getTime(),
-        value: 0.029772832972699392,
+        value: expect.closeTo(2.98),
+      }),
+    ]);
+
+    const actual = await service.getReturnRates(
+      adminUser,
+      portfolio.uuid,
+      TimePeriod.from(new Date(2022, 0, 1), new Date(2023, 0, 5)),
+    );
+
+    expect(actual).toEqual(expected);
+  });
+
+  it('should get return rates properly with contributions on monthly intervals (2)', async () => {
+    const portfolio: Portfolio = {
+      ...portfolioFactory(),
+      ownerId: adminUser.id,
+      contributions: [
+        new Date(2022, 5, 5),
+        new Date(2022, 7, 5),
+        // new Date(2022, 9, 5),
+      ].map((date) => ({
+        ...portfolioContributionFactory(),
+        timestamp: new Date(date).getTime(),
+        amountEUR: 100,
+      })),
+    };
+
+    const portfolioStates = [
+      10000, 9000, 8000, 9000, 11000, 10000, 10000, 10000, 10000, 10000, 11000,
+      11000,
+    ].map((value, n) => ({
+      ...portfolioStateFactory(),
+      timestamp: new Date(2022, n, 2),
+      totalValueEUR: value,
+    }));
+
+    indicesService.findAll.mockResolvedValueOnce([indexFactory()]);
+    portfoliosRepository.findOne.mockResolvedValueOnce(portfolio);
+    portfolioStatesService.getPortfolioStatesInPeriod.mockResolvedValueOnce(
+      portfolioStates,
+    );
+
+    const expected = expect.arrayContaining([
+      expect.objectContaining({
+        timestamp: new Date(2022, 1, 1).getTime(),
+        value: 0,
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 2, 1).getTime(),
+        value: expect.closeTo(-10),
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 3, 1).getTime(),
+        value: expect.closeTo(-20),
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 4, 1).getTime(),
+        value: expect.closeTo(-10),
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 5, 1).getTime(),
+        value: expect.closeTo(10),
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 6, 1).getTime(),
+        value: expect.closeTo(0),
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 7, 1).getTime(),
+        value: expect.closeTo(-0.99),
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 8, 1).getTime(),
+        value: expect.closeTo(-0.99),
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 9, 1).getTime(),
+        value: expect.closeTo(-1.97),
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 10, 1).getTime(),
+        value: expect.closeTo(-1.97),
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2022, 11, 1).getTime(),
+        value: expect.closeTo(7.83),
+      }),
+      expect.objectContaining({
+        timestamp: new Date(2023, 0, 1).getTime(),
+        value: expect.closeTo(7.83),
       }),
     ]);
 
