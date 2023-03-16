@@ -1,11 +1,11 @@
-import { Portfolio } from '../portfolio.entity';
 import { faker } from '@faker-js/faker';
-import { Position } from '../position.entity';
-import { PortfolioState } from '../portfolio-state.entity';
-import { positionFactory } from './position.factory';
-import { portfolioStateFactory } from './portfolio-state.factory';
 import { PortfolioContribution } from '../portfolio-contribution.entity';
+import { PortfolioState } from '../portfolio-state.entity';
+import { Portfolio } from '../portfolio.entity';
+import { Position } from '../position.entity';
 import { portfolioContributionFactory } from './portfolio-contribution.factory';
+import { portfolioStateFactory } from './portfolio-state.factory';
+import { positionFactory } from './position.factory';
 
 export function portfolioFactory(
   uuid?: string,
@@ -13,7 +13,6 @@ export function portfolioFactory(
   ownerId?: string,
   created?: number,
   positions?: Position[],
-  seed?: number,
   cash?: number,
   contributions?: PortfolioContribution[],
   state?: PortfolioState,
@@ -25,7 +24,6 @@ export function portfolioFactory(
     ownerId: ownerId ?? faker.datatype.uuid(),
     created: created ?? faker.datatype.number(),
     positions: positions || [positionFactory(), positionFactory()],
-    seed: seed ?? Number(faker.finance.amount()),
     cash: cash ?? Number(faker.finance.amount()),
     contributions: contributions || [
       portfolioContributionFactory(portfolioUuid),

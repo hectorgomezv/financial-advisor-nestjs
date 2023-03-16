@@ -16,8 +16,6 @@ export class Portfolio implements DomainPortfolio {
   @ApiProperty()
   positions: Position[];
   @ApiProperty()
-  seed: number;
-  @ApiProperty()
   cash: number;
   @ApiProperty()
   contributions: PortfolioContribution[];

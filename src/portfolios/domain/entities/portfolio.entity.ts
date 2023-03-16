@@ -8,7 +8,6 @@ export class Portfolio {
   ownerId: string;
   created: number;
   positions: Position[];
-  seed: number;
   cash: number;
   contributions: PortfolioContribution[];
   state: PortfolioState;

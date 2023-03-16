@@ -54,7 +54,6 @@ describe('Portfolio contributions e2e tests', () => {
           data: expect.objectContaining({
             uuid: createdPortfolioUuid,
             name: createPortfolioDto.name,
-            seed: createPortfolioDto.seed,
             contributions: [],
           }),
         });

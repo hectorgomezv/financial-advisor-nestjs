@@ -20,9 +20,6 @@ export class PortfolioModel {
   created: number;
 
   @Prop({ required: true })
-  seed: number;
-
-  @Prop({ required: true })
   cash: number;
 
   @Prop({ required: true, schema: PortfolioContributionSchema })

@@ -53,8 +53,7 @@ describe('PortfolioStatesService', () => {
           roicEUR:
             totalValueEUR +
             portfolio.cash -
-            (portfolio.seed +
-              portfolio.contributions.reduce((sum, i) => sum + i.amountEUR, 0)),
+            portfolio.contributions.reduce((sum, i) => sum + i.amountEUR, 0),
         }),
       );
     });

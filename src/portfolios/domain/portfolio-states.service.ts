@@ -39,7 +39,7 @@ export class PortfolioStatesService {
       sumWeights,
       cash,
       totalValueEUR,
-      roicEUR: totalValueEUR + cash - (portfolio.seed + contributionsAmount),
+      roicEUR: totalValueEUR + cash - contributionsAmount,
     });
   }
 

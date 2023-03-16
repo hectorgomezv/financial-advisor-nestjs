@@ -5,7 +5,6 @@ export class PortfolioDetailDto {
   uuid: string;
   name: string;
   created: number;
-  seed: number;
   cash: number;
   positions: PositionDetailDto[];
   state: PortfolioState;
