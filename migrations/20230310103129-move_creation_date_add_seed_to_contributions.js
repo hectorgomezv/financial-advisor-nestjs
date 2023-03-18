@@ -6,7 +6,7 @@ module.exports = {
       {
         uuid: '3d78a8d8-3c49-4dc1-af81-b32863a5f60e',
       },
-      { $set: { created: new Date(2022, 11, 30).getTime() } },
+      { $set: { created: new Date(2019, 11, 31).getTime() } },
     );
 
     const portfolios = await db

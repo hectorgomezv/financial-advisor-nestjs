@@ -65,6 +65,9 @@ export class PortfolioStatesService {
     return this.repository.deleteByPortfolioUuid(portfolioUuid);
   }
 
+  // TODO: this assumes the value in pos.value is in USD. It's needed to extract
+  // the currency info from the provider and store it into positions/companyStates/companies
+  // and then here just convert the currency when needed based on that info.
   private async getTotalValueEUR(positions: Position[]) {
     const fx = await this.exchangeClient.getFx();
     const totalValueUSD = positions.reduce((acc, pos) => acc + pos.value, 0);
