@@ -7,7 +7,8 @@ import { LoggerModule } from 'nestjs-pino';
 import pino from 'pino';
 import { AboutModule } from './about/about.module';
 import { JwtStrategy } from './common/auth/jwt.strategy';
-import { CommonModule } from './common/common.nodule';
+import { CommonModule } from './common/common.module';
+import { MigrationsRunner } from './common/migrations/migrations-runner';
 import { CompaniesModule } from './companies/companies.module';
 import { HealthModule } from './health/health.module';
 import { IndicesModule } from './indices/indices.module';
@@ -26,7 +27,7 @@ const { NODE_ENV } = process.env;
         level: NODE_ENV === 'production' ? 'info' : 'debug',
         stream: pino.destination({
           dest: NODE_ENV === 'production' ? '/var/log/fa.log' : './fa.log',
-          minLength: 4096,
+          minLength: 512,
           sync: false,
         }),
       },
@@ -51,6 +52,6 @@ const { NODE_ENV } = process.env;
     MetricsModule,
     PortfoliosModule,
   ],
-  providers: [JwtService, JwtStrategy],
+  providers: [JwtService, JwtStrategy, MigrationsRunner],
 })
 export class AppModule {}
