@@ -104,7 +104,9 @@ export class CompaniesService implements OnApplicationBootstrap {
   }
 
   onApplicationBootstrap() {
-    return this.refreshAllStates();
+    if (process.env.NODE_ENV === 'production') {
+      return this.refreshAllStates();
+    }
   }
 
   @Cron('0 32 9 * * *', { timeZone: 'America/New_York' })
