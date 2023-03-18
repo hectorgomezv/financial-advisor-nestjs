@@ -53,7 +53,6 @@ export class PortfoliosService implements OnApplicationBootstrap {
       ownerId: user.id,
       created: Date.now(),
       positions: [],
-      seed: createPortfolioDto.seed,
       cash: 0,
       contributions: [],
       state: null,
@@ -83,7 +82,6 @@ export class PortfoliosService implements OnApplicationBootstrap {
       uuid,
       name: portfolio.name,
       created: portfolio.created,
-      seed: portfolio.seed,
       cash: portfolio.cash,
       positions,
       state,
@@ -130,12 +128,9 @@ export class PortfoliosService implements OnApplicationBootstrap {
     timestamp: number,
     portfolio: Portfolio,
   ): number {
-    return (
-      portfolio.seed +
-      portfolio.contributions
-        .filter((c) => c.timestamp <= timestamp)
-        .reduce((acc, c) => acc + c.amountEUR, 0)
-    );
+    return portfolio.contributions
+      .filter((c) => c.timestamp <= timestamp)
+      .reduce((acc, c) => acc + c.amountEUR, 0);
   }
 
   /**

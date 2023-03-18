@@ -79,7 +79,6 @@ describe('PortfoliosService', () => {
       const portfolio = portfolioFactory();
       const dto = <CreatePortfolioDto>{
         name: faker.random.words(),
-        seed: Number(faker.finance.amount()),
       };
       portfoliosRepository.create.mockResolvedValueOnce(portfolio);
 
@@ -161,7 +160,6 @@ describe('PortfoliosService', () => {
       expect(retrieved).toEqual(<PortfolioDetailDto>{
         uuid: adminUserPortfolio.uuid,
         name: adminUserPortfolio.name,
-        seed: adminUserPortfolio.seed,
         cash: adminUserPortfolio.cash,
         created: adminUserPortfolio.created,
         positions,
@@ -210,23 +208,23 @@ describe('PortfoliosService', () => {
       const expected = [
         {
           ...portfolioAverageBalances[1],
-          contributions: adminUserPortfolio.seed,
+          contributions: 0,
         },
         {
           ...portfolioAverageBalances[0],
-          contributions: adminUserPortfolio.seed + 100,
+          contributions: 100,
         },
         {
           ...portfolioAverageBalances[2],
-          contributions: adminUserPortfolio.seed + 200,
+          contributions: 200,
         },
         {
           ...portfolioAverageBalances[3],
-          contributions: adminUserPortfolio.seed + 200,
+          contributions: 200,
         },
         {
           ...portfolioAverageBalances[4],
-          contributions: adminUserPortfolio.seed + 400,
+          contributions: 400,
         },
       ];
       expect(metrics).toEqual(expected);
