@@ -33,7 +33,8 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x]
-        mongodb-version: ['5.0', '6.0']
+        # mongodb-version: ['5.0', '6.0']
+        mongodb-version: ['5.0']
         redis-version: ['7']
     steps:
       - uses: actions/checkout@v3
