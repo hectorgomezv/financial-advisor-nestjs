@@ -64,7 +64,7 @@ services:
       - financial-advisor-nestjs
 
   fa-mongo:
-    image: mongo:5-focal
+    image: mongo:6
     ports:
       - "27017:27017"
     command: [--auth]
