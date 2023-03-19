@@ -32,6 +32,7 @@ export class CompanyStatesService {
       uuid: uuidv4(),
       timestamp: Date.now(),
       price: quoteSummary?.price || 0,
+      currency: quoteSummary.currency,
       peg: quoteSummary?.peg || 0,
       enterpriseToEbitda: quoteSummary?.enterpriseToEbitda || 0,
       shortPercentOfFloat: quoteSummary?.shortPercentOfFloat || 0,

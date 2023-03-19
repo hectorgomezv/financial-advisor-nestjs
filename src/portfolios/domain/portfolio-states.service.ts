@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { TimePeriod } from '../../common/domain/entities/time-period.entity';
+import { CompanyStatesRepository } from '../../companies/repositories/company-states.repository';
 import { CurrencyExchangeClient } from '../datasources/currency-exchange.client';
 import { PortfolioStatesRepository } from '../repositories/portfolio-states.repository';
 import { PortfolioAverageBalance } from './entities/portfolio-average-balance.entity';
@@ -14,6 +15,7 @@ export class PortfolioStatesService {
   constructor(
     private readonly repository: PortfolioStatesRepository,
     private readonly exchangeClient: CurrencyExchangeClient,
+    private readonly companyStatesRepository: CompanyStatesRepository,
   ) {}
 
   async createPortfolioState(portfolio: Portfolio, positions: Position[]) {
@@ -65,13 +67,34 @@ export class PortfolioStatesService {
     return this.repository.deleteByPortfolioUuid(portfolioUuid);
   }
 
-  // TODO: this assumes the value in pos.value is in USD. It's needed to extract
-  // the currency info from the provider and store it into positions/companyStates/companies
-  // and then here just convert the currency when needed based on that info.
   private async getTotalValueEUR(positions: Position[]) {
-    const fx = await this.exchangeClient.getFx();
-    const totalValueUSD = positions.reduce((acc, pos) => acc + pos.value, 0);
+    const companyStates =
+      await this.companyStatesRepository.getLastByCompanyUuids(
+        positions.map((pos) => pos.companyUuid),
+      );
 
-    return fx(totalValueUSD).from('USD').to('EUR');
+    const eurPositions = positions.filter((pos) =>
+      companyStates
+        .filter((companyState) => companyState.currency === 'EUR')
+        .map((cs) => cs.companyUuid)
+        .includes(pos.companyUuid),
+    );
+
+    const usdPositions = positions.filter((pos) =>
+      companyStates
+        .filter((companyState) => companyState.currency === 'USD')
+        .map((cs) => cs.companyUuid)
+        .includes(pos.companyUuid),
+    );
+
+    const fx = await this.exchangeClient.getFx();
+    const totalValueEUR = eurPositions.reduce((acc, pos) => acc + pos.value, 0);
+    const totalValueUSD = usdPositions.reduce((acc, pos) => acc + pos.value, 0);
+
+    const convertedTotalValueUSD = await fx(totalValueUSD)
+      .from('USD')
+      .to('EUR');
+
+    return convertedTotalValueUSD + totalValueEUR;
   }
 }

@@ -18,6 +18,9 @@ export class CompanyStateModel {
   price: number;
 
   @Prop({ required: true })
+  currency: string;
+
+  @Prop({ required: true })
   peg: number;
 
   @Prop({ required: true })
