@@ -1,4 +1,6 @@
 import { faker } from '@faker-js/faker';
+import { companyStateFactory } from '../../companies/domain/entities/__tests__/company-state.factory';
+import { CompanyStatesRepository } from '../../companies/repositories/company-states.repository';
 import { CurrencyExchangeClient } from '../datasources/currency-exchange.client';
 import { PortfolioStatesRepository } from '../repositories/portfolio-states.repository';
 import { TimeRange } from './entities/time-range.enum';
@@ -18,9 +20,14 @@ describe('PortfolioStatesService', () => {
     getFx: jest.fn(),
   } as unknown as CurrencyExchangeClient);
 
+  const companyStatesRepository = jest.mocked({
+    getLastByCompanyUuids: jest.fn(),
+  } as unknown as CompanyStatesRepository);
+
   const service: PortfolioStatesService = new PortfolioStatesService(
     portfolioStatesRepository,
     exchangeClient,
+    companyStatesRepository,
   );
 
   describe('creation', () => {
@@ -31,16 +38,42 @@ describe('PortfolioStatesService', () => {
         positionFactory(),
         positionFactory(),
       ];
-      const totalValueEUR = faker.datatype.number();
+      const convertedTotalValueUSD = faker.datatype.number();
       const sumWeights = positions.reduce(
         (acc, pos) => acc + pos.targetWeight,
         0,
       );
       exchangeClient.getFx = jest.fn().mockReturnValue(() => ({
-        from: jest
-          .fn()
-          .mockReturnValue({ to: jest.fn().mockReturnValue(totalValueEUR) }),
+        from: jest.fn().mockReturnValue({
+          to: jest.fn().mockReturnValue(convertedTotalValueUSD),
+        }),
       }));
+      companyStatesRepository.getLastByCompanyUuids.mockResolvedValue([
+        companyStateFactory(
+          faker.datatype.uuid(),
+          Date.now(),
+          faker.datatype.number(),
+          faker.datatype.number(),
+          'USD',
+          positions[0].companyUuid,
+        ),
+        companyStateFactory(
+          faker.datatype.uuid(),
+          Date.now(),
+          faker.datatype.number(),
+          faker.datatype.number(),
+          'USD',
+          positions[1].companyUuid,
+        ),
+        companyStateFactory(
+          faker.datatype.uuid(),
+          Date.now(),
+          faker.datatype.number(),
+          faker.datatype.number(),
+          'EUR',
+          positions[2].companyUuid,
+        ),
+      ]);
 
       await service.createPortfolioState(portfolio, positions);
 
@@ -49,9 +82,11 @@ describe('PortfolioStatesService', () => {
         expect.objectContaining({
           portfolioUuid: portfolio.uuid,
           isValid: sumWeights === 100,
-          totalValueEUR,
+          totalValueEUR: convertedTotalValueUSD + positions[2].value, // positions[2] is in EUR
+          cash: portfolio.cash,
           roicEUR:
-            totalValueEUR +
+            convertedTotalValueUSD +
+            positions[2].value + // positions[2] is in EUR
             portfolio.cash -
             portfolio.contributions.reduce((sum, i) => sum + i.amountEUR, 0),
         }),

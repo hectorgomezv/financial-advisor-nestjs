@@ -8,5 +8,7 @@ export class CompanyState {
   @ApiProperty()
   price: number;
   @ApiProperty()
+  currency: string;
+  @ApiProperty()
   peg: number;
 }
