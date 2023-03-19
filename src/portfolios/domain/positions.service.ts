@@ -212,7 +212,7 @@ export class PositionsService {
         portfolioUuid,
         targetWeight: pdd.targetWeight,
         shares: pdd.shares,
-        companyUuid: null,
+        companyUuid: pdd.companyState.companyUuid,
         symbol: pdd.symbol,
         value: pdd.value,
       };

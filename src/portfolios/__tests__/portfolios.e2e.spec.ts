@@ -59,7 +59,7 @@ describe('Portfolios e2e tests', () => {
       });
   });
 
-  it('/POST portfolio, company and two positions', async () => {
+  it.only('/POST portfolio, company and two positions', async () => {
     await request(app.getHttpServer())
       .post('/portfolios')
       .set('Authorization', `Bearer ${accessToken}`)

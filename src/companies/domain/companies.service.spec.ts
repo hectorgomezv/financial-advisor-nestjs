@@ -102,6 +102,7 @@ describe('CompaniesService', () => {
           Date.now(),
           faker.datatype.number(),
           faker.datatype.number(),
+          faker.finance.currencyCode(),
           companies[1].uuid,
         ),
         companyStateFactory(
@@ -109,6 +110,7 @@ describe('CompaniesService', () => {
           Date.now(),
           faker.datatype.number(),
           faker.datatype.number(),
+          faker.finance.currencyCode(),
           companies[0].uuid,
         ),
       ];

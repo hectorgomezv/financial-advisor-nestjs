@@ -6,14 +6,17 @@ export class MigrationsRunner implements OnApplicationBootstrap {
   private readonly logger = new Logger(MigrationsRunner.name);
 
   async onApplicationBootstrap() {
-    const { db, client } = await database.connect();
-    const migrationsStatus = await status(db);
+    const { NODE_ENV } = process.env;
+    if (NODE_ENV === 'production') {
+      const { db, client } = await database.connect();
+      const migrationsStatus = await status(db);
 
-    migrationsStatus.forEach(({ fileName, appliedAt }) =>
-      this.logger.log(`Already applied migration: ${fileName}: ${appliedAt}`),
-    );
+      migrationsStatus.forEach(({ fileName, appliedAt }) =>
+        this.logger.log(`Already applied migration: ${fileName}: ${appliedAt}`),
+      );
 
-    const migrated = await up(db, client);
-    migrated.forEach((name) => this.logger.warn('Migrated:', name));
+      const migrated = await up(db, client);
+      migrated.forEach((name) => this.logger.warn('Migrated:', name));
+    }
   }
 }
