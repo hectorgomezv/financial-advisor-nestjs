@@ -53,4 +53,19 @@ export class CompaniesRepository {
     await this.redisClient.redis.del(this.companiesKey);
     await this.model.deleteOne({ uuid });
   }
+
+  async updateMetrics(uuid: string): Promise<void> {
+    const metrics = await this.model
+      .aggregate()
+      .match({ companyUuid: uuid })
+      .group({
+        _id: '$companyUuid',
+        avgEnterpriseToRevenue: { $avg: '$enterpriseToRevenue' },
+        avgEnterpriseToEbitda: { $avg: '$enterpriseToEbitda' },
+        avgPeg: { $avg: '$peg' },
+      })
+      .exec();
+
+    console.log(metrics); // TODO: store this info in companies collection
+  }
 }

@@ -128,9 +128,10 @@ export class CompaniesService implements OnApplicationBootstrap {
     try {
       const companies = await this.repository.findAll();
       await Promise.all(
-        companies.map((company) =>
-          this.companyStatesService.createCompanyState(company),
-        ),
+        companies.map(async (company) => {
+          await this.companyStatesService.createCompanyState(company);
+          await this.repository.updateMetrics(company.uuid);
+        }),
       );
     } catch (err) {
       this.logger.error(
