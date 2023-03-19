@@ -24,6 +24,9 @@ export class CompanyStateModel {
   peg: number;
 
   @Prop({ required: true })
+  enterpriseToRevenue: number;
+
+  @Prop({ required: true })
   enterpriseToEbitda: number;
 
   @Prop({ required: true })

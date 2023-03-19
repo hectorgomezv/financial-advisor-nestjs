@@ -91,6 +91,9 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
       ),
       currency: item?.summaryDetail?.currency,
       peg: peg < 500 ? peg : 0,
+      enterpriseToRevenue: Number(
+        item?.defaultKeyStatistics?.enterpriseToRevenue?.raw,
+      ),
       enterpriseToEbitda: Number(
         item?.defaultKeyStatistics?.enterpriseToEbitda?.raw,
       ),

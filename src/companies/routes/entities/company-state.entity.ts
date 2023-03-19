@@ -11,4 +11,10 @@ export class CompanyState {
   currency: string;
   @ApiProperty()
   peg: number;
+  @ApiProperty()
+  enterpriseToRevenue: number;
+  @ApiProperty()
+  enterpriseToEbitda: number;
+  @ApiProperty()
+  shortPercentOfFloat: number;
 }

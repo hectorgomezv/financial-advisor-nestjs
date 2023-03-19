@@ -5,6 +5,7 @@ export class CompanyState {
   price: number;
   currency: string;
   peg: number;
+  enterpriseToRevenue: number;
   enterpriseToEbitda: number;
   shortPercentOfFloat: number;
 }

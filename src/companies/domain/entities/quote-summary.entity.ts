@@ -4,6 +4,7 @@ export class QuoteSummary {
   price: number;
   currency: string;
   peg: number;
+  enterpriseToRevenue: number;
   enterpriseToEbitda: number;
   shortPercentOfFloat: number;
 }
