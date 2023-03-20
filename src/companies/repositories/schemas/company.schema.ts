@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { CompanyMetrics } from '../../domain/entities/company-metrics.entity';
+import { CompanyMetricsSchema } from './company-metrics.schema';
 
 export type CompanyDocument = CompanyModel & Document;
 
@@ -13,6 +15,9 @@ export class CompanyModel {
 
   @Prop({ required: true })
   symbol: string;
+
+  @Prop({ required: true, schema: CompanyMetricsSchema })
+  metrics: CompanyMetrics;
 }
 
 export const CompanySchema = SchemaFactory.createForClass(CompanyModel);

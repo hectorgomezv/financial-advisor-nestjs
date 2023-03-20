@@ -14,6 +14,7 @@ import { PositionsRepository } from '../../portfolios/repositories/positions.rep
 import { CreateCompanyDto } from '../domain/dto/create-company.dto';
 import { CompaniesRepository } from '../repositories/companies.repository';
 import { CompanyStatesService } from './company-states.service';
+import { CompanyMetrics } from './entities/company-metrics.entity';
 import { Company, CompanyWithState } from './entities/company.entity';
 
 @Injectable()
@@ -42,6 +43,7 @@ export class CompaniesService implements OnApplicationBootstrap {
     const company = await this.repository.create(<Company>{
       ...createCompanyDto,
       uuid: uuidv4(),
+      metrics: new CompanyMetrics(0, 0, 0),
     });
 
     const state = await this.companyStatesService.createCompanyState(company);
@@ -128,9 +130,14 @@ export class CompaniesService implements OnApplicationBootstrap {
     try {
       const companies = await this.repository.findAll();
       await Promise.all(
-        companies.map((company) =>
-          this.companyStatesService.createCompanyState(company),
-        ),
+        companies.map(async (company) => {
+          await this.companyStatesService.createCompanyState(company);
+          const metrics =
+            await this.companyStatesService.getMetricsByCompanyUuid(
+              company.uuid,
+            );
+          await this.repository.updateMetricsByUuid(company.uuid, metrics);
+        }),
       );
     } catch (err) {
       this.logger.error(
