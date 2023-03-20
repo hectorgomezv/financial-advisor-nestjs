@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
 import { RedisClient } from '../../common/cache/redis.client';
+import { CompanyMetrics } from '../domain/entities/company-metrics.entity';
 import { Company } from '../domain/entities/company.entity';
 import { CompanyDocument, CompanyModel } from './schemas/company.schema';
 
@@ -54,18 +55,14 @@ export class CompaniesRepository {
     await this.model.deleteOne({ uuid });
   }
 
-  async updateMetrics(uuid: string): Promise<void> {
-    const metrics = await this.model
-      .aggregate()
-      .match({ companyUuid: uuid })
-      .group({
-        _id: '$companyUuid',
-        avgEnterpriseToRevenue: { $avg: '$enterpriseToRevenue' },
-        avgEnterpriseToEbitda: { $avg: '$enterpriseToEbitda' },
-        avgPeg: { $avg: '$peg' },
-      })
-      .exec();
-
-    console.log(metrics); // TODO: store this info in companies collection
+  async updateMetricsByUuid(
+    uuid: string,
+    metrics: CompanyMetrics,
+  ): Promise<Company> {
+    // TODO: manage companies one by one in cache
+    await this.redisClient.redis.del(this.companiesKey);
+    await this.model.updateOne({ uuid }, { $set: metrics });
+    const updated = await this.model.findOne({ uuid }).lean();
+    return plainToInstance(Company, updated, { excludePrefixes: ['_', '__'] });
   }
 }

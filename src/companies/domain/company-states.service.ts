@@ -5,6 +5,7 @@ import { CompanyState } from '../domain/entities/company-state.entity';
 import { Company } from '../domain/entities/company.entity';
 import { QuoteSummary } from '../domain/entities/quote-summary.entity';
 import { CompanyStatesRepository } from '../repositories/company-states.repository';
+import { CompanyMetrics } from './entities/company-metrics.entity';
 
 @Injectable()
 export class CompanyStatesService {
@@ -45,5 +46,9 @@ export class CompanyStatesService {
 
   deleteByCompanyUuid(companyUuid: string): Promise<void> {
     return this.companyStatesRepository.deleteByCompanyUuid(companyUuid);
+  }
+
+  getMetricsByCompanyUuid(companyUuid: string): Promise<CompanyMetrics> {
+    return this.companyStatesRepository.getMetricsByCompanyUuid(companyUuid);
   }
 }

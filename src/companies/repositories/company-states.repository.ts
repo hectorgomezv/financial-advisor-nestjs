@@ -4,6 +4,7 @@ import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
 import { from } from '../../common/cache/cache.key.mapper';
 import { RedisClient } from '../../common/cache/redis.client';
+import { CompanyMetrics } from '../domain/entities/company-metrics.entity';
 import { CompanyState } from '../domain/entities/company-state.entity';
 import {
   CompanyStateDocument,
@@ -103,5 +104,22 @@ export class CompanyStatesRepository {
     );
     this.logger.debug(`Key ${this.lastStateKey}:${hash} set in cache`);
     return result;
+  }
+
+  async getMetricsByCompanyUuid(companyUuid: string): Promise<CompanyMetrics> {
+    const metrics = await this.model
+      .aggregate()
+      .match({ companyUuid })
+      .group({
+        _id: '$companyUuid',
+        avgEnterpriseToRevenue: { $avg: '$enterpriseToRevenue' },
+        avgEnterpriseToEbitda: { $avg: '$enterpriseToEbitda' },
+        avgPeg: { $avg: '$peg' },
+      })
+      .exec();
+
+    return plainToInstance(CompanyMetrics, metrics[0], {
+      excludePrefixes: ['_', '__'],
+    });
   }
 }
