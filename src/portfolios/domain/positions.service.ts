@@ -6,8 +6,10 @@ import {
 } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { User } from '../../common/auth/entities/user.entity';
+import { CompanyState } from '../../companies/domain/entities/company-state.entity';
 import { CompaniesRepository } from '../../companies/repositories/companies.repository';
 import { CompanyStatesRepository } from '../../companies/repositories/company-states.repository';
+import { CurrencyExchangeClient } from '../datasources/currency-exchange.client';
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { PositionsRepository } from '../repositories/positions.repository';
 import { PositionDetailDto } from './dto/position-detail.dto';
@@ -24,6 +26,7 @@ export class PositionsService {
     private readonly portfolioStatesService: PortfolioStatesService,
     private readonly companiesRepository: CompaniesRepository,
     private readonly companyStatesRepository: CompanyStatesRepository,
+    private readonly exchangeClient: CurrencyExchangeClient,
   ) {}
 
   async create(
@@ -152,17 +155,23 @@ export class PositionsService {
     return position;
   }
 
-  private calculatePositionState(
+  private async calculatePositionState(
     position,
     company,
-    companyState,
-  ): PositionDetailDto {
+    companyState: CompanyState,
+  ): Promise<PositionDetailDto> {
+    const fx = await this.exchangeClient.getFx();
+    let value = Number((companyState?.price ?? 0) * position.shares);
+    if (companyState.currency !== 'EUR') {
+      value = await fx(value).from(companyState.currency).to('EUR');
+    }
+
     return <PositionDetailDto>{
       uuid: position.uuid,
       companyName: company.name,
       symbol: company.symbol,
       shares: position.shares,
-      value: Number((companyState?.price ?? 0) * position.shares),
+      value,
       targetWeight: position.targetWeight,
       companyState,
     };
