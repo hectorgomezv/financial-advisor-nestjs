@@ -17,7 +17,7 @@ export class PortfolioModel {
   ownerId: string;
 
   @Prop({ required: true })
-  created: number;
+  created: Date;
 
   @Prop({ required: true })
   cash: number;

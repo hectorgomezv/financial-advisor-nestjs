@@ -3,12 +3,12 @@ import { PortfolioContribution } from '../portfolio-contribution.entity';
 
 export function portfolioContributionFactory(
   uuid?: string,
-  timestamp?: number,
+  timestamp?: Date,
   amountEUR?: number,
 ): PortfolioContribution {
   return <PortfolioContribution>{
     uuid: uuid ?? faker.datatype.uuid(),
-    timestamp: timestamp ?? Date.now(),
+    timestamp: timestamp ?? new Date(),
     amountEUR: amountEUR ?? Number(faker.finance.amount()),
   };
 }

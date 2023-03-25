@@ -179,20 +179,32 @@ describe('PortfoliosService', () => {
       ).rejects.toThrow('Portfolio not found');
     });
 
-    it('should call repository to get portfolio metrics, sum contributions, and sort result', async () => {
+    it.only('should call repository to get portfolio metrics, sum contributions, and sort result', async () => {
       const portfolioAverageBalances = [
-        portfolioAverageBalanceFactory(2, 200),
-        portfolioAverageBalanceFactory(1, 100),
-        portfolioAverageBalanceFactory(5, 300),
-        portfolioAverageBalanceFactory(6, 200),
-        portfolioAverageBalanceFactory(8, 400),
+        portfolioAverageBalanceFactory(new Date(2022, 0, 2), 200),
+        portfolioAverageBalanceFactory(new Date(2022, 0, 1), 100),
+        portfolioAverageBalanceFactory(new Date(2022, 0, 5), 300),
+        portfolioAverageBalanceFactory(new Date(2022, 0, 6), 200),
+        portfolioAverageBalanceFactory(new Date(2022, 0, 8), 400),
       ];
       portfoliosRepository.findOne.mockResolvedValueOnce({
         ...adminUserPortfolio,
         contributions: [
-          portfolioContributionFactory(faker.datatype.uuid(), 2, 100),
-          portfolioContributionFactory(faker.datatype.uuid(), 4, 100),
-          portfolioContributionFactory(faker.datatype.uuid(), 7, 200),
+          portfolioContributionFactory(
+            faker.datatype.uuid(),
+            new Date(2022, 0, 2),
+            100,
+          ),
+          portfolioContributionFactory(
+            faker.datatype.uuid(),
+            new Date(2022, 0, 4),
+            100,
+          ),
+          portfolioContributionFactory(
+            faker.datatype.uuid(),
+            new Date(2022, 0, 7),
+            200,
+          ),
         ],
       });
       portfolioStatesService.getAverageBalancesForRange.mockResolvedValueOnce(
@@ -232,12 +244,12 @@ describe('PortfoliosService', () => {
 
     it('should call repository to get portfolio metrics', async () => {
       const portfolioAverageBalances = [
-        portfolioAverageBalanceFactory(1, 60),
-        portfolioAverageBalanceFactory(3, 90),
-        portfolioAverageBalanceFactory(4, 60),
-        portfolioAverageBalanceFactory(6, 90),
-        portfolioAverageBalanceFactory(5, 45),
-        portfolioAverageBalanceFactory(2, 120),
+        portfolioAverageBalanceFactory(new Date(2022, 0, 1), 60),
+        portfolioAverageBalanceFactory(new Date(2022, 0, 3), 90),
+        portfolioAverageBalanceFactory(new Date(2022, 0, 4), 60),
+        portfolioAverageBalanceFactory(new Date(2022, 0, 6), 90),
+        portfolioAverageBalanceFactory(new Date(2022, 0, 5), 45),
+        portfolioAverageBalanceFactory(new Date(2022, 0, 1), 120),
       ];
       portfoliosRepository.findOne.mockResolvedValueOnce(adminUserPortfolio);
       portfolioStatesService.getAverageBalancesForRange.mockResolvedValueOnce(
@@ -259,12 +271,12 @@ describe('PortfoliosService', () => {
       );
 
       const expected = [
-        expect.objectContaining(dataPointFactory(1, 0)),
-        expect.objectContaining(dataPointFactory(2, 100)),
-        expect.objectContaining(dataPointFactory(3, 50)),
-        expect.objectContaining(dataPointFactory(4, 0)),
-        expect.objectContaining(dataPointFactory(5, -25)),
-        expect.objectContaining(dataPointFactory(6, 50)),
+        expect.objectContaining(dataPointFactory(new Date(2022, 0, 1), 0)),
+        expect.objectContaining(dataPointFactory(new Date(2022, 0, 2), 100)),
+        expect.objectContaining(dataPointFactory(new Date(2022, 0, 3), 50)),
+        expect.objectContaining(dataPointFactory(new Date(2022, 0, 4), 0)),
+        expect.objectContaining(dataPointFactory(new Date(2022, 0, 5), -25)),
+        expect.objectContaining(dataPointFactory(new Date(2022, 0, 6), 50)),
       ];
 
       expect(performance).toEqual(expected);
@@ -508,7 +520,7 @@ describe('PortfoliosService', () => {
         new Date(2022, 9, 5),
       ].map((date) => ({
         ...portfolioContributionFactory(),
-        timestamp: new Date(date).getTime(),
+        timestamp: new Date(date),
         amountEUR: 100,
       })),
     };
@@ -598,7 +610,7 @@ describe('PortfoliosService', () => {
         // new Date(2022, 9, 5),
       ].map((date) => ({
         ...portfolioContributionFactory(),
-        timestamp: new Date(date).getTime(),
+        timestamp: new Date(date),
         amountEUR: 100,
       })),
     };

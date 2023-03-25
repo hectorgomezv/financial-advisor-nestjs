@@ -120,7 +120,7 @@ export class PortfolioStatesRepository {
       case TimeRange.ThreeYears:
       case TimeRange.FiveYears:
         return {
-          timestamp: new Date(_id.year, 0, 1 + (_id.week - 1) * 7, 0).getTime(),
+          timestamp: new Date(_id.year, 0, 1 + (_id.week - 1) * 7, 0),
           average,
         };
       case TimeRange.Week:
@@ -130,7 +130,7 @@ export class PortfolioStatesRepository {
       case TimeRange.SixMonths:
       case TimeRange.Year:
         return {
-          timestamp: new Date(_id.year, 0, _id.day, _id.hour ?? 0).getTime(),
+          timestamp: new Date(_id.year, 0, _id.day, _id.hour ?? 0),
           average,
         };
     }

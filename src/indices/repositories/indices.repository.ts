@@ -34,7 +34,7 @@ export class IndicesRepository {
 
   async getIndexValuesFrom(
     uuid: string,
-    timestamp: number,
+    timestamp: Date,
   ): Promise<DataPoint[]> {
     const result = await this.model
       .aggregate()

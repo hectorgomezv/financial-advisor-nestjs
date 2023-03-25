@@ -6,7 +6,7 @@ export function addPortfolioContributionDtoFactory(
   amountEUR?: number,
 ): AddPortfolioContributionDto {
   return <AddPortfolioContributionDto>{
-    timestamp: timestamp ?? faker.date.recent().getTime(),
+    timestamp: timestamp ?? faker.date.recent(),
     amountEUR: amountEUR ?? Number(faker.finance.amount()),
   };
 }

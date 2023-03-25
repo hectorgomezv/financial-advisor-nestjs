@@ -12,7 +12,7 @@ export class CompanyStateModel {
   companyUuid: string;
 
   @Prop({ required: true })
-  timestamp: number;
+  timestamp: Date;
 
   @Prop({ required: true })
   price: number;

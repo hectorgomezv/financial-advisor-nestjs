@@ -1,5 +1,5 @@
 export class PortfolioContribution {
   uuid: string;
-  timestamp: number;
+  timestamp: Date;
   amountEUR: number;
 }

@@ -125,11 +125,11 @@ export class PortfoliosService implements OnApplicationBootstrap {
   }
 
   private getContributionsSumForTimestamp(
-    timestamp: number,
+    timestamp: Date,
     portfolio: Portfolio,
   ): number {
     return portfolio.contributions
-      .filter((c) => c.timestamp <= timestamp)
+      .filter((c) => isBefore(c.timestamp, timestamp))
       .reduce((acc, c) => acc + c.amountEUR, 0);
   }
 
@@ -202,7 +202,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
         const endValue = this.getBalanceForDate(portfolioStates, next);
         const cashFlow = this.getSumContributionsIn(portfolio, previous, date);
         return new DataPoint(
-          date.getTime(),
+          date,
           (endValue - (initialValue + cashFlow)) / (initialValue + cashFlow),
         );
       }),
@@ -275,7 +275,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
 
   private async getIndexReturnsValues(
     index: Index,
-    timestamps: number[],
+    timestamps: Date[],
   ): Promise<number[]> {
     const indexReturns =
       await this.indicesService.getIndexPerformanceForTimestamps(

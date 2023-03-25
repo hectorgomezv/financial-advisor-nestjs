@@ -86,7 +86,7 @@ export class PortfoliosRepository {
     const portfolio = await this.model.findOne({ uuid });
     portfolio.contributions.push({
       uuid: contribution.uuid,
-      timestamp: contribution.timestamp,
+      timestamp: new Date(contribution.timestamp),
       amountEUR: contribution.amountEUR,
     });
     await portfolio.save();
