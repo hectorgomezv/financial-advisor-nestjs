@@ -1,6 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiExtraModels, ApiProperty } from '@nestjs/swagger';
 import { PortfolioContribution } from '../entities/portfolio-contribution.entity';
 
+@ApiExtraModels(PortfolioContribution)
 export class ContributionsPage {
   @ApiProperty()
   uuid: string;
@@ -12,6 +13,6 @@ export class ContributionsPage {
   offset: number;
   @ApiProperty()
   limit: number;
-  @ApiProperty()
+  @ApiProperty({ isArray: true, type: PortfolioContribution })
   items: PortfolioContribution[];
 }
