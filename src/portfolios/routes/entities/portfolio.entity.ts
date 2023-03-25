@@ -1,9 +1,10 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { PortfolioState } from '../../domain/entities/portfolio-state.entity';
+import { ApiExtraModels, ApiProperty } from '@nestjs/swagger';
 import { Portfolio as DomainPortfolio } from '../../domain/entities/portfolio.entity';
-import { Position } from '../../domain/entities/position.entity';
 import { PortfolioContribution } from './portfolio-contribution.entity';
+import { PortfolioState } from './portfolio-state.entity';
+import { Position } from './position.entity';
 
+@ApiExtraModels(Position, PortfolioContribution)
 export class Portfolio implements DomainPortfolio {
   @ApiProperty()
   uuid: string;
@@ -13,11 +14,11 @@ export class Portfolio implements DomainPortfolio {
   ownerId: string;
   @ApiProperty()
   created: number;
-  @ApiProperty()
+  @ApiProperty({ isArray: true, type: Position })
   positions: Position[];
   @ApiProperty()
   cash: number;
-  @ApiProperty()
+  @ApiProperty({ isArray: true, type: PortfolioContribution })
   contributions: PortfolioContribution[];
   @ApiProperty()
   state: PortfolioState;
