@@ -120,12 +120,13 @@ export class PositionsService {
       positions.map((p) => p.companyUuid),
     );
 
+    const fx = await this.exchangeClient.getFx();
     const positionStates = await Promise.all(
       positions.map(async (position) => {
         const company = companies.find((c) => c.uuid === position.companyUuid);
         const companyState =
           await this.companyStatesRepository.getLastByCompanyUuid(company.uuid);
-        return this.calculatePositionState(position, company, companyState);
+        return this.calculatePositionState(position, company, companyState, fx);
       }),
     );
 
@@ -159,8 +160,8 @@ export class PositionsService {
     position,
     company,
     companyState: CompanyState,
+    fx: any,
   ): Promise<PositionDetailDto> {
-    const fx = await this.exchangeClient.getFx();
     let value = Number((companyState?.price ?? 0) * position.shares);
     if (companyState.currency !== 'EUR') {
       value = await fx(value).from(companyState.currency).to('EUR');
