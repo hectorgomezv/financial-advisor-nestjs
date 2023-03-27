@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { isAfter, isBefore } from 'date-fns';
+import { isAfter, isBefore, isEqual } from 'date-fns';
 import { first, head, last, orderBy, sortBy } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthService } from '../../common/auth/auth-service';
@@ -129,7 +129,10 @@ export class PortfoliosService implements OnApplicationBootstrap {
     portfolio: Portfolio,
   ): number {
     return portfolio.contributions
-      .filter((c) => isBefore(c.timestamp, timestamp))
+      .filter(
+        (c) =>
+          isBefore(c.timestamp, timestamp) || isEqual(c.timestamp, timestamp),
+      )
       .reduce((acc, c) => acc + c.amountEUR, 0);
   }
 
