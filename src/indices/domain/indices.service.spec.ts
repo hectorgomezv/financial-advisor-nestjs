@@ -43,11 +43,11 @@ describe('IndicesService', () => {
   describe('retrieving indices performance for timestamps', () => {
     it('should return indices performance metrics', async () => {
       const dataPoints = [
-        dataPointFactory(11, 100),
-        dataPointFactory(29, 110),
-        dataPointFactory(21, 130),
-        dataPointFactory(32, 85),
-        dataPointFactory(39, 150),
+        dataPointFactory(new Date(2022, 0, 1, 1, 11), 100),
+        dataPointFactory(new Date(2022, 0, 1, 1, 29), 110),
+        dataPointFactory(new Date(2022, 0, 1, 1, 21), 130),
+        dataPointFactory(new Date(2022, 0, 1, 1, 32), 85),
+        dataPointFactory(new Date(2022, 0, 1, 1, 39), 150),
       ];
       const index = indexFactory(null, null, null, dataPoints);
       mockedIndicesRepository.getIndexValuesFrom.mockResolvedValueOnce(
@@ -57,20 +57,31 @@ describe('IndicesService', () => {
       const actual = await service.getIndexPerformanceForTimestamps(
         index,
         dataPoints[0].timestamp,
-        [0, 5, 10, 15, 20, 25, 30, 35, 40, 45],
+        [
+          new Date(2022, 0, 1, 1, 0),
+          new Date(2022, 0, 1, 1, 5),
+          new Date(2022, 0, 1, 1, 10),
+          new Date(2022, 0, 1, 1, 15),
+          new Date(2022, 0, 1, 1, 20),
+          new Date(2022, 0, 1, 1, 25),
+          new Date(2022, 0, 1, 1, 30),
+          new Date(2022, 0, 1, 1, 35),
+          new Date(2022, 0, 1, 1, 40),
+          new Date(2022, 0, 1, 1, 45),
+        ],
       );
 
       const expected = [
-        dataPointFactory(0, 0),
-        dataPointFactory(5, 0),
-        dataPointFactory(10, 0),
-        dataPointFactory(15, 15),
-        dataPointFactory(20, 15),
-        dataPointFactory(25, 20),
-        dataPointFactory(30, -2.5),
-        dataPointFactory(35, 17.5),
-        dataPointFactory(40, 50),
-        dataPointFactory(45, 50),
+        dataPointFactory(new Date(2022, 0, 1, 1, 0), 0),
+        dataPointFactory(new Date(2022, 0, 1, 1, 5), 0),
+        dataPointFactory(new Date(2022, 0, 1, 1, 10), 0),
+        dataPointFactory(new Date(2022, 0, 1, 1, 15), 15),
+        dataPointFactory(new Date(2022, 0, 1, 1, 20), 15),
+        dataPointFactory(new Date(2022, 0, 1, 1, 25), 20),
+        dataPointFactory(new Date(2022, 0, 1, 1, 30), -2.5),
+        dataPointFactory(new Date(2022, 0, 1, 1, 35), 17.5),
+        dataPointFactory(new Date(2022, 0, 1, 1, 40), 50),
+        dataPointFactory(new Date(2022, 0, 1, 1, 45), 50),
       ];
 
       expect(actual).toEqual(expected);

@@ -1,5 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
+import { isAfter, isBefore, isEqual } from 'date-fns';
 import { first, isEmpty, last, sortBy } from 'lodash';
 import { AuthService } from '../../common/auth/auth-service';
 import { User } from '../../common/auth/entities/user.entity';
@@ -26,8 +27,8 @@ export class IndicesService {
 
   async getIndexPerformanceForTimestamps(
     index: Index,
-    initialTimestamp: number,
-    timestamps: number[],
+    initialTimestamp: Date,
+    timestamps: Date[],
   ): Promise<DataPoint[]> {
     const indexValues = sortBy(
       await this.repository.getIndexValuesFrom(index.uuid, initialTimestamp),
@@ -49,10 +50,18 @@ export class IndicesService {
     }));
   }
 
-  private getAvgValue(dataPoints: DataPoint[], timestamp: number): number {
+  private getAvgValue(dataPoints: DataPoint[], timestamp: Date): number {
     if (isEmpty(dataPoints)) return 0;
-    if (dataPoints[0].timestamp >= timestamp) return dataPoints[0].value;
-    if (last(dataPoints).timestamp <= timestamp) return last(dataPoints).value;
+    if (
+      isAfter(dataPoints[0].timestamp, timestamp) ||
+      isEqual(dataPoints[0].timestamp, timestamp)
+    )
+      return dataPoints[0].value;
+    if (
+      isBefore(last(dataPoints).timestamp, timestamp) ||
+      isEqual(last(dataPoints).timestamp, timestamp)
+    )
+      return last(dataPoints).value;
 
     const nextIndex = dataPoints.findIndex((i) => i.timestamp >= timestamp);
     return (dataPoints[nextIndex - 1].value + dataPoints[nextIndex].value) / 2;

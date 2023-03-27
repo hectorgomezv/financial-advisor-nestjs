@@ -49,7 +49,7 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
     return quote.close.map(
       (value, n) =>
         new DataPoint(
-          response.data.chart.result.at(0).timestamp.at(n) * 1000,
+          new Date(response.data.chart.result.at(0).timestamp.at(n) * 1000),
           value,
         ),
     );

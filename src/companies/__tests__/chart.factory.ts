@@ -5,9 +5,9 @@ class IndicatorsBuilder {
   private quote: Quote[] = [
     {
       close: [
-        faker.datatype.number(),
-        faker.datatype.number(),
-        faker.datatype.number(),
+        faker.date.recent().getTime(),
+        faker.date.recent().getTime(),
+        faker.date.recent().getTime(),
       ],
     },
   ];
@@ -22,9 +22,9 @@ class IndicatorsBuilder {
 export class ChartBuilder {
   private meta: string = faker.random.words();
   private timestamp: number[] = [
-    faker.datatype.number(),
-    faker.datatype.number(),
-    faker.datatype.number(),
+    faker.date.recent().getTime(),
+    faker.date.recent().getTime(),
+    faker.date.recent().getTime(),
   ];
   private indicators: IndicatorsBuilder = new IndicatorsBuilder();
 

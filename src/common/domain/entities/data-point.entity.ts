@@ -1,8 +1,8 @@
 export class DataPoint {
-  timestamp: number;
+  timestamp: Date;
   value: number;
 
-  constructor(timestamp: number, value: number) {
+  constructor(timestamp: Date, value: number) {
     this.timestamp = timestamp;
     this.value = value;
   }

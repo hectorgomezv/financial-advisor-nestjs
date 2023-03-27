@@ -3,7 +3,7 @@ import { PortfolioAverageBalance as DomainPortfolioAverageBalance } from '../../
 
 export class PortfolioAverageMetric implements DomainPortfolioAverageBalance {
   @ApiProperty()
-  timestamp: number;
+  timestamp: Date;
   @ApiProperty()
   average: number;
   @ApiProperty()

@@ -1,4 +1,4 @@
 export class AddPortfolioContributionDto {
-  timestamp: number;
+  timestamp: Date;
   amountEUR: number;
 }

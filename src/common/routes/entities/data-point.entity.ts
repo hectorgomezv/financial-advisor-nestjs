@@ -3,7 +3,7 @@ import { DataPoint as DomainDataPoint } from '../../domain/entities/data-point.e
 
 export class DataPoint implements DomainDataPoint {
   @ApiProperty()
-  timestamp: number;
+  timestamp: Date;
   @ApiProperty()
   value: number;
 }

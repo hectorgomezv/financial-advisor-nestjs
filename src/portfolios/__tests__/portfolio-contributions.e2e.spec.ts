@@ -78,7 +78,7 @@ describe('Portfolio contributions e2e tests', () => {
             contributions: expect.arrayContaining([
               expect.objectContaining({
                 uuid: expect.any(String),
-                timestamp: addContributionDto.timestamp,
+                timestamp: addContributionDto.timestamp.toISOString(),
                 amountEUR: addContributionDto.amountEUR,
               }),
             ]),
@@ -105,7 +105,7 @@ describe('Portfolio contributions e2e tests', () => {
             contributions: expect.arrayContaining([
               expect.objectContaining({
                 uuid: expect.any(String),
-                timestamp: addContributionDto.timestamp,
+                timestamp: addContributionDto.timestamp.toISOString(),
                 amountEUR: addContributionDto.amountEUR,
               }),
             ]),
@@ -133,7 +133,7 @@ describe('Portfolio contributions e2e tests', () => {
             items: expect.arrayContaining([
               expect.objectContaining({
                 uuid: expect.any(String),
-                timestamp: addContributionDto.timestamp,
+                timestamp: addContributionDto.timestamp.toISOString(),
                 amountEUR: addContributionDto.amountEUR,
               }),
             ]),
@@ -165,7 +165,7 @@ describe('Portfolio contributions e2e tests', () => {
             items: expect.arrayContaining([
               expect.objectContaining({
                 uuid: expect.any(String),
-                timestamp: addContributionDto.timestamp,
+                timestamp: addContributionDto.timestamp.toISOString(),
                 amountEUR: addContributionDto.amountEUR,
               }),
             ]),

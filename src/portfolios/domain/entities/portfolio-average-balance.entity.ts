@@ -1,5 +1,5 @@
 export interface PortfolioAverageBalance {
-  timestamp: number;
+  timestamp: Date;
   average: number;
   contributions: number;
 }
