@@ -57,11 +57,11 @@ export class CompaniesRepository {
 
   async updateMetricsByUuid(
     uuid: string,
-    metrics: CompanyMetrics,
+    companyMetrics: CompanyMetrics,
   ): Promise<Company> {
     // TODO: manage companies one by one in cache
     await this.redisClient.redis.del(this.companiesKey);
-    await this.model.updateOne({ uuid }, { $set: metrics });
+    await this.model.updateOne({ uuid }, { $set: { metrics: companyMetrics } });
     const updated = await this.model.findOne({ uuid }).lean();
     return plainToInstance(Company, updated, { excludePrefixes: ['_', '__'] });
   }
