@@ -63,6 +63,7 @@ export class PositionsService {
       portfolioUuid,
       uuid,
       companyUuid: company.uuid,
+      blocked: false,
     });
 
     const created = await this.repository.findByUuid(uuid);
@@ -104,6 +105,7 @@ export class PositionsService {
       shares: upsertPositionDto.shares,
       companyUuid: company.uuid,
       symbol: upsertPositionDto.symbol,
+      blocked: upsertPositionDto.blocked ?? false,
     });
 
     const updated = await this.repository.findByUuid(existentPosition.uuid);
@@ -174,6 +176,7 @@ export class PositionsService {
       shares: position.shares,
       value,
       targetWeight: position.targetWeight,
+      blocked: position.blocked,
       companyState,
     };
   }

@@ -19,6 +19,9 @@ export class PositionModel {
 
   @Prop({ required: true })
   companyUuid: string;
+
+  @Prop({ required: true })
+  blocked: boolean;
 }
 
 export const PositionSchema = SchemaFactory.createForClass(PositionModel);

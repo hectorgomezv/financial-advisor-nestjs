@@ -11,4 +11,5 @@ export class PositionDetailDto {
   deltaWeight: number;
   deltaShares: number;
   companyState: CompanyState;
+  blocked: boolean;
 }

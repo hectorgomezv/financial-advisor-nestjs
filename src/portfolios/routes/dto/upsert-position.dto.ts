@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsPositive, IsString } from 'class-validator';
+import { IsBoolean, IsInt, IsPositive, IsString } from 'class-validator';
 import { UpsertPositionDto as DomainUpsertPositionDto } from '../../domain/dto/upsert-position.dto';
 
 export class UpsertPositionDto implements DomainUpsertPositionDto {
@@ -12,4 +12,7 @@ export class UpsertPositionDto implements DomainUpsertPositionDto {
   @ApiProperty()
   @IsInt()
   shares: number;
+  @ApiProperty()
+  @IsBoolean()
+  blocked: false;
 }
