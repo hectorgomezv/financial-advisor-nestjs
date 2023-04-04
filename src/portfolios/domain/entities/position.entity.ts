@@ -6,4 +6,5 @@ export class Position {
   companyUuid: string;
   symbol: string;
   value: number;
+  blocked: boolean;
 }

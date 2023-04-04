@@ -16,4 +16,6 @@ export class Position implements DomainPosition {
   symbol: string;
   @ApiProperty()
   value: number;
+  @ApiProperty()
+  blocked: boolean;
 }
