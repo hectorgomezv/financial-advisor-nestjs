@@ -109,7 +109,12 @@ export class CompanyStatesRepository {
   async getMetricsByCompanyUuid(companyUuid: string): Promise<CompanyMetrics> {
     const metrics = await this.model
       .aggregate()
-      .match({ companyUuid })
+      .match({
+        companyUuid,
+        enterpriseToRevenue: { $ne: NaN },
+        enterpriseToEbitda: { $ne: NaN },
+        peg: { $ne: NaN },
+      })
       .group({
         _id: '$companyUuid',
         avgEnterpriseToRevenue: { $avg: '$enterpriseToRevenue' },
