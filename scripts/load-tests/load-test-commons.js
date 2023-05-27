@@ -1,7 +1,7 @@
 import http from 'k6/http';
 
 export const authUrl =
-  'http://financial-advisor.site/api/v1/auth/accounts/login';
+  'http://financial-advisor.es/api/v1/auth/accounts/login';
 
 export const baseUrl = 'http://localhost:3000/api/v2';
 
