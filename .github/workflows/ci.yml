@@ -1,9 +1,9 @@
 name: CI
 
 on:
- create:
-   tags:
-     - v*
+  push:
+    tags:
+      - '*'
 
 jobs:
   prettier:
