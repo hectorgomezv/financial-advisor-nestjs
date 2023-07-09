@@ -1856,15 +1856,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/jwt@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "@nestjs/jwt@npm:9.0.0"
+"@nestjs/jwt@npm:^10.1.0":
+  version: 10.1.0
+  resolution: "@nestjs/jwt@npm:10.1.0"
   dependencies:
-    "@types/jsonwebtoken": 8.5.8
-    jsonwebtoken: 8.5.1
+    "@types/jsonwebtoken": 9.0.2
+    jsonwebtoken: 9.0.0
   peerDependencies:
-    "@nestjs/common": ^8.0.0 || ^9.0.0
-  checksum: c623bc710ace6345efc63d0dccff8d9f10b721b39efd94f4880bf8585a6a6a20ec00cc95fab6b913889382a0ff9327b4db02c12359eccc9e837d902bc9ba3676
+    "@nestjs/common": ^8.0.0 || ^9.0.0 || ^10.0.0
+  checksum: c172b11ce154f5f98b27a3b3a70a0dadbcad97624e201ccb487b6cf05a8d42edd9ecb8a442e375b974a7c889889f022ab9f684e4ec1019c91b43a8fe4d2d9ea8
   languageName: node
   linkType: hard
 
@@ -2307,12 +2307,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsonwebtoken@npm:8.5.8":
-  version: 8.5.8
-  resolution: "@types/jsonwebtoken@npm:8.5.8"
+"@types/jsonwebtoken@npm:9.0.2":
+  version: 9.0.2
+  resolution: "@types/jsonwebtoken@npm:9.0.2"
   dependencies:
     "@types/node": "*"
-  checksum: 56738a918c543dba30786066959f801212e7fb5cd4ec53cf7b8d227711ed358834feb9e5141f7f88ec7c642bb39757330a5a8917e3b22e0ff9084940d35f0d70
+  checksum: 3bb8d40e78d7eb53e427db6e9f0f22e0890cfee80965dcf741d08341814913afb211306de6e9847c6d241cc8e36f8a59090cbfdcc510ab7c81af9d650c5afe0e
   languageName: node
   linkType: hard
 
@@ -4580,7 +4580,7 @@ __metadata:
     "@nestjs/common": ^9.0.0
     "@nestjs/config": ^2.2.0
     "@nestjs/core": ^9.0.0
-    "@nestjs/jwt": ^9.0.0
+    "@nestjs/jwt": ^10.1.0
     "@nestjs/mapped-types": "*"
     "@nestjs/mongoose": ^9.2.0
     "@nestjs/passport": ^9.0.0
@@ -6007,7 +6007,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonwebtoken@npm:8.5.1, jsonwebtoken@npm:^8.2.0":
+"jsonwebtoken@npm:9.0.0":
+  version: 9.0.0
+  resolution: "jsonwebtoken@npm:9.0.0"
+  dependencies:
+    jws: ^3.2.2
+    lodash: ^4.17.21
+    ms: ^2.1.1
+    semver: ^7.3.8
+  checksum: b9181cecf9df99f1dc0253f91ba000a1aa4d91f5816d1608c0dba61a5623726a0bfe200b51df25de18c1a6000825d231ad7ce2788aa54fd48dcb760ad9eb9514
+  languageName: node
+  linkType: hard
+
+"jsonwebtoken@npm:^8.2.0":
   version: 8.5.1
   resolution: "jsonwebtoken@npm:8.5.1"
   dependencies:
