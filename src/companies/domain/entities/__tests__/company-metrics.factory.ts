@@ -7,8 +7,8 @@ export function companyMetricsFactory(
   avgPeg?: number,
 ): CompanyMetrics {
   return <CompanyMetrics>{
-    avgEnterpriseToRevenue: avgEnterpriseToRevenue ?? faker.datatype.number(),
-    avgEnterpriseToEbitda: avgEnterpriseToEbitda ?? faker.datatype.number(),
-    avgPeg: avgPeg ?? faker.datatype.number(),
+    avgEnterpriseToRevenue: avgEnterpriseToRevenue ?? faker.number.int(),
+    avgEnterpriseToEbitda: avgEnterpriseToEbitda ?? faker.number.int(),
+    avgPeg: avgPeg ?? faker.number.int(),
   };
 }

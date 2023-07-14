@@ -2,7 +2,7 @@ import { MongoClient } from 'mongodb';
 import { Mongoose } from 'mongoose';
 
 export class MongoDBClient {
-  private client: MongoClient;
+  private client: any;
 
   async getCollection(name: string) {
     await this.initClient();

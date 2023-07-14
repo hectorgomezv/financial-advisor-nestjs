@@ -17,12 +17,12 @@ export function portfolioFactory(
   contributions?: PortfolioContribution[],
   state?: PortfolioState,
 ): Portfolio {
-  const portfolioUuid = uuid ?? faker.datatype.uuid();
+  const portfolioUuid = uuid ?? faker.string.uuid();
   return <Portfolio>{
     uuid: portfolioUuid,
-    name: name ?? faker.random.word(),
-    ownerId: ownerId ?? faker.datatype.uuid(),
-    created: created ?? faker.datatype.number(),
+    name: name ?? faker.word.sample(),
+    ownerId: ownerId ?? faker.string.uuid(),
+    created: created ?? faker.number.int(),
     positions: positions || [positionFactory(), positionFactory()],
     cash: cash ?? Number(faker.finance.amount()),
     contributions: contributions || [

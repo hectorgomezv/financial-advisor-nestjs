@@ -8,9 +8,9 @@ export function upsertPositionDtoFactory(
   blocked?: boolean,
 ): UpsertPositionDto {
   return <UpsertPositionDto>{
-    symbol: symbol ?? faker.random.words(),
-    targetWeight: targetWeight ?? faker.datatype.number({ min: 5, max: 10 }),
-    shares: shares ?? faker.datatype.number({ min: 10, max: 100 }),
+    symbol: symbol ?? faker.word.words(),
+    targetWeight: targetWeight ?? faker.number.int({ min: 5, max: 10 }),
+    shares: shares ?? faker.number.int({ min: 10, max: 100 }),
     blocked: blocked ?? faker.datatype.boolean(),
   };
 }

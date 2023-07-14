@@ -10,9 +10,9 @@ export function companyFactory(
   metrics?: CompanyMetrics,
 ): Company {
   return <Company>{
-    uuid: uuid ?? faker.datatype.uuid(),
-    name: name ?? faker.random.words(),
-    symbol: symbol ?? faker.random.word(),
+    uuid: uuid ?? faker.string.uuid(),
+    name: name ?? faker.word.words(),
+    symbol: symbol ?? faker.word.sample(),
     metrics: metrics ?? companyMetricsFactory(),
   };
 }

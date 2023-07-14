@@ -144,7 +144,7 @@ describe('Portfolio contributions e2e tests', () => {
 
   it('GET portfolio contributions page', () => {
     const offset = 1;
-    const limit = faker.datatype.number({ min: 0, max: 100 });
+    const limit = faker.number.int({ min: 0, max: 100 });
     return request(app.getHttpServer())
       .get(
         `/portfolios/${createdPortfolioUuid}/contributions?offset=${offset}&limit=${limit}`,

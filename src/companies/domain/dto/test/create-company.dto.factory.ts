@@ -6,7 +6,7 @@ export function createCompanyDtoFactory(
   symbol?: string,
 ): CreateCompanyDto {
   return <CreateCompanyDto>{
-    name: name ?? faker.random.words(),
+    name: name ?? faker.word.words(),
     symbol: symbol ?? 'CRM',
   };
 }

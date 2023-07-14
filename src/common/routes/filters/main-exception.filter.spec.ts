@@ -5,8 +5,12 @@ import { MainExceptionFilter } from './main-exception.filter';
 
 describe('[unit] main-exception filter', () => {
   const fakeUrl = faker.internet.url();
-  const fakeErrMsg = faker.random.words();
-  const fakeResponse = JSON.parse(faker.datatype.json());
+  const fakeErrMsg = faker.word.words();
+  const fakeResponse = {
+    [faker.word.sample()]: faker.word.sample(),
+    [faker.word.sample()]: faker.word.sample(),
+    [faker.word.sample()]: faker.word.sample(),
+  };
 
   const mockedHttpAdapterHost = jest.mocked({
     httpAdapter: {

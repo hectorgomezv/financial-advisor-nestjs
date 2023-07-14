@@ -35,7 +35,7 @@ describe('YahooFinancialDataClient', () => {
         data: { chart: { result: [chart] } },
       });
       const res: DataPoint[] = await client.getChartDataPoints(
-        faker.random.word(),
+        faker.word.sample(),
       );
       res.forEach((dataPoint, n) => {
         expect(dataPoint.timestamp).toEqual(

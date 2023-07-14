@@ -42,7 +42,7 @@ describe('CompanyStatesService', () => {
 
   describe('retrieving', () => {
     it('should call repository to obtain the last states for an array of company uuids', async () => {
-      const companyUuids = [faker.datatype.uuid(), faker.datatype.uuid()];
+      const companyUuids = [faker.string.uuid(), faker.string.uuid()];
 
       await service.getLastStateByCompanyUuids(companyUuids);
 
@@ -57,7 +57,7 @@ describe('CompanyStatesService', () => {
 
   describe('deletion', () => {
     it('should call repository for deletion', async () => {
-      const companyUuid = faker.datatype.uuid();
+      const companyUuid = faker.string.uuid();
 
       service.deleteByCompanyUuid(companyUuid);
 

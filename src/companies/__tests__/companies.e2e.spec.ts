@@ -16,7 +16,7 @@ describe('Companies e2e tests', () => {
   let mongoClient: MongoDBClient;
   let accessToken: string;
 
-  const dto = createCompanyDtoFactory(faker.random.words(), 'IBM');
+  const dto = createCompanyDtoFactory(faker.word.words(), 'TSLA');
 
   const redis = new Redis({
     username: 'default',

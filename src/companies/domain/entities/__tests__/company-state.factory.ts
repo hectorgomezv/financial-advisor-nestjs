@@ -13,14 +13,14 @@ export function companyStateFactory(
   shortPercentOfFloat?: number,
 ): CompanyState {
   return <CompanyState>{
-    uuid: uuid ?? faker.datatype.uuid(),
+    uuid: uuid ?? faker.string.uuid(),
     timestamp: timestamp ?? Date.now(),
-    price: price ?? faker.datatype.number(),
+    price: price ?? faker.number.int(),
     currency: currency ?? faker.finance.currencyCode(),
-    peg: peg ?? faker.datatype.number(),
-    companyUuid: companyUuid ?? faker.datatype.uuid(),
-    enterpriseToRevenue: enterpriseToRevenue ?? faker.datatype.number(),
-    enterpriseToEbitda: enterpriseToEbitda ?? faker.datatype.number(),
-    shortPercentOfFloat: shortPercentOfFloat ?? faker.datatype.number(),
+    peg: peg ?? faker.number.int(),
+    companyUuid: companyUuid ?? faker.string.uuid(),
+    enterpriseToRevenue: enterpriseToRevenue ?? faker.number.int(),
+    enterpriseToEbitda: enterpriseToEbitda ?? faker.number.int(),
+    shortPercentOfFloat: shortPercentOfFloat ?? faker.number.int(),
   };
 }

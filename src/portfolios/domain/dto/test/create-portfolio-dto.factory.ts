@@ -3,6 +3,6 @@ import { CreatePortfolioDto } from '../create-portfolio.dto';
 
 export function createPortfolioDtoFactory(name?: string): CreatePortfolioDto {
   return <CreatePortfolioDto>{
-    name: name ?? faker.random.words(),
+    name: name ?? faker.word.words(),
   };
 }

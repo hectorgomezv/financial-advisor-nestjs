@@ -11,12 +11,12 @@ export function quoteSummaryFactory(
   shortPercentOfFloat?: number,
 ): QuoteSummary {
   return <QuoteSummary>{
-    uuid: uuid ?? faker.datatype.uuid(),
+    uuid: uuid ?? faker.string.uuid(),
     timestamp: timestamp ?? Date.now(),
-    price: price ?? faker.datatype.number(),
-    peg: peg ?? faker.datatype.number(),
-    enterpriseToRevenue: enterpriseToRevenue ?? faker.datatype.number(),
-    enterpriseToEbitda: enterpriseToEbitda ?? faker.datatype.number(),
-    shortPercentOfFloat: shortPercentOfFloat ?? faker.datatype.number(),
+    price: price ?? faker.number.int(),
+    peg: peg ?? faker.number.int(),
+    enterpriseToRevenue: enterpriseToRevenue ?? faker.number.int(),
+    enterpriseToEbitda: enterpriseToEbitda ?? faker.number.int(),
+    shortPercentOfFloat: shortPercentOfFloat ?? faker.number.int(),
   };
 }

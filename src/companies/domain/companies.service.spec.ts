@@ -41,7 +41,7 @@ describe('CompaniesService', () => {
   );
 
   const adminUser = <User>{
-    id: faker.datatype.uuid(),
+    id: faker.string.uuid(),
     email: faker.internet.email(),
     role: UserRole.ADMIN,
   };
@@ -98,18 +98,18 @@ describe('CompaniesService', () => {
       const companies = [companyFactory(), companyFactory()];
       const states = [
         companyStateFactory(
-          faker.datatype.uuid(),
+          faker.string.uuid(),
           Date.now(),
-          faker.datatype.number(),
-          faker.datatype.number(),
+          faker.number.int(),
+          faker.number.int(),
           faker.finance.currencyCode(),
           companies[1].uuid,
         ),
         companyStateFactory(
-          faker.datatype.uuid(),
+          faker.string.uuid(),
           Date.now(),
-          faker.datatype.number(),
-          faker.datatype.number(),
+          faker.number.int(),
+          faker.number.int(),
           faker.finance.currencyCode(),
           companies[0].uuid,
         ),
@@ -159,7 +159,7 @@ describe('CompaniesService', () => {
     });
 
     it('should fail if a company cannot be found by uuid', async () => {
-      const companyUuid = faker.datatype.uuid();
+      const companyUuid = faker.string.uuid();
       mockedCompaniesRepository.findOne.mockResolvedValue(null);
 
       await expect(service.findOne(companyUuid)).rejects.toThrow(
@@ -173,7 +173,7 @@ describe('CompaniesService', () => {
   describe('deletion', () => {
     it('should fail if the requestor is not an admin', async () => {
       const user = { ...adminUser, role: UserRole.USER };
-      const companyUuid = faker.datatype.uuid();
+      const companyUuid = faker.string.uuid();
 
       await expect(service.remove(user, companyUuid)).rejects.toThrow(
         'Access denied',
@@ -181,7 +181,7 @@ describe('CompaniesService', () => {
     });
 
     it('should fail if a company cannot be found by uuid', async () => {
-      const companyUuid = faker.datatype.uuid();
+      const companyUuid = faker.string.uuid();
       mockedCompaniesRepository.findOne.mockResolvedValue(null);
 
       await expect(service.remove(adminUser, companyUuid)).rejects.toThrow(

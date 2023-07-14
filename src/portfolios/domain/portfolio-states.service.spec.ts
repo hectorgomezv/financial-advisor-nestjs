@@ -59,7 +59,7 @@ describe('PortfolioStatesService', () => {
     });
 
     it('should call repository to retrieve portfolio average balances for range', async () => {
-      const uuid = faker.datatype.uuid();
+      const uuid = faker.string.uuid();
       await service.getAverageBalancesForRange(uuid, TimeRange.Week);
       expect(
         portfolioStatesRepository.getAverageBalancesForRange,
@@ -69,7 +69,7 @@ describe('PortfolioStatesService', () => {
 
   describe('deleting', () => {
     it('should call repository for deleting all the states by portfolio uuid', async () => {
-      const uuid = faker.datatype.uuid();
+      const uuid = faker.string.uuid();
       await service.deleteByPortfolioUuid(uuid);
       expect(portfolioStatesRepository.deleteByPortfolioUuid).toBeCalledWith(
         uuid,

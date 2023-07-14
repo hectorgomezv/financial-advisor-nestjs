@@ -8,7 +8,7 @@ export function portfolioAverageBalanceFactory(
 ): PortfolioAverageBalance {
   return <PortfolioAverageBalance>{
     timestamp: timestamp ?? faker.date.recent(),
-    average: average ?? faker.datatype.number(),
-    contributions: contributions ?? faker.datatype.number(),
+    average: average ?? faker.number.int(),
+    contributions: contributions ?? faker.number.int(),
   };
 }

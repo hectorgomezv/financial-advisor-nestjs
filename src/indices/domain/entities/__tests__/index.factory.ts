@@ -11,9 +11,9 @@ export function indexFactory(
   values?: DataPoint[],
 ) {
   return <Index>{
-    uuid: uuid ?? faker.datatype.uuid(),
-    name: name ?? faker.random.word(),
-    symbol: symbol ?? faker.random.word(),
+    uuid: uuid ?? faker.string.uuid(),
+    name: name ?? faker.word.sample(),
+    symbol: symbol ?? faker.word.sample(),
     values: values ?? range(random(4)).map(() => dataPointFactory()),
   };
 }

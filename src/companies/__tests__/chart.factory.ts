@@ -20,7 +20,7 @@ class IndicatorsBuilder {
 }
 
 export class ChartBuilder {
-  private meta: string = faker.random.words();
+  private meta: string = faker.word.words();
   private timestamp: number[] = [
     faker.date.recent().getTime(),
     faker.date.recent().getTime(),
