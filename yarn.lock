@@ -1501,27 +1501,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/common@npm:^9.0.0":
-  version: 9.4.3
-  resolution: "@nestjs/common@npm:9.4.3"
+"@nestjs/common@npm:^10.0.5":
+  version: 10.0.5
+  resolution: "@nestjs/common@npm:10.0.5"
   dependencies:
     iterare: 1.2.1
-    tslib: 2.5.3
+    tslib: 2.6.0
     uid: 2.0.2
   peerDependencies:
-    cache-manager: <=5
     class-transformer: "*"
     class-validator: "*"
     reflect-metadata: ^0.1.12
     rxjs: ^7.1.0
   peerDependenciesMeta:
-    cache-manager:
-      optional: true
     class-transformer:
       optional: true
     class-validator:
       optional: true
-  checksum: 45ccb5acac2521a05576f37b37ab94c63a83aefb1839ed670635090bb934c1bd532852cb7be9863ee3b9d1ad80aa84e0602be023c626623f9233257dcb754914
+  checksum: 6fa9d32c10354bd96cb5818a701c9f31870bc9d86a511643af3d3429dec5a6215fbc4946f8bd938a700d26b96a7187e179e86eeb2e44ba2cef4d26b0fb53bd35
   languageName: node
   linkType: hard
 
@@ -4828,7 +4825,7 @@ __metadata:
     "@faker-js/faker": ^8.0.2
     "@nestjs/axios": ^1.0.0
     "@nestjs/cli": ^9.0.0
-    "@nestjs/common": ^9.0.0
+    "@nestjs/common": ^10.0.5
     "@nestjs/config": ^2.2.0
     "@nestjs/core": ^9.0.0
     "@nestjs/jwt": ^10.1.0
