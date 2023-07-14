@@ -17,7 +17,6 @@ import { IFinancialDataClient } from './financial-data.client.interface';
 @Injectable()
 export class YahooFinancialDataClient implements IFinancialDataClient {
   private baseUrl: string;
-  private defaultModules: string;
   private providerApiTokens: string[];
 
   constructor(
@@ -25,7 +24,6 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
     private readonly httpService: HttpService,
   ) {
     this.baseUrl = this.configService.get<string>('PROVIDER_BASE_URL');
-    this.defaultModules = '?modules=summaryDetail,defaultKeyStatistics';
     this.providerApiTokens = [
       this.configService.get<string>('PROVIDER_API_TOKEN'),
     ];
@@ -56,17 +54,25 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
   }
 
   async getQuoteSummary(symbol: string): Promise<QuoteSummary> {
-    let response;
+    let summaryDetailResponse;
+    let defaultKeyStatisticsResponse;
     try {
-      response = await this.httpService.axiosRef.get(
-        `${this.baseUrl}/v11/finance/quoteSummary/${symbol}${this.defaultModules}`,
+      summaryDetailResponse = await this.httpService.axiosRef.get(
+        `${this.baseUrl}/v11/finance/quoteSummary/${symbol}?modules=summaryDetail`,
+        { headers: { 'x-api-key': sample(this.providerApiTokens) } },
+      );
+      defaultKeyStatisticsResponse = await this.httpService.axiosRef.get(
+        `${this.baseUrl}/v11/finance/quoteSummary/${symbol}?modules=defaultKeyStatistics`,
         { headers: { 'x-api-key': sample(this.providerApiTokens) } },
       );
     } catch (err) {
       return this.mapYahooErrorResponse(err);
     }
 
-    const result = response?.data?.quoteSummary?.result?.[0];
+    const result = {
+      ...summaryDetailResponse?.data?.quoteSummary?.result?.[0],
+      ...defaultKeyStatisticsResponse?.data?.quoteSummary?.result?.[0],
+    };
 
     if (!result) {
       throw new NotFoundException(
@@ -77,28 +83,29 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
     return this.mapQuoteSummaryResponse(result);
   }
 
-  private mapQuoteSummaryResponse(item: any): QuoteSummary {
-    const peg = Number(item?.defaultKeyStatistics?.pegRatio?.raw);
+  private mapQuoteSummaryResponse({
+    summaryDetail,
+    defaultKeyStatistics,
+  }): QuoteSummary {
+    const peg = Number(defaultKeyStatistics?.pegRatio?.raw);
 
     return <QuoteSummary>{
       uuid: uuidv4(),
       timestamp: Date.now(),
       price: Number(
-        item?.summaryDetail?.ask?.raw ||
-          item?.summaryDetail?.bid?.raw ||
-          item?.summaryDetail?.open?.raw ||
-          item?.summaryDetail?.previousClose?.raw,
+        summaryDetail?.ask?.raw ||
+          summaryDetail?.bid?.raw ||
+          summaryDetail?.open?.raw ||
+          summaryDetail?.previousClose?.raw,
       ),
-      currency: item?.summaryDetail?.currency,
+      currency: summaryDetail?.currency,
       peg: peg < 500 ? peg : 0,
       enterpriseToRevenue: Number(
-        item?.defaultKeyStatistics?.enterpriseToRevenue?.raw,
+        defaultKeyStatistics?.enterpriseToRevenue?.raw,
       ),
-      enterpriseToEbitda: Number(
-        item?.defaultKeyStatistics?.enterpriseToEbitda?.raw,
-      ),
+      enterpriseToEbitda: Number(defaultKeyStatistics?.enterpriseToEbitda?.raw),
       shortPercentOfFloat: Number(
-        item?.defaultKeyStatistics?.shortPercentOfFloat?.raw,
+        defaultKeyStatistics?.shortPercentOfFloat?.raw,
       ),
     };
   }
