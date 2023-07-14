@@ -2507,17 +2507,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*":
+"@types/node@npm:*, @types/node@npm:^20.4.1":
   version: 20.4.1
   resolution: "@types/node@npm:20.4.1"
   checksum: 22cbcc792f2eb636fe4188778ed0f32658ab872aa7fcb9847b3fa289a42b14b9f5e30c6faec50ef3c7adbc6c2a246926e5858136bb8b10c035a3fcaa6afbeed2
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^18.11.9":
-  version: 18.16.19
-  resolution: "@types/node@npm:18.16.19"
-  checksum: 63c31f09616508aa7135380a4c79470a897b75f9ff3a70eb069e534dfabdec3f32fb0f9df5939127f1086614d980ddea0fa5e8cc29a49103c4f74cd687618aaf
   languageName: node
   linkType: hard
 
@@ -4851,7 +4844,7 @@ __metadata:
     "@types/express": ^4.17.13
     "@types/jest": 28.1.4
     "@types/lodash": ^4.14.187
-    "@types/node": ^18.11.9
+    "@types/node": ^20.4.1
     "@types/passport-jwt": ^3.0.7
     "@types/supertest": ^2.0.11
     "@typescript-eslint/eslint-plugin": ^5.61.0
