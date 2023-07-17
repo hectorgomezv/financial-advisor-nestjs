@@ -1456,16 +1456,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/axios@npm:^1.0.0":
-  version: 1.0.1
-  resolution: "@nestjs/axios@npm:1.0.1"
-  dependencies:
-    axios: 1.2.1
+"@nestjs/axios@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@nestjs/axios@npm:3.0.0"
   peerDependencies:
-    "@nestjs/common": ^7.0.0 || ^8.0.0 || ^9.0.0
+    "@nestjs/common": ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
+    axios: ^1.3.1
     reflect-metadata: ^0.1.12
     rxjs: ^6.0.0 || ^7.0.0
-  checksum: c24c8c607e33401f4fb39c363760b028d7eeca5056a40cf5e7af0b83d93bcd43ec336383574d07c83a16d914ec4d60bb4a36223ac665e934ba0cd70a334d438d
+  checksum: 0483ef5a10ed920eb84756472de59b5bd83d09f152de9b769f68a57bd9c2c922961545c50001ac3ea45584cf991aee355b8fef4fe249b849fded4f1df92244f6
   languageName: node
   linkType: hard
 
@@ -3307,17 +3306,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:1.2.1":
-  version: 1.2.1
-  resolution: "axios@npm:1.2.1"
-  dependencies:
-    follow-redirects: ^1.15.0
-    form-data: ^4.0.0
-    proxy-from-env: ^1.1.0
-  checksum: c4dc4e119064c9aed09a3de309bedb797a139a6fb372223aafe3e0c10a7d4a14e4d3e9c9d309467fadb9d2b490b891ee3df96ef5b55716bb971910466ff9f0c5
-  languageName: node
-  linkType: hard
-
 "axios@npm:^1.1.3":
   version: 1.4.0
   resolution: "axios@npm:1.4.0"
@@ -4912,7 +4900,7 @@ __metadata:
   resolution: "financial-advisor@workspace:."
   dependencies:
     "@faker-js/faker": ^8.0.2
-    "@nestjs/axios": ^1.0.0
+    "@nestjs/axios": ^3.0.0
     "@nestjs/cli": ^9.0.0
     "@nestjs/common": ^10.0.5
     "@nestjs/config": ^2.2.0
