@@ -1075,16 +1075,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/mongoose@npm:^9.2.0":
-  version: 9.2.2
-  resolution: "@nestjs/mongoose@npm:9.2.2"
+"@nestjs/mongoose@npm:^10.0.1":
+  version: 10.0.1
+  resolution: "@nestjs/mongoose@npm:10.0.1"
   peerDependencies:
-    "@nestjs/common": ^8.0.0 || ^9.0.0
-    "@nestjs/core": ^8.0.0 || ^9.0.0
+    "@nestjs/common": ^8.0.0 || ^9.0.0 || ^10.0.0
+    "@nestjs/core": ^8.0.0 || ^9.0.0 || ^10.0.0
     mongoose: ^6.0.2 || ^7.0.0
     reflect-metadata: ^0.1.12
     rxjs: ^7.0.0
-  checksum: c429b2dec4c0b27e2e5b7b7a748b46992d033b971a097c7ba1a3a4871cb09b5876311be30149c7bfeb3a22aeb219c3eee3b687559ef4483f0f671b9d695862fe
+  checksum: f5fac41b31eddd14fff12dd8a551ce00d1ff118d8e44c9f6b5a1c246b601158b380d5bbdfe6eda871e2e0f43ca0c7f1b64cb5a54feaeffd4e88ca43424d7824b
   languageName: node
   linkType: hard
 
@@ -3933,7 +3933,7 @@ __metadata:
     "@nestjs/core": ^10.1.0
     "@nestjs/jwt": ^10.1.0
     "@nestjs/mapped-types": "*"
-    "@nestjs/mongoose": ^9.2.0
+    "@nestjs/mongoose": ^10.0.1
     "@nestjs/passport": ^10.0.0
     "@nestjs/platform-express": ^9.0.0
     "@nestjs/schedule": ^3.0.1
