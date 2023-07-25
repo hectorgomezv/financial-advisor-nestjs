@@ -1,9 +1,8 @@
 name: CI
 
 on:
-  push:
-    tags:
-      - '*'
+  release:
+    types: [published]
 
 jobs:
   prettier:
@@ -44,7 +43,7 @@ jobs:
       - name: Start MongoDB
         uses: supercharge/mongodb-github-action@1.8.0
         with:
-         mongodb-version: ${{ matrix.mongodb-version }}
+          mongodb-version: ${{ matrix.mongodb-version }}
       - name: Start Redis
         uses: supercharge/redis-github-action@1.4.0
         with:
@@ -52,7 +51,7 @@ jobs:
       - run: yarn install --immutable
       - run: yarn run build
       - run: yarn run test:cov --runInBand
-        env: 
+        env:
           EXCHANGE_RATES_PROVIDER_APP_ID: ${{ secrets.EXCHANGE_RATES_PROVIDER_APP_ID }}
           MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
           MONGO_DATABASE_NAME: ${{ secrets.MONGO_DATABASE_NAME }}
@@ -63,7 +62,6 @@ jobs:
           E2E_AUTH_EMAIL: ${{ secrets.E2E_AUTH_EMAIL }}
           E2E_AUTH_PASSWORD: ${{ secrets.E2E_AUTH_PASSWORD }}
           E2E_AUTH_URL: ${{ secrets.E2E_AUTH_URL }}
-        
 
   build:
     runs-on: ubuntu-latest
