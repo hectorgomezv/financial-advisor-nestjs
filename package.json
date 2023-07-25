@@ -57,7 +57,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^8.0.2",
-    "@nestjs/cli": "^9.0.0",
+    "@nestjs/cli": "^10.1.10",
     "@nestjs/schematics": "^10.0.1",
     "@nestjs/testing": "^10.0.5",
     "@types/cron": "^2.0.0",
