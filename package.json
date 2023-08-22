@@ -45,7 +45,7 @@
     "migrate-mongo": "^10.0.0",
     "money": "^0.2.0",
     "mongoose": "^7.4.3",
-    "nestjs-pino": "^3.1.1",
+    "nestjs-pino": "^3.4.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "pino-http": "^8.4.0",
