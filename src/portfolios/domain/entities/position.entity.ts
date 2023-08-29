@@ -7,4 +7,5 @@ export class Position {
   symbol: string;
   value: number;
   blocked: boolean;
+  sharesUpdatedAt: Date;
 }

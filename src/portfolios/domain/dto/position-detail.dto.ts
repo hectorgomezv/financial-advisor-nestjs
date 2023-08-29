@@ -12,4 +12,5 @@ export class PositionDetailDto {
   deltaShares: number;
   companyState: CompanyState;
   blocked: boolean;
+  sharesUpdatedAt: Date | null;
 }

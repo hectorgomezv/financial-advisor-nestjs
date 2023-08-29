@@ -18,4 +18,6 @@ export class Position implements DomainPosition {
   value: number;
   @ApiProperty()
   blocked: boolean;
+  @ApiProperty()
+  sharesUpdatedAt: Date;
 }
