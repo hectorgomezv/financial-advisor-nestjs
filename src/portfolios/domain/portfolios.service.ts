@@ -74,9 +74,8 @@ export class PortfoliosService implements OnApplicationBootstrap {
 
     const positions =
       await this.positionService.getPositionDetailsByPortfolioUuid(portfolio);
-    const state = await this.portfolioStatesService.getLastByPortfolioUuid(
-      uuid,
-    );
+    const state =
+      await this.portfolioStatesService.getLastByPortfolioUuid(uuid);
 
     return <PortfolioDetailDto>{
       uuid,

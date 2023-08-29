@@ -22,6 +22,9 @@ export class PositionModel {
 
   @Prop({ required: true })
   blocked: boolean;
+
+  @Prop({ required: true })
+  sharesUpdatedAt: Date;
 }
 
 export const PositionSchema = SchemaFactory.createForClass(PositionModel);

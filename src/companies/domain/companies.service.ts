@@ -76,9 +76,8 @@ export class CompaniesService implements OnApplicationBootstrap {
       throw new NotFoundException('Company not found');
     }
 
-    const state = await this.companyStatesService.getLastStateByCompanyUuid(
-      uuid,
-    );
+    const state =
+      await this.companyStatesService.getLastStateByCompanyUuid(uuid);
 
     return <CompanyWithState>{ ...company, state };
   }
