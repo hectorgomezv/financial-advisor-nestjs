@@ -25,7 +25,10 @@ describe('PortfolioStatesService', () => {
         positionFactory(),
         positionFactory(),
       ];
-      const totalValueEUR = positions.reduce((sum, pos) => sum + pos.value, 0);
+      const totalValueEUR = positions.reduce(
+        (sum, pos) => sum + pos.value,
+        portfolio.cash,
+      );
       const sumWeights = positions.reduce(
         (acc, pos) => acc + pos.targetWeight,
         0,
@@ -41,8 +44,7 @@ describe('PortfolioStatesService', () => {
           totalValueEUR,
           cash: portfolio.cash,
           roicEUR:
-            totalValueEUR +
-            portfolio.cash -
+            totalValueEUR -
             portfolio.contributions.reduce((sum, i) => sum + i.amountEUR, 0),
         }),
       );
