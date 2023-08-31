@@ -14,8 +14,8 @@ export class PortfolioStatesService {
 
   async createPortfolioState(portfolio: Portfolio, positions: Position[]) {
     const sumWeights = positions.reduce((acc, p) => acc + p.targetWeight, 0);
-    const totalValueEUR = positions.reduce((sum, pos) => sum + pos.value, 0);
     const cash = portfolio.cash ?? 0;
+    const totalValueEUR = positions.reduce((sum, pos) => sum + pos.value, cash);
     const contributionsAmount = portfolio.contributions
       ? portfolio.contributions.reduce(
           (sum, contribution) => sum + contribution.amountEUR,
@@ -31,7 +31,7 @@ export class PortfolioStatesService {
       sumWeights,
       cash,
       totalValueEUR,
-      roicEUR: totalValueEUR + cash - contributionsAmount,
+      roicEUR: totalValueEUR - contributionsAmount,
     });
   }
 
