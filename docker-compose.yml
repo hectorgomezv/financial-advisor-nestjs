@@ -1,6 +1,6 @@
 version: '3'
 services:
-  fa-nginx: 
+  fa-nginx:
     links:
       - financial-advisor-nestjs
       - fa-auth-service
@@ -31,9 +31,8 @@ services:
       - fa-redis
 
   fa-auth-service:
-    image: "hectorgomezv1/auth-service:${FA_AUTH_SERVICE_IMAGE_RELEASE}"
     ports:
-      - "4200:4200"
+      - '4200:4200'
     environment:
       - ACTIVATION_CODE_EXPIRATION=${FA_AUTH_SERVICE_ACTIVATION_CODE_EXPIRATION}
       - BASE_EMAIL=${FA_AUTH_SERVICE_BASE_EMAIL}
@@ -57,7 +56,7 @@ services:
 
   fa-frontend:
     ports:
-      - "9000:9000"
+      - '9000:9000'
     links:
       - financial-advisor-nestjs
     depends_on:
@@ -66,7 +65,7 @@ services:
   fa-mongo:
     image: mongo:6
     ports:
-      - "27017:27017"
+      - '27017:27017'
     command: [--auth]
     volumes:
       - mongo_data:/data/db
@@ -74,7 +73,7 @@ services:
   fa-redis:
     image: redis:7
     ports:
-      - "6379:6379"
+      - '6379:6379'
     command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
     volumes:
       - redis_data:/data

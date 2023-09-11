@@ -1,20 +1,20 @@
 version: '3'
 services:
-  fa-nginx: 
+  fa-nginx:
     build: ./docker/nginx
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
     extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - 'host.docker.internal:host-gateway'
 
   financial-advisor-nestjs:
-    image: "hectorgomezv1/financial-advisor-nestjs:${IMAGE_RELEASE}"
+    image: 'hectorgomezv1/financial-advisor-nestjs:${IMAGE_RELEASE}'
     ports:
-      - "5100:5100"
+      - '5100:5100'
     volumes:
       - fa_logs:/var/log
 
@@ -27,8 +27,11 @@ services:
       - ./certbot/www:/var/www/certbot
     command: certonly --webroot -w /var/www/certbot --force-renewal --email ${CERT_EMAIL} -d ${CERT_DOMAIN} --agree-tos
 
+  fa-auth-service:
+    image: 'hectorgomezv1/auth-service:${FA_AUTH_SERVICE_IMAGE_RELEASE}'
+
   fa-frontend:
-    image: "hectorgomezv1/fa-frontend:${FA_FRONTEND_IMAGE_RELEASE}"
+    image: 'hectorgomezv1/fa-frontend:${FA_FRONTEND_IMAGE_RELEASE}'
 
   fa-mongo:
     command: [--auth]
