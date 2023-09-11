@@ -1021,12 +1021,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/common@npm:^10.2.0":
-  version: 10.2.0
-  resolution: "@nestjs/common@npm:10.2.0"
+"@nestjs/common@npm:^10.2.5":
+  version: 10.2.5
+  resolution: "@nestjs/common@npm:10.2.5"
   dependencies:
     iterare: 1.2.1
-    tslib: 2.6.1
+    tslib: 2.6.2
     uid: 2.0.2
   peerDependencies:
     class-transformer: "*"
@@ -1038,7 +1038,7 @@ __metadata:
       optional: true
     class-validator:
       optional: true
-  checksum: 0a0a085f0b499f8e2b30b83381351a038b1dd53a9a12f2cf8ab39d3f65c5a1a36cac9c28795fb1d56a3a13265e30a983633574f914429a56022f7cb44eeab969
+  checksum: aa9c84059f33c306aff94b58b52cceba0ea065206b078db0db905c56baea3c6471e7e9791ae7ef6d318c536ce3b853136e360db99d0c2188f75b34a4bbec6e5f
   languageName: node
   linkType: hard
 
@@ -4004,7 +4004,7 @@ __metadata:
     "@faker-js/faker": ^8.0.2
     "@nestjs/axios": ^3.0.0
     "@nestjs/cli": ^10.1.17
-    "@nestjs/common": ^10.2.0
+    "@nestjs/common": ^10.2.5
     "@nestjs/config": ^3.0.1
     "@nestjs/core": ^10.2.4
     "@nestjs/jwt": ^10.1.0
@@ -8066,13 +8066,6 @@ __metadata:
     minimist: ^1.2.6
     strip-bom: ^3.0.0
   checksum: 28c5f7bbbcabc9dabd4117e8fdc61483f6872a1c6b02a4b1c4d68c5b79d06896c3cc9547610c4c3ba64658531caa2de13ead1ea1bf321c7b53e969c4752b98c7
-  languageName: node
-  linkType: hard
-
-"tslib@npm:2.6.1":
-  version: 2.6.1
-  resolution: "tslib@npm:2.6.1"
-  checksum: b0d176d176487905b66ae4d5856647df50e37beea7571c53b8d10ba9222c074b81f1410fb91da13debaf2cbc970663609068bdebafa844ea9d69b146527c38fe
   languageName: node
   linkType: hard
 
