@@ -1197,15 +1197,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/swagger@npm:^7.1.8":
-  version: 7.1.8
-  resolution: "@nestjs/swagger@npm:7.1.8"
+"@nestjs/swagger@npm:^7.1.11":
+  version: 7.1.11
+  resolution: "@nestjs/swagger@npm:7.1.11"
   dependencies:
     "@nestjs/mapped-types": 2.0.2
     js-yaml: 4.1.0
     lodash: 4.17.21
     path-to-regexp: 3.2.0
-    swagger-ui-dist: 5.3.1
+    swagger-ui-dist: 5.6.2
   peerDependencies:
     "@fastify/static": ^6.0.0
     "@nestjs/common": ^9.0.0 || ^10.0.0
@@ -1220,7 +1220,7 @@ __metadata:
       optional: true
     class-validator:
       optional: true
-  checksum: 771d9ca2dda69cd548184a59086c7a8202a1af554dcb73357de72be9376e56572aaa003fda0ea732c54fcb7d7ea55d80d5beb64aa3d6c1877510e2c70d9d1f9b
+  checksum: 09887a2144cc2101f2389787f6a2cfc1461e85b8e04aa1d8943bca103acdab04893d31efec3289e4582d80f19758edf4fa8a2f110bf4d909de2188fdb55cf765
   languageName: node
   linkType: hard
 
@@ -4014,7 +4014,7 @@ __metadata:
     "@nestjs/platform-express": ^10.2.4
     "@nestjs/schedule": ^3.0.3
     "@nestjs/schematics": ^10.0.2
-    "@nestjs/swagger": ^7.1.8
+    "@nestjs/swagger": ^7.1.11
     "@nestjs/testing": ^10.2.4
     "@types/cron": ^2.4.0
     "@types/express": ^4.17.13
@@ -7750,10 +7750,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"swagger-ui-dist@npm:5.3.1":
-  version: 5.3.1
-  resolution: "swagger-ui-dist@npm:5.3.1"
-  checksum: babf26f3a40a932db22248a620dbb0c5c68721c4165b173537a949c6ec3df3a89982db484651e1f5fe31f3cdb1037eeef13fb6b746efbb72902d7410291070c8
+"swagger-ui-dist@npm:5.6.2":
+  version: 5.6.2
+  resolution: "swagger-ui-dist@npm:5.6.2"
+  checksum: 55ee56c205d576917014d8c4603475d4b707195877a2f8d257312f11de67e3b5a3163ce9120b55103506e26a76bfc3455e08bc074e7e71d7a3abd4066600897e
   languageName: node
   linkType: hard
 
