@@ -5,10 +5,13 @@ services:
       context: ./docker/nginx
       dockerfile: Dockerfile.dev
     ports:
-      - "80:80"
+      - '80:80'
 
   financial-advisor-nestjs:
-    build: "./"
+    build: './'
+
+  fa-auth-service:
+    build: '../auth-service'
 
   fa-frontend:
     build:
