@@ -33,7 +33,7 @@
     "@nestjs/mongoose": "^10.0.1",
     "@nestjs/passport": "^10.0.2",
     "@nestjs/platform-express": "^10.2.6",
-    "@nestjs/schedule": "^3.0.3",
+    "@nestjs/schedule": "^3.0.4",
     "@nestjs/swagger": "^7.1.11",
     "axios": "^1.5.1",
     "class-transformer": "^0.5.1",
