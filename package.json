@@ -73,7 +73,7 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "jest": "28.1.2",
-    "pino-pretty": "^10.2.0",
+    "pino-pretty": "^10.2.3",
     "prettier": "^3.0.3",
     "source-map-support": "^0.5.20",
     "supertest": "^6.1.3",
