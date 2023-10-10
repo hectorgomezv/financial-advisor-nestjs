@@ -1234,9 +1234,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/testing@npm:^10.2.5":
-  version: 10.2.5
-  resolution: "@nestjs/testing@npm:10.2.5"
+"@nestjs/testing@npm:^10.2.7":
+  version: 10.2.7
+  resolution: "@nestjs/testing@npm:10.2.7"
   dependencies:
     tslib: 2.6.2
   peerDependencies:
@@ -1249,7 +1249,7 @@ __metadata:
       optional: true
     "@nestjs/platform-express":
       optional: true
-  checksum: 124e8368fd8864c9e7d7591b52b938126c6a29c922fe3aaca77fd0a4e6949a77403ae6e9b59af8a4621f83ccd551d2f91c031953230da397003cb326dd5b94a3
+  checksum: 598f6b206d4dad0e03ef78fd5579df07212443983dfa2c7036f56e1f865f5175ee6d44aadca873e9f75c04550b0cb375d03b9f1343db9b55f4765bdb277cf95d
   languageName: node
   linkType: hard
 
@@ -4038,7 +4038,7 @@ __metadata:
     "@nestjs/schedule": ^3.0.4
     "@nestjs/schematics": ^10.0.2
     "@nestjs/swagger": ^7.1.13
-    "@nestjs/testing": ^10.2.5
+    "@nestjs/testing": ^10.2.7
     "@types/cron": ^2.4.0
     "@types/express": ^4.17.18
     "@types/jest": 28.1.4
