@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
+import { sub } from 'date-fns';
 import { Model } from 'mongoose';
 import { from } from '../../common/cache/cache.key.mapper';
 import { RedisClient } from '../../common/cache/redis.client';
@@ -106,11 +107,15 @@ export class CompanyStatesRepository {
     return result;
   }
 
+  /**
+   * Gets {@link CompanyMetrics} for the last year.
+   */
   async getMetricsByCompanyUuid(companyUuid: string): Promise<CompanyMetrics> {
     const metrics = await this.model
       .aggregate()
       .match({
         companyUuid,
+        timestamp: { $gte: sub(new Date(), { years: 1 }) },
         enterpriseToRevenue: { $ne: NaN },
         enterpriseToEbitda: { $ne: NaN },
         peg: { $ne: NaN },
