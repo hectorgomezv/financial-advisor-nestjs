@@ -116,9 +116,9 @@ export class CompanyStatesRepository {
       .match({
         companyUuid,
         timestamp: { $gte: sub(new Date(), { years: 1 }) },
-        enterpriseToRevenue: { $ne: [NaN, 0] },
-        enterpriseToEbitda: { $ne: [NaN, 0] },
-        peg: { $ne: [NaN, 0] },
+        enterpriseToRevenue: { $ne: NaN, $gt: 0, $exists: true },
+        enterpriseToEbitda: { $ne: NaN, $gt: 0, $exists: true },
+        peg: { $ne: NaN, $gt: 0, $exists: true },
       })
       .group({
         _id: '$companyUuid',
