@@ -4130,7 +4130,7 @@ __metadata:
     nestjs-pino: ^3.5.0
     passport: ^0.6.0
     passport-jwt: ^4.0.0
-    pino-http: ^8.5.0
+    pino-http: ^8.5.1
     pino-pretty: ^10.2.3
     prettier: ^3.0.3
     prom-client: ^15.0.0
@@ -6825,15 +6825,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pino-http@npm:^8.5.0":
-  version: 8.5.0
-  resolution: "pino-http@npm:8.5.0"
+"pino-http@npm:^8.5.1":
+  version: 8.5.1
+  resolution: "pino-http@npm:8.5.1"
   dependencies:
     get-caller-file: ^2.0.5
     pino: ^8.0.0
     pino-std-serializers: ^6.0.0
     process-warning: ^2.0.0
-  checksum: fa166bf5bb39de4708c5992a529b0a91fd42fe4456b8135616601878f1bfc7e3f7e0c74d38ee8b63adc78e2d493da5906f3f4d5c6f37b1f3ff54672f0003b840
+  checksum: a30c8e310c4d52dca2d0633bf85ee711b5a74294c97444623ca0baf8c4fa94c3fddbaf05149a0617f138ad15343e7422fef07d2adddb90643e38ea5296a83e0c
   languageName: node
   linkType: hard
 
