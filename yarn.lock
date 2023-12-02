@@ -1057,15 +1057,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/axios@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@nestjs/axios@npm:3.0.0"
+"@nestjs/axios@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@nestjs/axios@npm:3.0.1"
   peerDependencies:
     "@nestjs/common": ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
     axios: ^1.3.1
     reflect-metadata: ^0.1.12
     rxjs: ^6.0.0 || ^7.0.0
-  checksum: 0483ef5a10ed920eb84756472de59b5bd83d09f152de9b769f68a57bd9c2c922961545c50001ac3ea45584cf991aee355b8fef4fe249b849fded4f1df92244f6
+  checksum: 01cebc64efa7a1d9df7a9053fbc5124986a95078789a0f280a2a61c31601a70a35745e07fc385497b4f85c7bdb6216a3575728646f1e6e684c038ac31900129c
   languageName: node
   linkType: hard
 
@@ -4144,7 +4144,7 @@ __metadata:
   resolution: "financial-advisor@workspace:."
   dependencies:
     "@faker-js/faker": ^8.2.0
-    "@nestjs/axios": ^3.0.0
+    "@nestjs/axios": ^3.0.1
     "@nestjs/cli": ^10.2.1
     "@nestjs/common": ^10.2.10
     "@nestjs/config": ^3.1.1
