@@ -3319,13 +3319,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cron@npm:^3.1.1":
-  version: 3.1.1
-  resolution: "cron@npm:3.1.1"
+"cron@npm:^3.1.6":
+  version: 3.1.6
+  resolution: "cron@npm:3.1.6"
   dependencies:
     "@types/luxon": ~3.3.0
-    luxon: ~3.3.0
-  checksum: 9826fec5936bc341a37258f6bd3027dae595e82f220d9981100b13f61d96465b685a2e87b353951037bbecbc82cf06f8b4cbff55456e531e40056048f8b7e7f9
+    luxon: ~3.4.0
+  checksum: e97bb6f85acf3195577c609f28bbac2e22812d8632802752a13591882deceeeeefd2c91c1293fb5102ef442f96ae17ca687854fd0b005149aae9a25834363e1d
   languageName: node
   linkType: hard
 
@@ -4170,7 +4170,7 @@ __metadata:
     axios: ^1.6.2
     class-transformer: ^0.5.1
     class-validator: ^0.14.0
-    cron: ^3.1.1
+    cron: ^3.1.6
     date-fns: ^2.29.3
     eslint: ^8.53.0
     eslint-config-prettier: ^9.1.0
@@ -5969,7 +5969,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"luxon@npm:^3.2.1, luxon@npm:~3.3.0":
+"luxon@npm:^3.2.1":
   version: 3.3.0
   resolution: "luxon@npm:3.3.0"
   checksum: 50cf17a0dc155c3dcacbeae8c0b7e80db425e0ba97b9cbdf12a7fc142d841ff1ab1560919f033af46240ed44e2f70c49f76e3422524c7fc8bb8d81ca47c66187
