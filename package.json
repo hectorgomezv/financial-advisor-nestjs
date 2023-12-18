@@ -46,7 +46,7 @@
     "money": "^0.2.0",
     "mongoose": "^7.6.3",
     "nestjs-pino": "^3.5.0",
-    "passport": "^0.6.0",
+    "passport": "^0.7.0",
     "passport-jwt": "^4.0.0",
     "pino-http": "^8.5.1",
     "prom-client": "^15.0.0",
