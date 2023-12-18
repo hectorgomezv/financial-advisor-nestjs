@@ -4153,7 +4153,7 @@ __metadata:
     nestjs-pino: ^3.5.0
     passport: ^0.7.0
     passport-jwt: ^4.0.0
-    pino-http: ^8.5.1
+    pino-http: ^8.6.0
     pino-pretty: ^10.3.0
     prettier: ^3.1.0
     prom-client: ^15.0.0
@@ -6868,7 +6868,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pino-abstract-transport@npm:^1.0.0, pino-abstract-transport@npm:v1.0.0":
+"pino-abstract-transport@npm:^1.0.0":
   version: 1.0.0
   resolution: "pino-abstract-transport@npm:1.0.0"
   dependencies:
@@ -6878,15 +6878,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pino-http@npm:^8.5.1":
-  version: 8.5.1
-  resolution: "pino-http@npm:8.5.1"
+"pino-abstract-transport@npm:v1.1.0":
+  version: 1.1.0
+  resolution: "pino-abstract-transport@npm:1.1.0"
+  dependencies:
+    readable-stream: ^4.0.0
+    split2: ^4.0.0
+  checksum: cc84caabee5647b5753ae484d5f63a1bca0f6e1791845e2db2b6d830a561c2b5dd1177720f68d78994c8a93aecc69f2729e6ac2bc871a1bf5bb4b0ec17210668
+  languageName: node
+  linkType: hard
+
+"pino-http@npm:^8.6.0":
+  version: 8.6.0
+  resolution: "pino-http@npm:8.6.0"
   dependencies:
     get-caller-file: ^2.0.5
-    pino: ^8.0.0
+    pino: ^8.17.0
     pino-std-serializers: ^6.0.0
     process-warning: ^2.0.0
-  checksum: a30c8e310c4d52dca2d0633bf85ee711b5a74294c97444623ca0baf8c4fa94c3fddbaf05149a0617f138ad15343e7422fef07d2adddb90643e38ea5296a83e0c
+  checksum: ebcde8cfa86be7030b719a6d6c55d3e92e2c6c3a21e6e21e68e7bb910223272e2c206d356dd311082e2d2d133d4a5586fd40758efe43ca0469061d887c68a7a2
   languageName: node
   linkType: hard
 
@@ -6921,24 +6931,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pino@npm:^8.0.0":
-  version: 8.14.1
-  resolution: "pino@npm:8.14.1"
+"pino@npm:^8.17.0":
+  version: 8.17.1
+  resolution: "pino@npm:8.17.1"
   dependencies:
     atomic-sleep: ^1.0.0
     fast-redact: ^3.1.1
     on-exit-leak-free: ^2.1.0
-    pino-abstract-transport: v1.0.0
+    pino-abstract-transport: v1.1.0
     pino-std-serializers: ^6.0.0
     process-warning: ^2.0.0
     quick-format-unescaped: ^4.0.3
     real-require: ^0.2.0
     safe-stable-stringify: ^2.3.1
-    sonic-boom: ^3.1.0
+    sonic-boom: ^3.7.0
     thread-stream: ^2.0.0
   bin:
     pino: bin.js
-  checksum: 72dcae8f550d375695bb8745f11b30c42aaa20d0bcab8f546ca5af0684d784453850949fe1b244206793e813a46d72cbbf0dda8aed2cee86e9491ba44a643e3e
+  checksum: 12fda9f8942ff299dcab6aace9396c90f650db88b82c5954fc91ab7e05765a15dc655072749342b539916406bbe13a8983c13498a95cd7e126218f4b830126a2
   languageName: node
   linkType: hard
 
@@ -7653,12 +7663,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sonic-boom@npm:^3.0.0, sonic-boom@npm:^3.1.0":
+"sonic-boom@npm:^3.0.0":
   version: 3.3.0
   resolution: "sonic-boom@npm:3.3.0"
   dependencies:
     atomic-sleep: ^1.0.0
   checksum: 4a290dd0f3edf49894bb72c631ee304dc3f9be0752c43d516808a365f341821f5cf49997c80ee7c0e67167e0e5131dc71afe7c58812858eb965d6b9746c0cac7
+  languageName: node
+  linkType: hard
+
+"sonic-boom@npm:^3.7.0":
+  version: 3.7.0
+  resolution: "sonic-boom@npm:3.7.0"
+  dependencies:
+    atomic-sleep: ^1.0.0
+  checksum: 528f0f7f7e09dcdb02ad5985039f66554266cbd8813f9920781607c9248e01f468598c1334eab2cc740c016a63c8b2a20e15c3f618cddb08ea1cfb4a390a796e
   languageName: node
   linkType: hard
 
