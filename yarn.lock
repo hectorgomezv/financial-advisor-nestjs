@@ -3309,12 +3309,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"date-fns@npm:^2.28.0, date-fns@npm:^2.29.3":
+"date-fns@npm:^2.28.0":
   version: 2.30.0
   resolution: "date-fns@npm:2.30.0"
   dependencies:
     "@babel/runtime": ^7.21.0
   checksum: f7be01523282e9bb06c0cd2693d34f245247a29098527d4420628966a2d9aad154bd0e90a6b1cf66d37adcb769cd108cf8a7bd49d76db0fb119af5cdd13644f4
+  languageName: node
+  linkType: hard
+
+"date-fns@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "date-fns@npm:3.0.0"
+  checksum: 679e07eb4625afa25ced624f471e90663131f053b35f9b73cb5b863829f717f887305801f05cfd1dd53c029e598289b52792f053b8a1c7082885c7e1bdb309df
   languageName: node
   linkType: hard
 
@@ -4140,7 +4147,7 @@ __metadata:
     class-transformer: ^0.5.1
     class-validator: ^0.14.0
     cron: ^3.1.6
-    date-fns: ^2.29.3
+    date-fns: ^3.0.0
     eslint: ^8.53.0
     eslint-config-prettier: ^9.1.0
     eslint-plugin-prettier: ^5.0.1
