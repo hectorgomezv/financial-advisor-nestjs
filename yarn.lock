@@ -1810,13 +1810,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/supertest@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "@types/supertest@npm:6.0.1"
+"@types/supertest@npm:^6.0.2":
+  version: 6.0.2
+  resolution: "@types/supertest@npm:6.0.2"
   dependencies:
     "@types/methods": ^1.1.4
     "@types/superagent": ^8.1.0
-  checksum: 26e849e9b173b65b18aeb2107b737f8528e865639a9d9101b005b133f9cba01ec1c0c046a3b54971d87e441fc2325694132e941fdcd225c7e19202de5dd0b12d
+  checksum: 1eafa472665757a6fd984439d11f388ae0480c6d243a6884066c474c4e0357de5373316488da503b1690c3163e075ca8c64c0c4853b3bb7deb09e05d1b64e556
   languageName: node
   linkType: hard
 
@@ -4135,7 +4135,7 @@ __metadata:
     "@types/lodash": ^4.14.202
     "@types/node": ^20.10.5
     "@types/passport-jwt": ^3.0.13
-    "@types/supertest": ^6.0.1
+    "@types/supertest": ^6.0.2
     "@typescript-eslint/eslint-plugin": ^6.16.0
     "@typescript-eslint/parser": ^6.17.0
     axios: ^1.6.2
