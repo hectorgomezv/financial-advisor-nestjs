@@ -1721,13 +1721,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/passport-jwt@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@types/passport-jwt@npm:4.0.0"
+"@types/passport-jwt@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "@types/passport-jwt@npm:4.0.1"
   dependencies:
     "@types/jsonwebtoken": "*"
     "@types/passport-strategy": "*"
-  checksum: f18d048b756356a80cda51a14e9cad51a97c86b162748373c433f9e2bb030c5947845efc03250a675e27596cdd4ca3500cc8db94e59bf428a566c34170ad40b8
+  checksum: 778f88eaefe39d845ba4824760f9b149c1e408249357514ea9b3d302c180af1faadc164af3fbf41596a23ad01f0a1c95501e193693f4db804f34713853fdc727
   languageName: node
   linkType: hard
 
@@ -4177,7 +4177,7 @@ __metadata:
     "@types/jest": 28.1.4
     "@types/lodash": ^4.14.202
     "@types/node": ^20.11.2
-    "@types/passport-jwt": ^4.0.0
+    "@types/passport-jwt": ^4.0.1
     "@types/supertest": ^6.0.2
     "@typescript-eslint/eslint-plugin": ^6.18.1
     "@typescript-eslint/parser": ^6.19.0
