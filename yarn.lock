@@ -4200,7 +4200,7 @@ __metadata:
     passport: ^0.7.0
     passport-jwt: ^4.0.0
     pino-http: ^9.0.0
-    pino-pretty: ^10.3.1
+    pino-pretty: ^11.0.0
     prettier: ^3.2.5
     prom-client: ^15.1.0
     reflect-metadata: ^0.1.13
@@ -7009,9 +7009,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pino-pretty@npm:^10.3.1":
-  version: 10.3.1
-  resolution: "pino-pretty@npm:10.3.1"
+"pino-pretty@npm:^11.0.0":
+  version: 11.0.0
+  resolution: "pino-pretty@npm:11.0.0"
   dependencies:
     colorette: ^2.0.7
     dateformat: ^4.6.3
@@ -7029,7 +7029,7 @@ __metadata:
     strip-json-comments: ^3.1.1
   bin:
     pino-pretty: bin.js
-  checksum: 51e2d670745a396ddfd12da9f7ea5c2e4dc93a84589ffb29f64f4118d4b83ab636ee21f4aee7a47adb04664d5d921fb33e039e0ea961bb1c1cffefa28444563c
+  checksum: 9915634548002c83b8217ab197e28ffdbda9f633d183b03cebb71ce8cccfc7c1295e59be4986229460a231ff71ca5bf9d5f9ff8bc291263b81e89d6688928484
   languageName: node
   linkType: hard
 
