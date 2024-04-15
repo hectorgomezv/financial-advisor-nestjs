@@ -38,7 +38,7 @@
     "axios": "^1.6.8",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
-    "cron": "^3.1.6",
+    "cron": "^3.1.7",
     "date-fns": "^3.3.1",
     "ioredis": "^5.2.3",
     "lodash": "^4.17.21",
