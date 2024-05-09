@@ -1241,16 +1241,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/schedule@npm:^4.0.1":
-  version: 4.0.1
-  resolution: "@nestjs/schedule@npm:4.0.1"
+"@nestjs/schedule@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "@nestjs/schedule@npm:4.0.2"
   dependencies:
-    cron: 3.1.6
+    cron: 3.1.7
     uuid: 9.0.1
   peerDependencies:
     "@nestjs/common": ^8.0.0 || ^9.0.0 || ^10.0.0
     "@nestjs/core": ^8.0.0 || ^9.0.0 || ^10.0.0
-  checksum: 4ab97ea3b09e3087081a8fcd09b5c113a6d5aa99b3c8a70eca83d3031ab14d8a2a53506997bee399d3f3e0adf54bbe811bf064a2a9398d464a31b2b47127e07f
+  checksum: 8910e30c85d6809cdbc0bfae3380d248e4a2adcdc0c28b9ba260a8bf5a954ef330fe9f1a811c2c5ebefc1a91104ed79e308f50b9593d1725deb9f97078efd306
   languageName: node
   linkType: hard
 
@@ -1710,13 +1710,6 @@ __metadata:
   version: 4.17.1
   resolution: "@types/lodash@npm:4.17.1"
   checksum: 01984d5b44c09ef45258f8ac6d0cf926900624064722d51a020ba179e5d4a293da0068fb278d87dc695586afe7ebd3362ec57f5c0e7c4f6c1fab9d04a80e77f5
-  languageName: node
-  linkType: hard
-
-"@types/luxon@npm:~3.3.0":
-  version: 3.3.1
-  resolution: "@types/luxon@npm:3.3.1"
-  checksum: da8f6158edacae1430f3eca5f4ab4891200ffb34aa521ef6bae407a3c50b3854907098bc4535fb2a66a2779738f3c6c48fdfd86f01117a6f4844b18536cdb7c0
   languageName: node
   linkType: hard
 
@@ -3321,17 +3314,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cron@npm:3.1.6":
-  version: 3.1.6
-  resolution: "cron@npm:3.1.6"
-  dependencies:
-    "@types/luxon": ~3.3.0
-    luxon: ~3.4.0
-  checksum: e97bb6f85acf3195577c609f28bbac2e22812d8632802752a13591882deceeeeefd2c91c1293fb5102ef442f96ae17ca687854fd0b005149aae9a25834363e1d
-  languageName: node
-  linkType: hard
-
-"cron@npm:^3.1.7":
+"cron@npm:3.1.7, cron@npm:^3.1.7":
   version: 3.1.7
   resolution: "cron@npm:3.1.7"
   dependencies:
@@ -4200,7 +4183,7 @@ __metadata:
     "@nestjs/mongoose": ^10.0.6
     "@nestjs/passport": ^10.0.3
     "@nestjs/platform-express": ^10.3.8
-    "@nestjs/schedule": ^4.0.1
+    "@nestjs/schedule": ^4.0.2
     "@nestjs/schematics": ^10.1.1
     "@nestjs/swagger": ^7.3.1
     "@nestjs/testing": ^10.3.8
