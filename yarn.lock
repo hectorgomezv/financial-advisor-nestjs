@@ -4256,7 +4256,7 @@ __metadata:
     migrate-mongo: ^11.0.0
     money: ^0.2.0
     mongoose: ^8.3.4
-    nestjs-pino: ^4.0.0
+    nestjs-pino: ^4.1.0
     passport: ^0.7.0
     passport-jwt: ^4.0.0
     pino-http: ^9.0.0
@@ -6606,13 +6606,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nestjs-pino@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "nestjs-pino@npm:4.0.0"
+"nestjs-pino@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "nestjs-pino@npm:4.1.0"
   peerDependencies:
     "@nestjs/common": ^8.0.0 || ^9.0.0 || ^10.0.0
-    pino-http: ^6.4.0 || ^7.0.0 || ^8.0.0 || ^9.0.0
-  checksum: 3f7f81ae6df1553afcf00568825b1a6ec38108ca9763c87c7fc7aca412920ba8260300abeee7cee0cf2fb01bb202bc501b06dd6bd12d092379994c7d9ee94ca3
+    pino-http: ^6.4.0 || ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
+  checksum: 83e4bee5934447edfb60ec4eeed5fb5529f0e4a12a4498920ff7de6277152ceb0b37127637f447e60faaaf8c2ef9e3a2f9f6f51c1e936e50246e485d36972639
   languageName: node
   linkType: hard
 
