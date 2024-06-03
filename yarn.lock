@@ -1225,9 +1225,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/platform-express@npm:^10.3.8":
-  version: 10.3.8
-  resolution: "@nestjs/platform-express@npm:10.3.8"
+"@nestjs/platform-express@npm:^10.3.9":
+  version: 10.3.9
+  resolution: "@nestjs/platform-express@npm:10.3.9"
   dependencies:
     body-parser: 1.20.2
     cors: 2.8.5
@@ -1237,7 +1237,7 @@ __metadata:
   peerDependencies:
     "@nestjs/common": ^10.0.0
     "@nestjs/core": ^10.0.0
-  checksum: 678384fe60f4f1255ad70926cef05f349229739a6e3b5cdf13a6c26d2f915220c41ce21e08cffc3a2fa9dfb237b275a06fa3f405f49a1056fc3f3558938b724f
+  checksum: 843523067566b9ebb83ace847f594df37f1238afb9f59131b090a3491a08df207784c1a4e6cacea28bcc6b85a7d7c09c603fa9e0da34c402880580ed579093e5
   languageName: node
   linkType: hard
 
@@ -4163,7 +4163,7 @@ __metadata:
     "@nestjs/mapped-types": "*"
     "@nestjs/mongoose": ^10.0.6
     "@nestjs/passport": ^10.0.3
-    "@nestjs/platform-express": ^10.3.8
+    "@nestjs/platform-express": ^10.3.9
     "@nestjs/schedule": ^4.0.2
     "@nestjs/schematics": ^10.1.1
     "@nestjs/swagger": ^7.3.1
