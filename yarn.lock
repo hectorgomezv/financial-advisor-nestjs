@@ -1741,12 +1741,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.12.12":
-  version: 20.12.12
-  resolution: "@types/node@npm:20.12.12"
+"@types/node@npm:^20.14.3":
+  version: 20.14.3
+  resolution: "@types/node@npm:20.14.3"
   dependencies:
     undici-types: ~5.26.4
-  checksum: 5373983874b9af7c216e7ca5d26b32a8d9829c703a69f1e66f2113598b5be8582c0e009ca97369f1ec9a6282b3f92812208d06eb1e9fc3bd9b939b022303d042
+  checksum: c00cedce9f469415a50c0a0562860ef50e896fdc598f2cd56316a15d863410b155f3004bebd90b1fa04af4b3a5584ae9803a6dbe22604dab3889692eb84aa85d
   languageName: node
   linkType: hard
 
@@ -4172,7 +4172,7 @@ __metadata:
     "@types/express": ^4.17.21
     "@types/jest": 28.1.4
     "@types/lodash": ^4.17.4
-    "@types/node": ^20.12.12
+    "@types/node": ^20.14.3
     "@types/passport-jwt": ^4.0.1
     "@types/supertest": ^6.0.2
     "@typescript-eslint/eslint-plugin": ^7.10.0
