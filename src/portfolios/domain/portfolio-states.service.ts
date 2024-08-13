@@ -7,13 +7,17 @@ import { PortfolioState } from './entities/portfolio-state.entity';
 import { Portfolio } from './entities/portfolio.entity';
 import { Position } from './entities/position.entity';
 import { TimeRange } from './entities/time-range.enum';
+import { round } from 'lodash';
 
 @Injectable()
 export class PortfolioStatesService {
   constructor(private readonly repository: PortfolioStatesRepository) {}
 
   async createPortfolioState(portfolio: Portfolio, positions: Position[]) {
-    const sumWeights = positions.reduce((acc, p) => acc + p.targetWeight, 0);
+    const sumWeights = round(
+      positions.reduce((acc, p) => acc + p.targetWeight, 0),
+      2,
+    );
     const cash = portfolio.cash ?? 0;
     const totalValueEUR = positions.reduce((sum, pos) => sum + pos.value, cash);
     const contributionsAmount = portfolio.contributions

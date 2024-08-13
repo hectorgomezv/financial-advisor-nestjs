@@ -4,6 +4,7 @@ import { TimeRange } from './entities/time-range.enum';
 import { portfolioFactory } from './entities/__tests__/portfolio.factory';
 import { positionFactory } from './entities/__tests__/position.factory';
 import { PortfolioStatesService } from './portfolio-states.service';
+import { round } from 'lodash';
 
 describe('PortfolioStatesService', () => {
   const portfolioStatesRepository = jest.mocked({
@@ -29,9 +30,9 @@ describe('PortfolioStatesService', () => {
         (sum, pos) => sum + pos.value,
         portfolio.cash,
       );
-      const sumWeights = positions.reduce(
-        (acc, pos) => acc + pos.targetWeight,
-        0,
+      const sumWeights = round(
+        positions.reduce((acc, pos) => acc + pos.targetWeight, 0),
+        2,
       );
 
       await service.createPortfolioState(portfolio, positions);
