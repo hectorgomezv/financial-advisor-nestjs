@@ -1,7 +1,7 @@
 #
 # BUILD CONTAINER
 #
-FROM node:20 as base
+FROM node:22 as base
 USER node
 ENV NODE_ENV production
 WORKDIR /app
@@ -15,7 +15,7 @@ RUN yarn run build
 #
 # PRODUCTION CONTAINER
 #
-FROM node:20-alpine as production
+FROM node:22-alpine as production
 RUN touch /var/log/fa.log && chown node:node /var/log/fa.log
 USER node
 ARG GITHUB_RUN_NUMBER
