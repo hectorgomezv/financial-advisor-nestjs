@@ -1265,9 +1265,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/schematics@npm:^10.1.3":
-  version: 10.1.3
-  resolution: "@nestjs/schematics@npm:10.1.3"
+"@nestjs/schematics@npm:^10.1.4":
+  version: 10.1.4
+  resolution: "@nestjs/schematics@npm:10.1.4"
   dependencies:
     "@angular-devkit/core": 17.3.8
     "@angular-devkit/schematics": 17.3.8
@@ -1276,7 +1276,7 @@ __metadata:
     pluralize: 8.0.0
   peerDependencies:
     typescript: ">=4.8.2"
-  checksum: fe79a4ea95c8c6571c48b0f204783a1434e5365194a32fe6218e0792693ecb7ace8ae14f3ac12e4559e5c71129d87408b1ecf0b2719bcf63068d9b8c369b4400
+  checksum: 3e39ceba8968e5bb5fc3b96489d19addf716b6e478c84ba3665b0e93b21daaa64309f98b2eb9deb5b5514fe5e6c04e98d9d4d00c74a965938e86dfbd6a496e47
   languageName: node
   linkType: hard
 
@@ -4127,7 +4127,7 @@ __metadata:
     "@nestjs/passport": ^10.0.3
     "@nestjs/platform-express": ^10.4.1
     "@nestjs/schedule": ^4.1.0
-    "@nestjs/schematics": ^10.1.3
+    "@nestjs/schematics": ^10.1.4
     "@nestjs/swagger": ^7.4.0
     "@nestjs/testing": ^10.3.8
     "@types/cron": ^2.4.0
