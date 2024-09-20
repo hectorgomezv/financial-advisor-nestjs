@@ -1495,16 +1495,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/schedule@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "@nestjs/schedule@npm:4.1.0"
+"@nestjs/schedule@npm:^4.1.1":
+  version: 4.1.1
+  resolution: "@nestjs/schedule@npm:4.1.1"
   dependencies:
     cron: 3.1.7
     uuid: 10.0.0
   peerDependencies:
     "@nestjs/common": ^8.0.0 || ^9.0.0 || ^10.0.0
     "@nestjs/core": ^8.0.0 || ^9.0.0 || ^10.0.0
-  checksum: 257abe15f9e815b2da5e27ae0dd90ac1c16e32b6070150644b2844467d637f4719ea194c5135839d1b85a51f4b0a0532b4b5162ccb40c292fccf9074d4ded24c
+  checksum: 8839137c982fb32b992436e182326cff9dae5d622e0d07515dc261df1133052ee51fe72aafe3c1731283dedf0012412be24c02ef52deff8f91b4295ebfa0344c
   languageName: node
   linkType: hard
 
@@ -4448,7 +4448,7 @@ __metadata:
     "@nestjs/mongoose": ^10.0.10
     "@nestjs/passport": ^10.0.3
     "@nestjs/platform-express": ^10.4.1
-    "@nestjs/schedule": ^4.1.0
+    "@nestjs/schedule": ^4.1.1
     "@nestjs/schematics": ^10.1.4
     "@nestjs/swagger": ^7.4.0
     "@nestjs/testing": ^10.3.8
