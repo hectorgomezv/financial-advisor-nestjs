@@ -1566,11 +1566,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/testing@npm:^10.3.8":
-  version: 10.3.8
-  resolution: "@nestjs/testing@npm:10.3.8"
+"@nestjs/testing@npm:^10.4.3":
+  version: 10.4.3
+  resolution: "@nestjs/testing@npm:10.4.3"
   dependencies:
-    tslib: 2.6.2
+    tslib: 2.7.0
   peerDependencies:
     "@nestjs/common": ^10.0.0
     "@nestjs/core": ^10.0.0
@@ -1581,7 +1581,7 @@ __metadata:
       optional: true
     "@nestjs/platform-express":
       optional: true
-  checksum: 435e1f71288384c79b32de6abf73a84428e22a62df30e8c2b336bc55566b96ebc931236aafe733a53603db59640e81621f06bb81a0904f24999e77ff3a6c89f3
+  checksum: 070033c594ffbdbee6ee00b8882c4ef0e8ac87745983137ef1dd5898e98be662669fef87e5e416d206a2a6abacd358f298d6ee5f3e67a66b052b50d4616d0285
   languageName: node
   linkType: hard
 
@@ -4451,7 +4451,7 @@ __metadata:
     "@nestjs/schedule": ^4.1.0
     "@nestjs/schematics": ^10.1.4
     "@nestjs/swagger": ^7.4.0
-    "@nestjs/testing": ^10.3.8
+    "@nestjs/testing": ^10.4.3
     "@types/cron": ^2.4.0
     "@types/express": ^4.17.21
     "@types/jest": 29.5.13
@@ -8645,13 +8645,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:2.6.2, tslib@npm:^2.6.2":
-  version: 2.6.2
-  resolution: "tslib@npm:2.6.2"
-  checksum: 329ea56123005922f39642318e3d1f0f8265d1e7fcb92c633e0809521da75eeaca28d2cf96d7248229deb40e5c19adf408259f4b9640afd20d13aecc1430f3ad
-  languageName: node
-  linkType: hard
-
 "tslib@npm:2.6.3":
   version: 2.6.3
   resolution: "tslib@npm:2.6.3"
@@ -8670,6 +8663,13 @@ __metadata:
   version: 2.6.0
   resolution: "tslib@npm:2.6.0"
   checksum: c01066038f950016a18106ddeca4649b4d76caa76ec5a31e2a26e10586a59fceb4ee45e96719bf6c715648e7c14085a81fee5c62f7e9ebee68e77a5396e5538f
+  languageName: node
+  linkType: hard
+
+"tslib@npm:^2.6.2":
+  version: 2.6.2
+  resolution: "tslib@npm:2.6.2"
+  checksum: 329ea56123005922f39642318e3d1f0f8265d1e7fcb92c633e0809521da75eeaca28d2cf96d7248229deb40e5c19adf408259f4b9640afd20d13aecc1430f3ad
   languageName: node
   linkType: hard
 
