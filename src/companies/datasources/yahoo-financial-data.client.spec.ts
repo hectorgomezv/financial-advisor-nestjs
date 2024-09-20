@@ -12,7 +12,7 @@ describe('YahooFinancialDataClient', () => {
 
   const mockedHttpService = jest.mocked(
     { axiosRef: { get: jest.fn() } } as unknown as HttpService,
-    true,
+    { shallow: false },
   );
 
   const client = new YahooFinancialDataClient(
