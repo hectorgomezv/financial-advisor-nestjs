@@ -1,4 +1,6 @@
-const axios = require('axios'); // eslint-disable-line @typescript-eslint/no-var-requires
+/* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable @typescript-eslint/no-var-requires */
+const axios = require('axios');
 
 export class AuthClient {
   private readonly url: string;
