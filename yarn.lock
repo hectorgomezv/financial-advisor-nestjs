@@ -1342,9 +1342,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/common@npm:^10.4.2":
-  version: 10.4.2
-  resolution: "@nestjs/common@npm:10.4.2"
+"@nestjs/common@npm:^10.4.5":
+  version: 10.4.5
+  resolution: "@nestjs/common@npm:10.4.5"
   dependencies:
     iterare: 1.2.1
     tslib: 2.7.0
@@ -1359,7 +1359,7 @@ __metadata:
       optional: true
     class-validator:
       optional: true
-  checksum: 84940d2743b58df0cea82fd2d4799e555f2369a45982e399e752db159de846023352f81017076bd0794eaa57a4a022d3cf9642fe8a4fa31aa4759240e3dab91a
+  checksum: 4d98b3f27099ee17dd63fae46eda23980de209c542e72ddc0e626a8f0c3d5c5236c41dc51b421ecb2b0ac1405321689afea16235952b6d41a20aedce14964c47
   languageName: node
   linkType: hard
 
@@ -4380,7 +4380,7 @@ __metadata:
     "@faker-js/faker": ^8.4.1
     "@nestjs/axios": ^3.0.3
     "@nestjs/cli": ^10.4.5
-    "@nestjs/common": ^10.4.2
+    "@nestjs/common": ^10.4.5
     "@nestjs/config": ^3.2.3
     "@nestjs/core": ^10.4.4
     "@nestjs/jwt": ^10.2.0
