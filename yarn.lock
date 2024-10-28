@@ -1515,15 +1515,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/swagger@npm:^7.4.0":
-  version: 7.4.0
-  resolution: "@nestjs/swagger@npm:7.4.0"
+"@nestjs/swagger@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "@nestjs/swagger@npm:8.0.0"
   dependencies:
     "@microsoft/tsdoc": ^0.15.0
     "@nestjs/mapped-types": 2.0.5
     js-yaml: 4.1.0
     lodash: 4.17.21
-    path-to-regexp: 3.2.0
+    path-to-regexp: 3.3.0
     swagger-ui-dist: 5.17.14
   peerDependencies:
     "@fastify/static": ^6.0.0 || ^7.0.0
@@ -1539,7 +1539,7 @@ __metadata:
       optional: true
     class-validator:
       optional: true
-  checksum: 8f1ce75140201f0b064c72c3ab031214d8889ab1fc8bc231d91fdde628ecc14fdb47e2c18477a8758eac4e5d90d312f088f039183c5e67aa2670758491c554e2
+  checksum: 25c3cdf10718ee9569d61be0443c2ce45bd6d796ae9f012db50fbb47f6bdd48ae0d68b16f18d84431f0415866640164e154052a9d2a14b29773772278fdc033d
   languageName: node
   linkType: hard
 
@@ -4390,7 +4390,7 @@ __metadata:
     "@nestjs/platform-express": ^10.4.3
     "@nestjs/schedule": ^4.1.1
     "@nestjs/schematics": ^10.1.4
-    "@nestjs/swagger": ^7.4.0
+    "@nestjs/swagger": ^8.0.0
     "@nestjs/testing": ^10.4.3
     "@types/cron": ^2.4.0
     "@types/express": ^4.17.21
@@ -7160,13 +7160,6 @@ __metadata:
   version: 0.1.10
   resolution: "path-to-regexp@npm:0.1.10"
   checksum: ab7a3b7a0b914476d44030340b0a65d69851af2a0f33427df1476100ccb87d409c39e2182837a96b98fb38c4ef2ba6b87bdad62bb70a2c153876b8061760583c
-  languageName: node
-  linkType: hard
-
-"path-to-regexp@npm:3.2.0":
-  version: 3.2.0
-  resolution: "path-to-regexp@npm:3.2.0"
-  checksum: c3d35cda3b26d9e604d789b9a1764bb9845f53ca8009d5809356b4677a3c064b0f01117a05a5b4b77bafd5ae002a82592e3f3495e885c22961f8b1dab8bd6ae7
   languageName: node
   linkType: hard
 
