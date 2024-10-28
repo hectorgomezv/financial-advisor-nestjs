@@ -845,10 +845,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@faker-js/faker@npm:^8.4.1":
-  version: 8.4.1
-  resolution: "@faker-js/faker@npm:8.4.1"
-  checksum: d802d531f8929562715adc279cfec763c9a4bc596ec67b0ce43fd0ae61b285d2b0eec6f1f4aa852452a63721a842fe7e81926dce7bd92acca94b01e2a1f55f5a
+"@faker-js/faker@npm:^9.1.0":
+  version: 9.1.0
+  resolution: "@faker-js/faker@npm:9.1.0"
+  checksum: 0cd91386e670ca64ef635146e06cacdf26fd5e2f6fde3e58e0d7b7555f9bcb69f93408e16cdbb15f688774c1454f71f001ec75dd3ea27dbe09cb56ca06107b57
   languageName: node
   linkType: hard
 
@@ -4377,7 +4377,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "financial-advisor@workspace:."
   dependencies:
-    "@faker-js/faker": ^8.4.1
+    "@faker-js/faker": ^9.1.0
     "@nestjs/axios": ^3.0.3
     "@nestjs/cli": ^10.4.5
     "@nestjs/common": ^10.4.2
