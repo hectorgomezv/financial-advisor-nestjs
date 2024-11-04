@@ -4414,7 +4414,7 @@ __metadata:
     lodash: ^4.17.21
     migrate-mongo: ^11.0.0
     money: ^0.2.0
-    mongoose: ^8.7.0
+    mongoose: ^8.8.0
     nestjs-pino: ^4.1.0
     passport: ^0.7.0
     passport-jwt: ^4.0.0
@@ -6619,9 +6619,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mongodb@npm:6.9.0":
-  version: 6.9.0
-  resolution: "mongodb@npm:6.9.0"
+"mongodb@npm:~6.10.0":
+  version: 6.10.0
+  resolution: "mongodb@npm:6.10.0"
   dependencies:
     "@mongodb-js/saslprep": ^1.1.5
     bson: ^6.7.0
@@ -6649,22 +6649,22 @@ __metadata:
       optional: true
     socks:
       optional: true
-  checksum: 754beb9acf605bbb4d55383fd1df1915ec25043f1e6ad0226d34a5d32b85ad822f784cf77d2751592696f5af72b5dc62a01514c4eb5fc0c7c0f495bf5764555a
+  checksum: b8e7ab9fb84181cb020b5fef5fedd90a5fc12140e688fa12ba588d523a958bb9f8790bfaceeca9f594171794eda0f56be855d7d0588705db82b3de7bf5e2352c
   languageName: node
   linkType: hard
 
-"mongoose@npm:^8.7.0":
-  version: 8.7.0
-  resolution: "mongoose@npm:8.7.0"
+"mongoose@npm:^8.8.0":
+  version: 8.8.0
+  resolution: "mongoose@npm:8.8.0"
   dependencies:
     bson: ^6.7.0
     kareem: 2.6.3
-    mongodb: 6.9.0
+    mongodb: ~6.10.0
     mpath: 0.9.0
     mquery: 5.0.0
     ms: 2.1.3
     sift: 17.1.3
-  checksum: 51a5f392bb2b80bb2f48b014d7056fd1ee836e61f479fd30d2aa8721171f9e7ab2cca30509e57cea356988ff7037bb4a27dcae2d4aa55798213ffb18886b7f9a
+  checksum: eac3b5073fa22fac4498f1d55871fcbc8ed69d402a08c464adde012254c007f0f9af036ca58f5b2548534e9fcb3c118bd5611e90013e20917109c7ddb8725f6d
   languageName: node
   linkType: hard
 
