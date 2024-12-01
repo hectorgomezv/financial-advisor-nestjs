@@ -1547,9 +1547,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/swagger@npm:^8.0.5":
-  version: 8.0.5
-  resolution: "@nestjs/swagger@npm:8.0.5"
+"@nestjs/swagger@npm:^8.0.7":
+  version: 8.0.7
+  resolution: "@nestjs/swagger@npm:8.0.7"
   dependencies:
     "@microsoft/tsdoc": ^0.15.0
     "@nestjs/mapped-types": 2.0.6
@@ -1571,7 +1571,7 @@ __metadata:
       optional: true
     class-validator:
       optional: true
-  checksum: 98defc21905b5b9f48d68c61762890cb2c85f51a05f2341de49004ac6256b13bf3ed0e909b540f69b6c430f927d0c275b30e78b113be668f9f080c67c766cfcc
+  checksum: 7514401dddb2d776bf32a50e0ec17c7c5c7675d76b9bbb66c714946e7f2de84b8ca626fe9ea40f676f0f014020335e0480c8cd678221fc620109b2f882bcbd33
   languageName: node
   linkType: hard
 
@@ -4522,7 +4522,7 @@ __metadata:
     "@nestjs/platform-express": ^10.4.6
     "@nestjs/schedule": ^4.1.1
     "@nestjs/schematics": ^10.2.3
-    "@nestjs/swagger": ^8.0.5
+    "@nestjs/swagger": ^8.0.7
     "@nestjs/testing": ^10.4.7
     "@types/cron": ^2.4.0
     "@types/express": ^5.0.0
