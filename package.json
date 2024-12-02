@@ -44,7 +44,7 @@
     "lodash": "^4.17.21",
     "migrate-mongo": "^11.0.0",
     "money": "^0.2.0",
-    "mongoose": "^8.8.2",
+    "mongoose": "^8.8.3",
     "nestjs-pino": "^4.1.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.0",
