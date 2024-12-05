@@ -405,9 +405,12 @@ export class PortfoliosService implements OnApplicationBootstrap {
     try {
       const portfolios = await this.repository.findAll();
       await Promise.all(
-        portfolios.map((portfolio) =>
-          this.positionService.updatePortfolioState(portfolio),
-        ),
+        portfolios.map((portfolio) => {
+          this.logger.log(
+            `Refreshing portfolio ${portfolio.name} (uuid: ${portfolio.uuid})`,
+          );
+          return this.positionService.updatePortfolioState(portfolio);
+        }),
       );
     } catch (err) {
       this.logger.error(

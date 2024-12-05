@@ -130,12 +130,16 @@ export class CompaniesService implements OnApplicationBootstrap {
       const companies = await this.repository.findAll();
       await Promise.all(
         companies.map(async (company) => {
-          await this.companyStatesService.createCompanyState(company);
+          const companyState =
+            await this.companyStatesService.createCompanyState(company);
           const metrics =
             await this.companyStatesService.getMetricsByCompanyUuid(
               company.uuid,
             );
           await this.repository.updateMetricsByUuid(company.uuid, metrics);
+          this.logger.log(
+            `${company.symbol} refreshed: price ${companyState.price} [PEG: ${companyState.peg} (avg: ${metrics.avgPeg}), EV/Rev: ${companyState.enterpriseToRevenue} (avg: ${metrics.avgEnterpriseToRevenue}), EV/Ebitda: ${companyState.enterpriseToEbitda} (avg: ${metrics.avgEnterpriseToEbitda}), Short %: ${companyState.shortPercentOfFloat}]`,
+          );
         }),
       );
     } catch (err) {
