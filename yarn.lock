@@ -1775,12 +1775,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/cron@npm:^2.4.0":
-  version: 2.4.0
-  resolution: "@types/cron@npm:2.4.0"
+"@types/cron@npm:^2.4.3":
+  version: 2.4.3
+  resolution: "@types/cron@npm:2.4.3"
   dependencies:
     cron: "*"
-  checksum: c763e99a757ea76aee435948c25e0bdaf32ec44c69603088c73e8832df6b121e87932709925fe3e94777833ca30845c31df1167be54c330cf458d348059b9ffc
+  checksum: 760d1d4957d1755348b9cf8b4779205faeab9694d4c1d477283087d649474e1cccf64d448980fbbe8fd2324aa9f343d8e9f4aca77c1155dca8abd70986233032
   languageName: node
   linkType: hard
 
@@ -4519,7 +4519,7 @@ __metadata:
     "@nestjs/schematics": ^10.2.3
     "@nestjs/swagger": ^8.0.7
     "@nestjs/testing": ^10.4.12
-    "@types/cron": ^2.4.0
+    "@types/cron": ^2.4.3
     "@types/express": ^5.0.0
     "@types/jest": 29.5.14
     "@types/lodash": ^4.17.13
