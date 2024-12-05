@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Injectable,
+  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -20,6 +21,8 @@ import { PortfolioStatesService } from './portfolio-states.service';
 
 @Injectable()
 export class PositionsService {
+  private readonly logger = new Logger(PositionsService.name);
+
   constructor(
     private readonly repository: PositionsRepository,
     private readonly portfoliosRepository: PortfoliosRepository,
@@ -208,11 +211,18 @@ export class PositionsService {
   }
 
   async updatePortfolioState(portfolio: Portfolio) {
-    const positions = await this.getPositionDetailsByPortfolioUuid(portfolio);
-    await this.portfolioStatesService.createPortfolioState(
-      portfolio,
-      this.mapToPositions(positions, portfolio.uuid), // TODO: refactor when implementing PositionState
+    const positionDetailDTOs =
+      await this.getPositionDetailsByPortfolioUuid(portfolio);
+    const positions = this.mapToPositions(positionDetailDTOs, portfolio.uuid); // TODO: refactor when implementing PositionState
+    const portfolioState =
+      await this.portfolioStatesService.createPortfolioState(
+        portfolio,
+        positions,
+      );
+    this.logger.log(
+      `Updated portfolio ${portfolio.name} state. Total value: ${portfolioState.totalValueEUR}€, ROIC: ${portfolioState.roicEUR}€`,
     );
+    return portfolioState;
   }
 
   private checkOwner(user: User, portfolio: Portfolio): void {
