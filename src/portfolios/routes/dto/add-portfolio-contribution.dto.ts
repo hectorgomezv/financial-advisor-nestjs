@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsNumber, IsPositive } from 'class-validator';
+import { IsNumber } from 'class-validator';
 import { AddPortfolioContributionDto as DomainAddPortfolioContributionDto } from '../../domain/dto/add-portfolio-contribution.dto';
 
 export class AddPortfolioContributionDto
@@ -11,6 +11,5 @@ export class AddPortfolioContributionDto
   @ApiProperty()
   @Type(() => Number)
   @IsNumber()
-  @IsPositive()
   amountEUR: number;
 }
