@@ -110,7 +110,7 @@ export class CompaniesService implements OnApplicationBootstrap {
     }
   }
 
-  @Cron('0 32 9 * * *', { timeZone: 'America/New_York' })
+  @Cron('0 50 9 * * *', { timeZone: 'America/New_York' })
   private refreshAllStatesAtMarketOpen() {
     return this.refreshAllStates();
   }
@@ -120,7 +120,7 @@ export class CompaniesService implements OnApplicationBootstrap {
     return this.refreshAllStates();
   }
 
-  @Cron('0 02 16 * * *', { timeZone: 'America/New_York' })
+  @Cron('0 45 15 * * *', { timeZone: 'America/New_York' })
   private refreshAllStatesAtMarketClose() {
     return this.refreshAllStates();
   }
