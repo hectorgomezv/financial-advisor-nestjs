@@ -387,16 +387,16 @@ export class PortfoliosService implements OnApplicationBootstrap {
     return this.refreshAllStates();
   }
 
-  @Cron('0 33 9 * * *', { timeZone: 'America/New_York' })
+  @Cron('0 50 9 * * *', { timeZone: 'America/New_York' })
   private refreshAllStatesAtMarketOpen() {
     return this.refreshAllStates();
   }
 
-  @Cron('0 31 12 * * *', { timeZone: 'America/New_York' })
+  @Cron('0 30 12 * * *', { timeZone: 'America/New_York' })
   private refreshAllStatesAtMidday() {
     return this.refreshAllStates();
   }
-  @Cron('0 03 16 * * *', { timeZone: 'America/New_York' })
+  @Cron('0 45 15 * * *', { timeZone: 'America/New_York' })
   private refreshAllStatesAtMarketClose() {
     return this.refreshAllStates();
   }
