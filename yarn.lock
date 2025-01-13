@@ -1067,19 +1067,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/platform-express@npm:^10.4.12":
-  version: 10.4.13
-  resolution: "@nestjs/platform-express@npm:10.4.13"
+"@nestjs/platform-express@npm:^10.4.15":
+  version: 10.4.15
+  resolution: "@nestjs/platform-express@npm:10.4.15"
   dependencies:
     body-parser: 1.20.3
     cors: 2.8.5
-    express: 4.21.1
+    express: 4.21.2
     multer: 1.4.4-lts.1
     tslib: 2.8.1
   peerDependencies:
     "@nestjs/common": ^10.0.0
     "@nestjs/core": ^10.0.0
-  checksum: e31f71305515fd7856580b02407971621ac40b05f0f1bd8ae1598d4938952433ac7524efc345874aa9f7ba817554562e9f9e7a5780ed755b751cb4b5e34b2e46
+  checksum: d876b788d45ff998f20e8b21d50dd40b1545af4177ec28dd9f9193bdd32134d57d97ae864b6afcd5b023f508612ca48103224e817a9e69f072e6867e1e7e0346
   languageName: node
   linkType: hard
 
@@ -3529,9 +3529,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express@npm:4.21.1":
-  version: 4.21.1
-  resolution: "express@npm:4.21.1"
+"express@npm:4.21.2":
+  version: 4.21.2
+  resolution: "express@npm:4.21.2"
   dependencies:
     accepts: ~1.3.8
     array-flatten: 1.1.1
@@ -3552,7 +3552,7 @@ __metadata:
     methods: ~1.1.2
     on-finished: 2.4.1
     parseurl: ~1.3.3
-    path-to-regexp: 0.1.10
+    path-to-regexp: 0.1.12
     proxy-addr: ~2.0.7
     qs: 6.13.0
     range-parser: ~1.2.1
@@ -3564,7 +3564,7 @@ __metadata:
     type-is: ~1.6.18
     utils-merge: 1.0.1
     vary: ~1.1.2
-  checksum: 5ac2b26d8aeddda5564fc0907227d29c100f90c0ead2ead9d474dc5108e8fb306c2de2083c4e3ba326e0906466f2b73417dbac16961f4075ff9f03785fd940fe
+  checksum: 3aef1d355622732e20b8f3a7c112d4391d44e2131f4f449e1f273a309752a41abfad714e881f177645517cbe29b3ccdc10b35e7e25c13506114244a5b72f549d
   languageName: node
   linkType: hard
 
@@ -3731,7 +3731,7 @@ __metadata:
     "@nestjs/mapped-types": "*"
     "@nestjs/mongoose": ^10.1.0
     "@nestjs/passport": ^10.0.3
-    "@nestjs/platform-express": ^10.4.12
+    "@nestjs/platform-express": ^10.4.15
     "@nestjs/schedule": ^4.1.1
     "@nestjs/schematics": ^10.2.3
     "@nestjs/swagger": ^8.0.7
@@ -6251,10 +6251,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"path-to-regexp@npm:0.1.10":
-  version: 0.1.10
-  resolution: "path-to-regexp@npm:0.1.10"
-  checksum: ab7a3b7a0b914476d44030340b0a65d69851af2a0f33427df1476100ccb87d409c39e2182837a96b98fb38c4ef2ba6b87bdad62bb70a2c153876b8061760583c
+"path-to-regexp@npm:0.1.12":
+  version: 0.1.12
+  resolution: "path-to-regexp@npm:0.1.12"
+  checksum: ab237858bee7b25ecd885189f175ab5b5161e7b712b360d44f5c4516b8d271da3e4bf7bf0a7b9153ecb04c7d90ce8ff5158614e1208819cf62bac2b08452722e
   languageName: node
   linkType: hard
 
