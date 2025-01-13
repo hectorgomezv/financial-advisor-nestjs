@@ -3758,7 +3758,7 @@ __metadata:
     lodash: ^4.17.21
     migrate-mongo: ^11.0.0
     money: ^0.2.0
-    mongoose: ^8.9.3
+    mongoose: ^8.9.4
     nestjs-pino: ^4.1.0
     passport: ^0.7.0
     passport-jwt: ^4.0.0
@@ -5794,9 +5794,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mongoose@npm:^8.9.3":
-  version: 8.9.3
-  resolution: "mongoose@npm:8.9.3"
+"mongoose@npm:^8.9.4":
+  version: 8.9.4
+  resolution: "mongoose@npm:8.9.4"
   dependencies:
     bson: ^6.10.1
     kareem: 2.6.3
@@ -5805,7 +5805,7 @@ __metadata:
     mquery: 5.0.0
     ms: 2.1.3
     sift: 17.1.3
-  checksum: 6b481067fefcc64b2853d9c9de5d3219c55529d260409c424c446d909bec4f010764890c0231e3d26e6b25542e7d5d84cc63b4ae47a6498c548c3a888d5f241a
+  checksum: 108d9672df6c316c2fc3cd7198646d964bf71667d71cde9e4083c98a39ea07cc9cea8b1b46f266e85532d6e781f490221f40922ddad238f38df98ba9e00b571c
   languageName: node
   linkType: hard
 
