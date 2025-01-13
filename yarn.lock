@@ -896,7 +896,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mongodb-js/saslprep@npm:^1.1.5":
+"@mongodb-js/saslprep@npm:^1.1.9":
   version: 1.1.9
   resolution: "@mongodb-js/saslprep@npm:1.1.9"
   dependencies:
@@ -2413,7 +2413,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bson@npm:^6.7.0":
+"bson@npm:^6.10.1":
   version: 6.10.1
   resolution: "bson@npm:6.10.1"
   checksum: 7c85c8df309bbfd4d42fae54aa37112ee048a89457be908a0e53a01d077d548c94a5a6870dd725ef48130da935286edc8b9ce04830869446db22b8c13a370c42
@@ -3748,7 +3748,7 @@ __metadata:
     lodash: ^4.17.21
     migrate-mongo: ^11.0.0
     money: ^0.2.0
-    mongoose: ^8.8.3
+    mongoose: ^8.9.3
     nestjs-pino: ^4.1.0
     passport: ^0.7.0
     passport-jwt: ^4.0.0
@@ -5750,16 +5750,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mongodb@npm:~6.10.0":
-  version: 6.10.0
-  resolution: "mongodb@npm:6.10.0"
+"mongodb@npm:~6.12.0":
+  version: 6.12.0
+  resolution: "mongodb@npm:6.12.0"
   dependencies:
-    "@mongodb-js/saslprep": ^1.1.5
-    bson: ^6.7.0
+    "@mongodb-js/saslprep": ^1.1.9
+    bson: ^6.10.1
     mongodb-connection-string-url: ^3.0.0
   peerDependencies:
     "@aws-sdk/credential-providers": ^3.188.0
-    "@mongodb-js/zstd": ^1.1.0
+    "@mongodb-js/zstd": ^1.1.0 || ^2.0.0
     gcp-metadata: ^5.2.0
     kerberos: ^2.0.1
     mongodb-client-encryption: ">=6.0.0 <7"
@@ -5780,22 +5780,22 @@ __metadata:
       optional: true
     socks:
       optional: true
-  checksum: b8e7ab9fb84181cb020b5fef5fedd90a5fc12140e688fa12ba588d523a958bb9f8790bfaceeca9f594171794eda0f56be855d7d0588705db82b3de7bf5e2352c
+  checksum: 7b3cc75454c8a87134c8d09d16d8fb6f0dc623698df1e7d7791b4e78fa15ae6dd20795a6813d4f98ed4caf054caec5ae8233b3c72787a98b3f0bf7f62fd2ea78
   languageName: node
   linkType: hard
 
-"mongoose@npm:^8.8.3":
-  version: 8.8.4
-  resolution: "mongoose@npm:8.8.4"
+"mongoose@npm:^8.9.3":
+  version: 8.9.3
+  resolution: "mongoose@npm:8.9.3"
   dependencies:
-    bson: ^6.7.0
+    bson: ^6.10.1
     kareem: 2.6.3
-    mongodb: ~6.10.0
+    mongodb: ~6.12.0
     mpath: 0.9.0
     mquery: 5.0.0
     ms: 2.1.3
     sift: 17.1.3
-  checksum: 6af8b2362263c2f64c4ad4a2c1ce12c0fc61593c317466c21f0ee98fecea1a34cb29f2e364e057e9e57738e925aa862cf64051bb097e3e96ea99bf038abbc0d1
+  checksum: 6b481067fefcc64b2853d9c9de5d3219c55529d260409c424c446d909bec4f010764890c0231e3d26e6b25542e7d5d84cc63b4ae47a6498c548c3a888d5f241a
   languageName: node
   linkType: hard
 
