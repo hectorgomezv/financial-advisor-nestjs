@@ -2420,6 +2420,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bson@npm:^6.10.3":
+  version: 6.10.3
+  resolution: "bson@npm:6.10.3"
+  checksum: 156807dc7a36954273cbe364783bffaaa8b89f193241d388250314f4d60b24f719d9c9fcb2d7fcbfb28f8330811617c5fd5e0b00c459867f16df6e8efe29d850
+  languageName: node
+  linkType: hard
+
 "buffer-equal-constant-time@npm:1.0.1":
   version: 1.0.1
   resolution: "buffer-equal-constant-time@npm:1.0.1"
@@ -3758,7 +3765,7 @@ __metadata:
     lodash: ^4.17.21
     migrate-mongo: ^11.0.0
     money: ^0.2.0
-    mongoose: ^8.9.3
+    mongoose: ^8.12.0
     nestjs-pino: ^4.1.0
     passport: ^0.7.0
     passport-jwt: ^4.0.0
@@ -5760,12 +5767,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mongodb@npm:~6.12.0":
-  version: 6.12.0
-  resolution: "mongodb@npm:6.12.0"
+"mongodb@npm:~6.14.0":
+  version: 6.14.1
+  resolution: "mongodb@npm:6.14.1"
   dependencies:
     "@mongodb-js/saslprep": ^1.1.9
-    bson: ^6.10.1
+    bson: ^6.10.3
     mongodb-connection-string-url: ^3.0.0
   peerDependencies:
     "@aws-sdk/credential-providers": ^3.188.0
@@ -5790,22 +5797,22 @@ __metadata:
       optional: true
     socks:
       optional: true
-  checksum: 7b3cc75454c8a87134c8d09d16d8fb6f0dc623698df1e7d7791b4e78fa15ae6dd20795a6813d4f98ed4caf054caec5ae8233b3c72787a98b3f0bf7f62fd2ea78
+  checksum: 2ba8265204becdb43caa9726daab86889329f222ff30dc6f789d96a964fd09bd9c461f19ceb5357126f23f32a87f5563f1dc04c978cfc20017689f1df05bf969
   languageName: node
   linkType: hard
 
-"mongoose@npm:^8.9.3":
-  version: 8.9.3
-  resolution: "mongoose@npm:8.9.3"
+"mongoose@npm:^8.12.0":
+  version: 8.12.0
+  resolution: "mongoose@npm:8.12.0"
   dependencies:
     bson: ^6.10.1
     kareem: 2.6.3
-    mongodb: ~6.12.0
+    mongodb: ~6.14.0
     mpath: 0.9.0
     mquery: 5.0.0
     ms: 2.1.3
     sift: 17.1.3
-  checksum: 6b481067fefcc64b2853d9c9de5d3219c55529d260409c424c446d909bec4f010764890c0231e3d26e6b25542e7d5d84cc63b4ae47a6498c548c3a888d5f241a
+  checksum: 6e8c6a0907fed1625d3d0d4a0d3f4e43e6035435f10d1e68f27e49de16a795726c46cf8cec7dc882154f21efdac991ad7c0d814f1e9b12d2c17b7771afb74ca7
   languageName: node
   linkType: hard
 
