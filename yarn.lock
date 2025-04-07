@@ -1532,12 +1532,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^22.10.1":
+"@types/node@npm:*":
   version: 22.10.1
   resolution: "@types/node@npm:22.10.1"
   dependencies:
     undici-types: ~6.20.0
   checksum: 5a9b81500f288a8fb757b61bd939f99f72b6cb59347a5bae52dd1c2c87100ebbaa9da4256ef3cb9add2090e8704cda1d9a1ffc14ccd5db47a6466c8bae10ebcb
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^22.14.0":
+  version: 22.14.0
+  resolution: "@types/node@npm:22.14.0"
+  dependencies:
+    undici-types: ~6.21.0
+  checksum: 8bfae1d3c428b122d23750690bdc5b8295a53949823563ec60654a24ece98bde4fc0d2b5f06ddc6def6f01a08dfe62cece7c93e60964b74f736145dad5ee1302
   languageName: node
   linkType: hard
 
@@ -3740,7 +3749,7 @@ __metadata:
     "@types/express": ^5.0.0
     "@types/jest": 29.5.14
     "@types/lodash": ^4.17.13
-    "@types/node": ^22.10.1
+    "@types/node": ^22.14.0
     "@types/passport-jwt": ^4.0.1
     "@types/supertest": ^6.0.2
     "@typescript-eslint/eslint-plugin": ^8.19.1
@@ -7720,6 +7729,13 @@ __metadata:
   version: 6.20.0
   resolution: "undici-types@npm:6.20.0"
   checksum: b7bc50f012dc6afbcce56c9fd62d7e86b20a62ff21f12b7b5cbf1973b9578d90f22a9c7fe50e638e96905d33893bf2f9f16d98929c4673c2480de05c6c96ea8b
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~6.21.0":
+  version: 6.21.0
+  resolution: "undici-types@npm:6.21.0"
+  checksum: 46331c7d6016bf85b3e8f20c159d62f5ae471aba1eb3dc52fff35a0259d58dcc7d592d4cc4f00c5f9243fa738a11cfa48bd20203040d4a9e6bc25e807fab7ab3
   languageName: node
   linkType: hard
 
