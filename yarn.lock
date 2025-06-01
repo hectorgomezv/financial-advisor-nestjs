@@ -1822,10 +1822,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4.17.13":
-  version: 4.17.13
-  resolution: "@types/lodash@npm:4.17.13"
-  checksum: d0bf8fbd950be71946e0076b30fd40d492293baea75f05931b6b5b906fd62583708c6229abdb95b30205ad24ce1ed2f48bc9d419364f682320edd03405cc0c7e
+"@types/lodash@npm:^4.17.17":
+  version: 4.17.17
+  resolution: "@types/lodash@npm:4.17.17"
+  checksum: cfa34a752f3c540a196e9f92dbaff93ae15fe4058da8cce1918dd9219076dc19eec33b043aae45865e2b3ef8234a845bb57366144ec8e52551e2bc3f119e04a1
   languageName: node
   linkType: hard
 
@@ -4127,7 +4127,7 @@ __metadata:
     "@types/cron": ^2.4.0
     "@types/express": ^5.0.0
     "@types/jest": 29.5.14
-    "@types/lodash": ^4.17.13
+    "@types/lodash": ^4.17.17
     "@types/node": ^22.14.0
     "@types/passport-jwt": ^4.0.1
     "@types/supertest": ^6.0.2
@@ -6137,6 +6137,7 @@ __metadata:
   checksum: 2572d10d47becfd72f200e972114097570db78e0ae5e259804c09903029d3906ab01d2b47b609cc33c9adf487682dd0562e9a457d0d0e6ab7645512c4abb7727
   languageName: node
   linkType: hard
+
 "mongoose@npm:^8.13.2":
   version: 8.13.2
   resolution: "mongoose@npm:8.13.2"
