@@ -32,7 +32,7 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/mongoose": "^10.1.0",
     "@nestjs/passport": "^10.0.3",
-    "@nestjs/platform-express": "^10.4.15",
+    "@nestjs/platform-express": "^11.1.2",
     "@nestjs/schedule": "^5.0.1",
     "@nestjs/swagger": "^8.0.7",
     "axios": "^1.8.2",
