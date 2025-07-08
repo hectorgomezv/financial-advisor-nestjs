@@ -1833,10 +1833,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4.17.17":
-  version: 4.17.17
-  resolution: "@types/lodash@npm:4.17.17"
-  checksum: cfa34a752f3c540a196e9f92dbaff93ae15fe4058da8cce1918dd9219076dc19eec33b043aae45865e2b3ef8234a845bb57366144ec8e52551e2bc3f119e04a1
+"@types/lodash@npm:^4.17.20":
+  version: 4.17.20
+  resolution: "@types/lodash@npm:4.17.20"
+  checksum: dc7bb4653514dd91117a4c4cec2c37e2b5a163d7643445e4757d76a360fabe064422ec7a42dde7450c5e7e0e7e678d5e6eae6d2a919abcddf581d81e63e63839
   languageName: node
   linkType: hard
 
@@ -4160,7 +4160,7 @@ __metadata:
     "@types/cron": ^2.4.0
     "@types/express": ^5.0.0
     "@types/jest": 29.5.14
-    "@types/lodash": ^4.17.17
+    "@types/lodash": ^4.17.20
     "@types/node": ^24.0.8
     "@types/passport-jwt": ^4.0.1
     "@types/supertest": ^6.0.2
