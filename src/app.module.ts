@@ -4,7 +4,6 @@ import { JwtService } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
 import { LoggerModule } from 'nestjs-pino';
-import pino from 'pino';
 import { AboutModule } from './about/about.module';
 import { JwtStrategy } from './common/auth/jwt.strategy';
 import { CommonModule } from './common/common.module';
