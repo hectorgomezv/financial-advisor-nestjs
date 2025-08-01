@@ -42,12 +42,12 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
       return this.mapYahooErrorResponse(err);
     }
 
-    const chart: Chart = response.data.chart.result.at(0);
-    const quote: Quote = chart.indicators.quote.at(0);
+    const chart: Chart = response.data.chart.result[0];
+    const quote: Quote = chart.indicators.quote[0];
     return quote.close.map(
       (value, n) =>
         new DataPoint(
-          new Date(response.data.chart.result.at(0).timestamp.at(n) * 1000),
+          new Date(response.data.chart.result[0].timestamp[n] * 1000),
           value,
         ),
     );

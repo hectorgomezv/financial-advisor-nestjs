@@ -162,7 +162,7 @@ CORS_BASE_URL=http://localhost:3000
 
 # Database
 MONGO_CONNECTION_STRING=mongodb://localhost:27017
-MONGO_DATABASE_NAME=financial_advisor
+MONGO_DATABASE_NAME=financialAdvisorDB
 
 # Redis Cache
 REDIS_CONNECTION_STRING=redis://localhost:6379
