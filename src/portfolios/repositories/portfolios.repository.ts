@@ -64,14 +64,16 @@ export class PortfoliosRepository {
 
   async getContributionsMetadata(uuid: string): Promise<ContributionsMetadata> {
     const results = await this.model
-      .find(
-        { uuid },
+      .aggregate([
+        { $match: { uuid } },
         {
-          contributionsCount: { $size: '$contributions' },
-          contributionsSum: { $sum: '$contributions.amountEUR' },
+          $project: {
+            contributionsCount: { $size: '$contributions' },
+            contributionsSum: { $sum: '$contributions.amountEUR' },
+          },
         },
-      )
-      .lean();
+      ])
+      .exec();
 
     return new ContributionsMetadata(
       results[0]?.contributionsCount ?? null,

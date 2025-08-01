@@ -23,14 +23,7 @@ const { NODE_ENV } = process.env;
       envFilePath: NODE_ENV ? `.env.${NODE_ENV}` : '.env',
     }),
     LoggerModule.forRoot({
-      pinoHttp: {
-        level: NODE_ENV === 'production' ? 'info' : 'debug',
-        stream: pino.destination({
-          dest: NODE_ENV === 'production' ? '/var/log/fa.log' : './fa.log',
-          minLength: 512,
-          sync: false,
-        }),
-      },
+      pinoHttp: { level: NODE_ENV === 'production' ? 'info' : 'debug' },
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],

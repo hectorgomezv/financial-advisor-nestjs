@@ -41,9 +41,7 @@ describe('YahooFinancialDataClient', () => {
         expect(dataPoint.timestamp).toEqual(
           new Date(chart.timestamp[n] * 1000),
         );
-        expect(dataPoint.value).toEqual(
-          chart.indicators.quote.at(0).close.at(n),
-        );
+        expect(dataPoint.value).toEqual(chart.indicators.quote[0].close[n]);
       });
     });
   });
