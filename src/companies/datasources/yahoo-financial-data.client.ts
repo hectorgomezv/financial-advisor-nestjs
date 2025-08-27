@@ -93,9 +93,9 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
       uuid: uuidv4(),
       timestamp: Date.now(),
       price: Number(
-        summaryDetail?.bid?.raw ??
-          summaryDetail?.previousClose?.raw ??
-          summaryDetail?.open?.raw ??
+        summaryDetail?.bid?.raw ||
+          summaryDetail?.previousClose?.raw ||
+          summaryDetail?.open?.raw ||
           summaryDetail?.ask?.raw,
       ),
       currency: summaryDetail?.currency,
