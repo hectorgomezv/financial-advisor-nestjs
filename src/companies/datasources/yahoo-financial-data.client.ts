@@ -54,50 +54,35 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
   }
 
   async getQuoteSummary(symbol: string): Promise<QuoteSummary> {
-    let summaryDetailResponse;
-    let defaultKeyStatisticsResponse;
+    let response;
     try {
-      summaryDetailResponse = await this.httpService.axiosRef.get(
-        `${this.baseUrl}/v11/finance/quoteSummary/${symbol}?modules=summaryDetail`,
-        { headers: { 'x-api-key': sample(this.providerApiTokens) } },
-      );
-      defaultKeyStatisticsResponse = await this.httpService.axiosRef.get(
-        `${this.baseUrl}/v11/finance/quoteSummary/${symbol}?modules=defaultKeyStatistics`,
+      response = await this.httpService.axiosRef.get(
+        `${this.baseUrl}/v11/finance/quoteSummary/${symbol}?modules=summaryDetail,defaultKeyStatistics,price`,
         { headers: { 'x-api-key': sample(this.providerApiTokens) } },
       );
     } catch (err) {
       return this.mapYahooErrorResponse(err);
     }
-
-    const result = {
-      ...summaryDetailResponse?.data?.quoteSummary?.result?.[0],
-      ...defaultKeyStatisticsResponse?.data?.quoteSummary?.result?.[0],
-    };
-
+    const result = response?.data?.quoteSummary?.result?.[0];
     if (!result) {
       throw new NotFoundException(
         `Financial data client cannot find company ${symbol}`,
       );
     }
-
-    return this.mapQuoteSummaryResponse(result);
+    return this._mapResponse(result);
   }
 
-  private mapQuoteSummaryResponse({
+  private _mapResponse({
     summaryDetail,
     defaultKeyStatistics,
+    price,
   }): QuoteSummary {
     const peg = Number(defaultKeyStatistics?.pegRatio?.raw);
 
     return <QuoteSummary>{
       uuid: uuidv4(),
       timestamp: Date.now(),
-      price: Number(
-        summaryDetail?.bid?.raw ||
-          summaryDetail?.previousClose?.raw ||
-          summaryDetail?.open?.raw ||
-          summaryDetail?.ask?.raw,
-      ),
+      price: price.regularMarketPrice.raw,
       currency: summaryDetail?.currency,
       peg: peg < 500 ? peg : 0,
       enterpriseToRevenue: Number(
