@@ -4,7 +4,8 @@ export class CompanyState {
   timestamp: number;
   price: number;
   currency: string;
-  peg: number;
+  forwardPE: number;
+  profitMargins: number;
   enterpriseToRevenue: number;
   enterpriseToEbitda: number;
   shortPercentOfFloat: number;

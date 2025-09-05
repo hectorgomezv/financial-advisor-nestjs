@@ -43,7 +43,7 @@ export class CompaniesService implements OnApplicationBootstrap {
     const company = await this.repository.create(<Company>{
       ...createCompanyDto,
       uuid: uuidv4(),
-      metrics: new CompanyMetrics(0, 0, 0),
+      metrics: new CompanyMetrics(0, 0, 0, 0),
     });
 
     const state = await this.companyStatesService.createCompanyState(company);
@@ -110,7 +110,7 @@ export class CompaniesService implements OnApplicationBootstrap {
     }
   }
 
-  @Cron('0 49 9 * * *', { timeZone: 'America/New_York' })
+  @Cron('0 06 10 * * *', { timeZone: 'America/New_York' })
   private refreshAllStatesAtMarketOpen() {
     return this.refreshAllStates();
   }
@@ -138,7 +138,7 @@ export class CompaniesService implements OnApplicationBootstrap {
             );
           await this.repository.updateMetricsByUuid(company.uuid, metrics);
           this.logger.log(
-            `${company.symbol} refreshed: price ${companyState.price} [PEG: ${companyState.peg} (avg: ${metrics.avgPeg}), EV/Rev: ${companyState.enterpriseToRevenue} (avg: ${metrics.avgEnterpriseToRevenue}), EV/Ebitda: ${companyState.enterpriseToEbitda} (avg: ${metrics.avgEnterpriseToEbitda}), Short %: ${companyState.shortPercentOfFloat}]`,
+            `${company.symbol} refreshed: price ${companyState.price} [ForwardPE: ${companyState.forwardPE} (avg: ${metrics.avgForwardPE}), profitMargins: ${companyState.profitMargins} (avg: ${metrics.avgProfitMargins}), EV/Rev: ${companyState.enterpriseToRevenue} (avg: ${metrics.avgEnterpriseToRevenue}), EV/Ebitda: ${companyState.enterpriseToEbitda} (avg: ${metrics.avgEnterpriseToEbitda}), Short %: ${companyState.shortPercentOfFloat}]`,
           );
         }),
       );

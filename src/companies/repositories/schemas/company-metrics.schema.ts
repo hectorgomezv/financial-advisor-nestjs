@@ -9,5 +9,8 @@ export class CompanyMetricsSchema {
   avgEnterpriseToEbitda: number;
 
   @Prop({ required: true })
-  avgPeg: number;
+  avgForwardPE: number;
+
+  @Prop({ required: true })
+  avgProfitMargins: number;
 }

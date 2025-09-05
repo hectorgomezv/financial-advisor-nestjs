@@ -118,13 +118,15 @@ export class CompanyStatesRepository {
         timestamp: { $gte: sub(new Date(), { years: 1 }) },
         enterpriseToRevenue: { $ne: NaN, $gt: 0, $exists: true },
         enterpriseToEbitda: { $ne: NaN, $gt: 0, $exists: true },
-        peg: { $ne: NaN, $gt: 0, $exists: true },
+        forwardPE: { $ne: NaN, $gt: 0, $exists: true },
+        profitMargins: { $ne: NaN, $gt: 0, $exists: true },
       })
       .group({
         _id: '$companyUuid',
         avgEnterpriseToRevenue: { $avg: '$enterpriseToRevenue' },
         avgEnterpriseToEbitda: { $avg: '$enterpriseToEbitda' },
-        avgPeg: { $avg: '$peg' },
+        avgForwardPE: { $avg: '$forwardPE' },
+        avgProfitMargins: { $avg: '$profitMargins' },
       })
       .exec();
 

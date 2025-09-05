@@ -4,20 +4,31 @@ import { CompanyState as DomainCompanyState } from '../../domain/entities/compan
 export class CompanyState implements DomainCompanyState {
   @ApiProperty()
   uuid: string;
+
   @ApiProperty()
   companyUuid: string;
+
   @ApiProperty()
   timestamp: number;
+
   @ApiProperty()
   price: number;
+
   @ApiProperty()
   currency: string;
+
   @ApiProperty()
   enterpriseToRevenue: number;
+
   @ApiProperty()
   enterpriseToEbitda: number;
+
   @ApiProperty()
-  peg: number;
+  forwardPE: number;
+
+  @ApiProperty()
+  profitMargins: number;
+
   @ApiProperty()
   shortPercentOfFloat: number;
 }

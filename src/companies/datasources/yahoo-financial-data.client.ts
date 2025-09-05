@@ -77,14 +77,13 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
     defaultKeyStatistics,
     price,
   }): QuoteSummary {
-    const peg = Number(defaultKeyStatistics?.pegRatio?.raw);
-
     return <QuoteSummary>{
       uuid: uuidv4(),
       timestamp: Date.now(),
       price: price?.regularMarketPrice?.raw ?? 0,
       currency: summaryDetail?.currency,
-      peg: peg < 500 ? peg : 0,
+      forwardPE: defaultKeyStatistics?.forwardPE.raw ?? 0,
+      profitMargins: defaultKeyStatistics?.profitMargins.raw ?? 0,
       enterpriseToRevenue: Number(
         defaultKeyStatistics?.enterpriseToRevenue?.raw,
       ),
