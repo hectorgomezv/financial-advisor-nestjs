@@ -21,7 +21,10 @@ export class CompanyStateModel {
   currency: string;
 
   @Prop({ required: true })
-  peg: number;
+  forwardPE: number;
+
+  @Prop({ required: true })
+  profitMargins: number;
 
   @Prop({ required: true })
   enterpriseToRevenue: number;

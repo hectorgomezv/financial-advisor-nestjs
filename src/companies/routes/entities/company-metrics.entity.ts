@@ -4,8 +4,13 @@ import { CompanyMetrics as DomainCompanyMetrics } from '../../domain/entities/co
 export class CompanyMetrics implements DomainCompanyMetrics {
   @ApiProperty()
   avgEnterpriseToRevenue: number;
+
   @ApiProperty()
   avgEnterpriseToEbitda: number;
+
   @ApiProperty()
-  avgPeg: number;
+  avgForwardPE: number;
+
+  @ApiProperty()
+  avgProfitMargins: number;
 }
