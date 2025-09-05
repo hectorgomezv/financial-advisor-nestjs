@@ -117,9 +117,9 @@ export class CompanyStatesRepository {
         companyUuid,
         timestamp: { $gte: sub(new Date(), { years: 1 }) },
         enterpriseToRevenue: { $ne: NaN, $gt: 0, $exists: true },
-        enterpriseToEbitda: { $ne: NaN, $gt: 0, $exists: true },
+        enterpriseToEbitda: { $ne: NaN, $exists: true },
         forwardPE: { $ne: NaN, $gt: 0, $exists: true },
-        profitMargins: { $ne: NaN, $gt: 0, $exists: true },
+        profitMargins: { $ne: NaN, $exists: true },
       })
       .group({
         _id: '$companyUuid',
