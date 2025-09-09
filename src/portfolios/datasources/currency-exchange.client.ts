@@ -24,7 +24,9 @@ export class CurrencyExchangeClient {
 
   private async refreshFx() {
     const rates = await this.openExchangeRatesClient.getRates();
-    money.rates = rates;
+    if (rates) {
+      money.rates = rates;
+    }
     money.base = 'USD';
     return money;
   }

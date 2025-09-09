@@ -1,9 +1,11 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class OpenExchangeRatesClient {
+  private readonly logger = new Logger(OpenExchangeRatesClient.name);
+
   private baseUrl: string;
   private appId: string;
 
@@ -18,10 +20,13 @@ export class OpenExchangeRatesClient {
   }
 
   async getRates(): Promise<Record<string, number>> {
-    const { data } = await this.httpService.axiosRef.get(
-      `${this.baseUrl}${this.appId}`,
-    );
-
-    return data.rates;
+    try {
+      const { data } = await this.httpService.axiosRef.get(
+        `${this.baseUrl}${this.appId}`,
+      );
+      return data.rates;
+    } catch (err) {
+      this.logger.fatal('Unable to get exchange rates');
+    }
   }
 }
