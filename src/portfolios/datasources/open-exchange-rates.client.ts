@@ -19,14 +19,15 @@ export class OpenExchangeRatesClient {
     );
   }
 
-  async getRates(): Promise<Record<string, number>> {
+  async getRates(): Promise<Record<string, number> | null> {
     try {
       const { data } = await this.httpService.axiosRef.get(
         `${this.baseUrl}${this.appId}`,
       );
       return data.rates;
     } catch (err) {
-      this.logger.fatal('Unable to get exchange rates');
+      this.logger.fatal('Unable to get exchange rates', err);
+      return null;
     }
   }
 }
