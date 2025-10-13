@@ -1292,15 +1292,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/jwt@npm:^10.2.0":
-  version: 10.2.0
-  resolution: "@nestjs/jwt@npm:10.2.0"
+"@nestjs/jwt@npm:^11.0.1":
+  version: 11.0.1
+  resolution: "@nestjs/jwt@npm:11.0.1"
   dependencies:
-    "@types/jsonwebtoken": 9.0.5
+    "@types/jsonwebtoken": 9.0.10
     jsonwebtoken: 9.0.2
   peerDependencies:
-    "@nestjs/common": ^8.0.0 || ^9.0.0 || ^10.0.0
-  checksum: 00ad630809c28f2b214036459f2557393c66b42a7b93e87b3788ba8465b69b779e9c5ce5942b79f3fb38b20679703f6a12b31a116e52ffa9acb2461b53a54bec
+    "@nestjs/common": ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0
+  checksum: d41529c1090c4cf617b1bfd0dfad1eeaee4736d73738c78e769f393d47e2b345ff04a8e89c531b14714b447cb39056c0d7accca91da49d3141e2ff6880cd12bd
   languageName: node
   linkType: hard
 
@@ -1792,22 +1792,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsonwebtoken@npm:*":
+"@types/jsonwebtoken@npm:*, @types/jsonwebtoken@npm:9.0.10":
   version: 9.0.10
   resolution: "@types/jsonwebtoken@npm:9.0.10"
   dependencies:
     "@types/ms": "*"
     "@types/node": "*"
   checksum: 370e60879902d769c3dd86dc94cda0bf6149c3514762fa8ed6de873d10de7f0952edf960796a4b89ebc5d81f45abcff21430c1e956b165962ad42c836f3e88c8
-  languageName: node
-  linkType: hard
-
-"@types/jsonwebtoken@npm:9.0.5":
-  version: 9.0.5
-  resolution: "@types/jsonwebtoken@npm:9.0.5"
-  dependencies:
-    "@types/node": "*"
-  checksum: 07ab6fee602e5bd3fb5c6dfe4ec400769dc20f1d7fce901feecb4c3af5f5f08323b03ea55de3e49b1aa41e171a59008f6f4318738a735588c5268a63eba25337
   languageName: node
   linkType: hard
 
@@ -4033,7 +4024,7 @@ __metadata:
     "@nestjs/common": ^11.1.6
     "@nestjs/config": ^4.0.2
     "@nestjs/core": ^11.1.6
-    "@nestjs/jwt": ^10.2.0
+    "@nestjs/jwt": ^11.0.1
     "@nestjs/mapped-types": "*"
     "@nestjs/mongoose": ^10.1.0
     "@nestjs/passport": ^11.0.5
