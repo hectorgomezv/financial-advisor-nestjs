@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { CompanyState } from '../company-state.entity';
+import { CompanyState } from '../company-state.entity.js';
 
 export function companyStateFactory(
   uuid?: string,

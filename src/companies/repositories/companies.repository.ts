@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
-import { RedisClient } from '../../common/cache/redis.client';
-import { CompanyMetrics } from '../domain/entities/company-metrics.entity';
-import { Company } from '../domain/entities/company.entity';
-import { CompanyDocument, CompanyModel } from './schemas/company.schema';
+import { RedisClient } from '../../common/cache/redis.client.js';
+import { CompanyMetrics } from '../domain/entities/company-metrics.entity.js';
+import { Company } from '../domain/entities/company.entity.js';
+import { CompanyDocument, CompanyModel } from './schemas/company.schema.js';
 
 @Injectable()
 export class CompaniesRepository {

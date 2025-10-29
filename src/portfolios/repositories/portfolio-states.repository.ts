@@ -2,17 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
-import { TimePeriod } from '../../common/domain/entities/time-period.entity';
-import { PortfolioAverageBalance } from '../domain/entities/portfolio-average-balance.entity';
-import { PortfolioState } from '../domain/entities/portfolio-state.entity';
+import { TimePeriod } from '../../common/domain/entities/time-period.entity.js';
+import { PortfolioAverageBalance } from '../domain/entities/portfolio-average-balance.entity.js';
+import { PortfolioState } from '../domain/entities/portfolio-state.entity.js';
 import {
   getRangeStartTimestamp,
   TimeRange,
-} from '../domain/entities/time-range.enum';
+} from '../domain/entities/time-range.enum.js';
 import {
   PortfolioStateDocument,
   PortfolioStateModel,
-} from './schemas/portfolio-state.schema';
+} from './schemas/portfolio-state.schema.js';
 
 @Injectable()
 export class PortfolioStatesRepository {
@@ -133,6 +133,8 @@ export class PortfolioStatesRepository {
           timestamp: new Date(_id.year, 0, _id.day, _id.hour ?? 0),
           average,
         };
+      default:
+        throw new Error('unknown range');
     }
   }
 }

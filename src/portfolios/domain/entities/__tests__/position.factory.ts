@@ -1,4 +1,4 @@
-import { Position } from '../position.entity';
+import { Position } from '../position.entity.js';
 import { faker } from '@faker-js/faker';
 
 export function positionFactory(

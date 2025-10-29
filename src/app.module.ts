@@ -4,15 +4,15 @@ import { JwtService } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
 import { LoggerModule } from 'nestjs-pino';
-import { AboutModule } from './about/about.module';
-import { JwtStrategy } from './common/auth/jwt.strategy';
-import { CommonModule } from './common/common.module';
-import { MigrationsRunner } from './common/migrations/migrations-runner';
-import { CompaniesModule } from './companies/companies.module';
-import { HealthModule } from './health/health.module';
-import { IndicesModule } from './indices/indices.module';
-import { MetricsModule } from './metrics/metrics.module';
-import { PortfoliosModule } from './portfolios/portfolios.module';
+import { AboutModule } from './about/about.module.js';
+import { JwtStrategy } from './common/auth/jwt.strategy.js';
+import { CommonModule } from './common/common.module.js';
+import { MigrationsRunner } from './common/migrations/migrations-runner.js';
+import { CompaniesModule } from './companies/companies.module.js';
+import { HealthModule } from './health/health.module.js';
+import { IndicesModule } from './indices/indices.module.js';
+import { MetricsModule } from './metrics/metrics.module.js';
+import { PortfoliosModule } from './portfolios/portfolios.module.js';
 
 const { NODE_ENV } = process.env;
 

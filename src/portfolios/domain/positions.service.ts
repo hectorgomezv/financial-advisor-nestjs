@@ -6,18 +6,18 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { User } from '../../common/auth/entities/user.entity';
-import { CompanyState } from '../../companies/domain/entities/company-state.entity';
-import { CompaniesRepository } from '../../companies/repositories/companies.repository';
-import { CompanyStatesRepository } from '../../companies/repositories/company-states.repository';
-import { CurrencyExchangeClient } from '../datasources/currency-exchange.client';
-import { PortfoliosRepository } from '../repositories/portfolios.repository';
-import { PositionsRepository } from '../repositories/positions.repository';
-import { PositionDetailDto } from './dto/position-detail.dto';
-import { UpsertPositionDto } from './dto/upsert-position.dto';
-import { Portfolio } from './entities/portfolio.entity';
-import { Position } from './entities/position.entity';
-import { PortfolioStatesService } from './portfolio-states.service';
+import { User } from '../../common/auth/entities/user.entity.js';
+import { CompanyState } from '../../companies/domain/entities/company-state.entity.js';
+import { CompaniesRepository } from '../../companies/repositories/companies.repository.js';
+import { CompanyStatesRepository } from '../../companies/repositories/company-states.repository.js';
+import { CurrencyExchangeClient } from '../datasources/currency-exchange.client.js';
+import { PortfoliosRepository } from '../repositories/portfolios.repository.js';
+import { PositionsRepository } from '../repositories/positions.repository.js';
+import { PositionDetailDto } from './dto/position-detail.dto.js';
+import { UpsertPositionDto } from './dto/upsert-position.dto.js';
+import { Portfolio } from './entities/portfolio.entity.js';
+import { Position } from './entities/position.entity.js';
+import { PortfolioStatesService } from './portfolio-states.service.js';
 
 @Injectable()
 export class PositionsService {

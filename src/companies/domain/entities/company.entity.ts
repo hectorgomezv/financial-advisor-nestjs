@@ -1,5 +1,5 @@
-import { CompanyMetrics } from './company-metrics.entity';
-import { CompanyState } from './company-state.entity';
+import { CompanyMetrics } from './company-metrics.entity.js';
+import { CompanyState } from './company-state.entity.js';
 
 export class Company {
   uuid: string;

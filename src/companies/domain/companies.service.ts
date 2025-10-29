@@ -8,14 +8,14 @@ import {
 import { Cron } from '@nestjs/schedule';
 import { sortBy } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
-import { AuthService } from '../../common/auth/auth-service';
-import { User } from '../../common/auth/entities/user.entity';
-import { PositionsRepository } from '../../portfolios/repositories/positions.repository';
-import { CreateCompanyDto } from '../domain/dto/create-company.dto';
-import { CompaniesRepository } from '../repositories/companies.repository';
-import { CompanyStatesService } from './company-states.service';
-import { CompanyMetrics } from './entities/company-metrics.entity';
-import { Company, CompanyWithState } from './entities/company.entity';
+import { AuthService } from '../../common/auth/auth-service.js';
+import { User } from '../../common/auth/entities/user.entity.js';
+import { PositionsRepository } from '../../portfolios/repositories/positions.repository.js';
+import { CreateCompanyDto } from '../domain/dto/create-company.dto.js';
+import { CompaniesRepository } from '../repositories/companies.repository.js';
+import { CompanyStatesService } from './company-states.service.js';
+import { CompanyMetrics } from './entities/company-metrics.entity.js';
+import { Company, CompanyWithState } from './entities/company.entity.js';
 
 @Injectable()
 export class CompaniesService implements OnApplicationBootstrap {

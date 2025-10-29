@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
-import { Position } from '../domain/entities/position.entity';
-import { PositionDocument, PositionModel } from './schemas/position.schema';
+import { Position } from '../domain/entities/position.entity.js';
+import { PositionDocument, PositionModel } from './schemas/position.schema.js';
 
 @Injectable()
 export class PositionsRepository {

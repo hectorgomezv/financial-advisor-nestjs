@@ -2,10 +2,13 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
-import { ContributionsMetadata } from '../domain/entities/contributions-metadata';
-import { PortfolioContribution } from '../domain/entities/portfolio-contribution.entity';
-import { Portfolio } from '../domain/entities/portfolio.entity';
-import { PortfolioDocument, PortfolioModel } from './schemas/portfolio.schema';
+import { ContributionsMetadata } from '../domain/entities/contributions-metadata.js';
+import { PortfolioContribution } from '../domain/entities/portfolio-contribution.entity.js';
+import { Portfolio } from '../domain/entities/portfolio.entity.js';
+import {
+  PortfolioDocument,
+  PortfolioModel,
+} from './schemas/portfolio.schema.js';
 
 @Injectable()
 export class PortfoliosRepository {

@@ -1,15 +1,15 @@
 import { faker } from '@faker-js/faker';
 import { sortBy } from 'lodash';
-import { AuthService } from '../../common/auth/auth-service';
-import { User, UserRole } from '../../common/auth/entities/user.entity';
-import { positionFactory } from '../../portfolios/domain/entities/__tests__/position.factory';
-import { PositionsRepository } from '../../portfolios/repositories/positions.repository';
-import { CompaniesRepository } from '../repositories/companies.repository';
-import { CreateCompanyDto } from '../routes/dto/create-company.dto';
-import { CompaniesService } from './companies.service';
-import { CompanyStatesService } from './company-states.service';
-import { companyStateFactory } from './entities/__tests__/company-state.factory';
-import { companyFactory } from './entities/__tests__/company.factory';
+import { AuthService } from '../../common/auth/auth-service.js';
+import { User, UserRole } from '../../common/auth/entities/user.entity.js';
+import { positionFactory } from '../../portfolios/domain/entities/__tests__/position.factory.js';
+import { PositionsRepository } from '../../portfolios/repositories/positions.repository.js';
+import { CompaniesRepository } from '../repositories/companies.repository.js';
+import { CreateCompanyDto } from '../routes/dto/create-company.dto.js';
+import { CompaniesService } from './companies.service.js';
+import { CompanyStatesService } from './company-states.service.js';
+import { companyStateFactory } from './entities/__tests__/company-state.factory.js';
+import { companyFactory } from './entities/__tests__/company.factory.js';
 
 describe('CompaniesService', () => {
   const mockedCompaniesRepository = jest.mocked({

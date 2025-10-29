@@ -1,4 +1,4 @@
-import { CompanyState } from '../../../companies/domain/entities/company-state.entity';
+import { CompanyState } from '../../../companies/domain/entities/company-state.entity.js';
 
 export class PositionDetailDto {
   uuid: string;

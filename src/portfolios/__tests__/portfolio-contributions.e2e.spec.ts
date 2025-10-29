@@ -1,13 +1,13 @@
 import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { AppModule } from '../../app.module';
-import { createPortfolioDtoFactory } from '../domain/dto/test/create-portfolio-dto.factory';
-import { PortfoliosRepository } from '../repositories/portfolios.repository';
-import { MongoDBClient } from '../../common/__tests__/database/mongodb.client';
-import { AuthClient } from '../../common/__tests__/auth/auth.client';
-import { addPortfolioContributionDtoFactory } from '../domain/dto/test/add-portfolio-contribution.dto.factory';
-import { PortfoliosService } from '../domain/portfolios.service';
+import { AppModule } from '../../app.module.js';
+import { createPortfolioDtoFactory } from '../domain/dto/test/create-portfolio-dto.factory.js';
+import { PortfoliosRepository } from '../repositories/portfolios.repository.js';
+import { MongoDBClient } from '../../common/__tests__/database/mongodb.client.js';
+import { AuthClient } from '../../common/__tests__/auth/auth.client.js';
+import { addPortfolioContributionDtoFactory } from '../domain/dto/test/add-portfolio-contribution.dto.factory.js';
+import { PortfoliosService } from '../domain/portfolios.service.js';
 import { faker } from '@faker-js/faker';
 
 describe('Portfolio contributions e2e tests', () => {

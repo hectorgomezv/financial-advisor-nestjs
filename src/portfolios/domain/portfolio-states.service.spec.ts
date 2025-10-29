@@ -1,9 +1,9 @@
 import { faker } from '@faker-js/faker';
-import { PortfolioStatesRepository } from '../repositories/portfolio-states.repository';
+import { PortfolioStatesRepository } from '../repositories/portfolio-states.repository.js';
 import { TimeRange } from './entities/time-range.enum';
-import { portfolioFactory } from './entities/__tests__/portfolio.factory';
-import { positionFactory } from './entities/__tests__/position.factory';
-import { PortfolioStatesService } from './portfolio-states.service';
+import { portfolioFactory } from './entities/__tests__/portfolio.factory.js';
+import { positionFactory } from './entities/__tests__/position.factory.js';
+import { PortfolioStatesService } from './portfolio-states.service.js';
 import { round } from 'lodash';
 
 describe('PortfolioStatesService', () => {

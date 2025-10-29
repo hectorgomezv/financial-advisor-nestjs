@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
-import { DataPoint } from '../../common/domain/entities/data-point.entity';
-import { Index } from '../domain/entities/index.entity';
-import { IndexDocument, IndexModel } from './schemas/index.schema';
+import { DataPoint } from '../../common/domain/entities/data-point.entity.js';
+import { Index } from '../domain/entities/index.entity.js';
+import { IndexDocument, IndexModel } from './schemas/index.schema.js';
 
 @Injectable()
 export class IndicesRepository {

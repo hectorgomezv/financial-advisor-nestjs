@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { CompanyMetrics } from '../../domain/entities/company-metrics.entity';
-import { CompanyMetricsSchema } from './company-metrics.schema';
+import { CompanyMetrics } from '../../domain/entities/company-metrics.entity.js';
+import { CompanyMetricsSchema } from './company-metrics.schema.js';
 
 export type CompanyDocument = CompanyModel & Document;
 

@@ -1,14 +1,14 @@
 import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { AppModule } from '../../app.module';
-import { createPortfolioDtoFactory } from '../domain/dto/test/create-portfolio-dto.factory';
-import { createCompanyDtoFactory } from '../../companies/domain/dto/test/create-company.dto.factory';
-import { upsertPositionDtoFactory } from '../domain/dto/test/upsert-position-dto.factory';
-import { PortfoliosRepository } from '../repositories/portfolios.repository';
-import { MongoDBClient } from '../../common/__tests__/database/mongodb.client';
-import { AuthClient } from '../../common/__tests__/auth/auth.client';
-import { User } from '../../common/auth/entities/user.entity';
+import { AppModule } from '../../app.module.js';
+import { createPortfolioDtoFactory } from '../domain/dto/test/create-portfolio-dto.factory.js';
+import { createCompanyDtoFactory } from '../../companies/domain/dto/test/create-company.dto.factory.js';
+import { upsertPositionDtoFactory } from '../domain/dto/test/upsert-position-dto.factory.js';
+import { PortfoliosRepository } from '../repositories/portfolios.repository.js';
+import { MongoDBClient } from '../../common/__tests__/database/mongodb.client.js';
+import { AuthClient } from '../../common/__tests__/auth/auth.client.js';
+import { User } from '../../common/auth/entities/user.entity.js';
 
 describe('Portfolios e2e tests', () => {
   let app: INestApplication;

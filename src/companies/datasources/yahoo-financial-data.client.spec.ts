@@ -1,9 +1,9 @@
 import { faker } from '@faker-js/faker';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-import { DataPoint } from '../../common/domain/entities/data-point.entity';
-import { ChartBuilder } from '../__tests__/chart.factory';
-import { YahooFinancialDataClient } from './yahoo-financial-data.client';
+import { DataPoint } from '../../common/domain/entities/data-point.entity.js';
+import { ChartBuilder } from '../__tests__/chart.factory.js';
+import { YahooFinancialDataClient } from './yahoo-financial-data.client.js';
 
 describe('YahooFinancialDataClient', () => {
   const mockedConfigService = jest.mocked({

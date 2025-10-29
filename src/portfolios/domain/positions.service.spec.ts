@@ -1,10 +1,10 @@
-import { CompaniesRepository } from '../../companies/repositories/companies.repository';
-import { CompanyStatesRepository } from '../../companies/repositories/company-states.repository';
-import { CurrencyExchangeClient } from '../datasources/currency-exchange.client';
-import { PortfoliosRepository } from '../repositories/portfolios.repository';
-import { PositionsRepository } from '../repositories/positions.repository';
-import { PortfolioStatesService } from './portfolio-states.service';
-import { PositionsService } from './positions.service';
+import { CompaniesRepository } from '../../companies/repositories/companies.repository.js';
+import { CompanyStatesRepository } from '../../companies/repositories/company-states.repository.js';
+import { CurrencyExchangeClient } from '../datasources/currency-exchange.client.js';
+import { PortfoliosRepository } from '../repositories/portfolios.repository.js';
+import { PositionsRepository } from '../repositories/positions.repository.js';
+import { PortfolioStatesService } from './portfolio-states.service.js';
+import { PositionsService } from './positions.service.js';
 
 describe('PositionsService', () => {
   const positionsRepository = {} as unknown as PositionsRepository;

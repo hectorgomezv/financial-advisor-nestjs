@@ -3,14 +3,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import { sub } from 'date-fns';
 import { Model } from 'mongoose';
-import { from } from '../../common/cache/cache.key.mapper';
-import { RedisClient } from '../../common/cache/redis.client';
-import { CompanyMetrics } from '../domain/entities/company-metrics.entity';
-import { CompanyState } from '../domain/entities/company-state.entity';
+import { from } from '../../common/cache/cache.key.mapper.js';
+import { RedisClient } from '../../common/cache/redis.client.js';
+import { CompanyMetrics } from '../domain/entities/company-metrics.entity.js';
+import { CompanyState } from '../domain/entities/company-state.entity.js';
 import {
   CompanyStateDocument,
   CompanyStateModel,
-} from './schemas/company-state.schema';
+} from './schemas/company-state.schema.js';
 
 @Injectable()
 export class CompanyStatesRepository {

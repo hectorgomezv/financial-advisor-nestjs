@@ -9,10 +9,10 @@ import { ConfigService } from '@nestjs/config';
 import { AxiosError } from 'axios';
 import { sample } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
-import { DataPoint } from '../../common/domain/entities/data-point.entity';
-import { Chart, Quote } from '../domain/entities/chart.entity';
-import { QuoteSummary } from '../domain/entities/quote-summary.entity';
-import { IFinancialDataClient } from './financial-data.client.interface';
+import { DataPoint } from '../../common/domain/entities/data-point.entity.js';
+import { Chart, Quote } from '../domain/entities/chart.entity.js';
+import { QuoteSummary } from '../domain/entities/quote-summary.entity.js';
+import { IFinancialDataClient } from './financial-data.client.interface.js';
 
 @Injectable()
 export class YahooFinancialDataClient implements IFinancialDataClient {

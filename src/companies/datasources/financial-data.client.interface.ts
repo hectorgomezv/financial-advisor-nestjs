@@ -1,5 +1,5 @@
-import { DataPoint } from '../../common/domain/entities/data-point.entity';
-import { QuoteSummary } from '../domain/entities/quote-summary.entity';
+import { DataPoint } from '../../common/domain/entities/data-point.entity.js';
+import { QuoteSummary } from '../domain/entities/quote-summary.entity.js';
 
 export const IFinancialDataClient = Symbol('IFinancialDataClient');
 

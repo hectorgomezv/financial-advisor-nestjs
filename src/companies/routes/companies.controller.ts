@@ -16,16 +16,16 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { omit } from 'lodash';
-import { User } from '../../common/auth/entities/user.entity';
-import { JwtAuthGuard } from '../../common/auth/jwt-auth.guard';
-import { CreatedResponse } from '../../common/routes/entities/created-response.entity';
-import { OkArrayResponse } from '../../common/routes/entities/ok-array-response.entity';
-import { OkResponse } from '../../common/routes/entities/ok-response.entity';
-import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
-import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
-import { CompaniesService } from '../domain/companies.service';
-import { CreateCompanyDto } from './dto/create-company.dto';
-import { Company, CompanyWithState } from './entities/company.entity';
+import { User } from '../../common/auth/entities/user.entity.js';
+import { JwtAuthGuard } from '../../common/auth/jwt-auth.guard.js';
+import { CreatedResponse } from '../../common/routes/entities/created-response.entity.js';
+import { OkArrayResponse } from '../../common/routes/entities/ok-array-response.entity.js';
+import { OkResponse } from '../../common/routes/entities/ok-response.entity.js';
+import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter.js';
+import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor.js';
+import { CompaniesService } from '../domain/companies.service.js';
+import { CreateCompanyDto } from './dto/create-company.dto.js';
+import { Company, CompanyWithState } from './entities/company.entity.js';
 
 @UseInterceptors(DataInterceptor)
 @UseFilters(MainExceptionFilter)

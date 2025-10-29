@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as money from 'money';
 import { CronJob } from 'cron';
-import { OpenExchangeRatesClient } from './open-exchange-rates.client';
+import { OpenExchangeRatesClient } from './open-exchange-rates.client.js';
 
 const EVERY_THREE_HOURS_CRON_EXP = '0 */3 * * *';
 

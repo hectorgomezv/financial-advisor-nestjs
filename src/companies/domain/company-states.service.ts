@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { IFinancialDataClient } from '../datasources/financial-data.client.interface';
-import { CompanyState } from '../domain/entities/company-state.entity';
-import { Company } from '../domain/entities/company.entity';
-import { QuoteSummary } from '../domain/entities/quote-summary.entity';
-import { CompanyStatesRepository } from '../repositories/company-states.repository';
-import { CompanyMetrics } from './entities/company-metrics.entity';
+import { IFinancialDataClient } from '../datasources/financial-data.client.interface.js';
+import { CompanyState } from '../domain/entities/company-state.entity.js';
+import { Company } from '../domain/entities/company.entity.js';
+import { QuoteSummary } from '../domain/entities/quote-summary.entity.js';
+import { CompanyStatesRepository } from '../repositories/company-states.repository.js';
+import { CompanyMetrics } from './entities/company-metrics.entity.js';
 
 @Injectable()
 export class CompanyStatesService {

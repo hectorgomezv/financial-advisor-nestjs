@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { PortfolioContribution } from '../../domain/entities/portfolio-contribution.entity';
-import { PortfolioContributionSchema } from './portfolio-contribution.schema';
+import { PortfolioContribution } from '../../domain/entities/portfolio-contribution.entity.js';
+import { PortfolioContributionSchema } from './portfolio-contribution.schema.js';
 
 export type PortfolioDocument = PortfolioModel & Document;
 

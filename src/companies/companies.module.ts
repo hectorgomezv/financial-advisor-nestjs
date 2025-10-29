@@ -2,24 +2,24 @@ import { HttpModule } from '@nestjs/axios';
 import { forwardRef, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AuthService } from '../common/auth/auth-service';
-import { RedisClient } from '../common/cache/redis.client';
-import { PortfoliosModule } from '../portfolios/portfolios.module';
-import { IFinancialDataClient } from './datasources/financial-data.client.interface';
-import { YahooFinancialDataClient } from './datasources/yahoo-financial-data.client';
-import { CompaniesService } from './domain/companies.service';
-import { CompanyStatesService } from './domain/company-states.service';
-import { CompaniesRepository } from './repositories/companies.repository';
-import { CompanyStatesRepository } from './repositories/company-states.repository';
+import { AuthService } from '../common/auth/auth-service.js';
+import { RedisClient } from '../common/cache/redis.client.js';
+import { PortfoliosModule } from '../portfolios/portfolios.module.js';
+import { IFinancialDataClient } from './datasources/financial-data.client.interface.js';
+import { YahooFinancialDataClient } from './datasources/yahoo-financial-data.client.js';
+import { CompaniesService } from './domain/companies.service.js';
+import { CompanyStatesService } from './domain/company-states.service.js';
+import { CompaniesRepository } from './repositories/companies.repository.js';
+import { CompanyStatesRepository } from './repositories/company-states.repository.js';
 import {
   CompanyStateModel,
   CompanyStateSchema,
-} from './repositories/schemas/company-state.schema';
+} from './repositories/schemas/company-state.schema.js';
 import {
   CompanyModel,
   CompanySchema,
-} from './repositories/schemas/company.schema';
-import { CompaniesController } from './routes/companies.controller';
+} from './repositories/schemas/company.schema.js';
+import { CompaniesController } from './routes/companies.controller.js';
 
 @Module({
   imports: [

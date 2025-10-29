@@ -4,11 +4,11 @@ import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import Redis from 'ioredis';
 import * as request from 'supertest';
-import { AppModule } from '../../app.module';
-import { AuthClient } from '../../common/__tests__/auth/auth.client';
-import { MongoDBClient } from '../../common/__tests__/database/mongodb.client';
-import { createCompanyDtoFactory } from '../domain/dto/test/create-company.dto.factory';
-import { CompaniesRepository } from '../repositories/companies.repository';
+import { AppModule } from '../../app.module.js';
+import { AuthClient } from '../../common/__tests__/auth/auth.client.js';
+import { MongoDBClient } from '../../common/__tests__/database/mongodb.client.js';
+import { createCompanyDtoFactory } from '../domain/dto/test/create-company.dto.factory.js';
+import { CompaniesRepository } from '../repositories/companies.repository.js';
 
 describe('Companies e2e tests', () => {
   let app: INestApplication;

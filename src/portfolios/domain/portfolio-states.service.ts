@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { TimePeriod } from '../../common/domain/entities/time-period.entity';
-import { PortfolioStatesRepository } from '../repositories/portfolio-states.repository';
-import { PortfolioAverageBalance } from './entities/portfolio-average-balance.entity';
-import { PortfolioState } from './entities/portfolio-state.entity';
-import { Portfolio } from './entities/portfolio.entity';
-import { Position } from './entities/position.entity';
-import { TimeRange } from './entities/time-range.enum';
+import { TimePeriod } from '../../common/domain/entities/time-period.entity.js';
+import { PortfolioStatesRepository } from '../repositories/portfolio-states.repository.js';
+import { PortfolioAverageBalance } from './entities/portfolio-average-balance.entity.js';
+import { PortfolioState } from './entities/portfolio-state.entity.js';
+import { Portfolio } from './entities/portfolio.entity.js';
+import { Position } from './entities/position.entity.js';
+import { TimeRange } from './entities/time-range.enum.js';
 import { round } from 'lodash';
 
 @Injectable()

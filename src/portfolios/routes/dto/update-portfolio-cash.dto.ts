@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsNumber, IsPositive } from 'class-validator';
-import { UpdatePortfolioCashDto as DomainUpdatePortfolioCashDto } from '../../domain/dto/update-portfolio-cash.dto';
+import { UpdatePortfolioCashDto as DomainUpdatePortfolioCashDto } from '../../domain/dto/update-portfolio-cash.dto.js';
 
 export class UpdatePortfolioCashDto implements DomainUpdatePortfolioCashDto {
   @ApiProperty()

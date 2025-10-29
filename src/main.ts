@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { readFileSync } from 'fs';
 import { Logger } from 'nestjs-pino';
-import { AppModule } from './app.module';
+import { AppModule } from './app.module.js';
 
 const { CORS_BASE_URL, HTTP_SERVER_PORT } = process.env;
 

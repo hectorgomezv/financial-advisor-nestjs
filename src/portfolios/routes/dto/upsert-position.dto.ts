@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsPositive, IsString } from 'class-validator';
-import { UpsertPositionDto as DomainUpsertPositionDto } from '../../domain/dto/upsert-position.dto';
+import { UpsertPositionDto as DomainUpsertPositionDto } from '../../domain/dto/upsert-position.dto.js';
 
 export class UpsertPositionDto implements DomainUpsertPositionDto {
   @ApiProperty()
