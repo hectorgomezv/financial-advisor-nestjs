@@ -11,9 +11,9 @@ export class AuthClient {
   constructor() {
     const { E2E_AUTH_EMAIL, E2E_AUTH_PASSWORD, E2E_AUTH_URL } = process.env;
     this.client = axios;
-    this.email = E2E_AUTH_EMAIL;
-    this.password = E2E_AUTH_PASSWORD;
-    this.url = E2E_AUTH_URL;
+    this.email = E2E_AUTH_EMAIL!;
+    this.password = E2E_AUTH_PASSWORD!;
+    this.url = E2E_AUTH_URL!;
   }
 
   async getAuth() {

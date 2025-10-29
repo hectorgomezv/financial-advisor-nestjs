@@ -135,7 +135,9 @@ export class PositionsService {
       positions.map(async (position) => {
         const company = companies.find((c) => c.uuid === position.companyUuid);
         const companyState =
-          await this.companyStatesRepository.getLastByCompanyUuid(company.uuid);
+          await this.companyStatesRepository.getLastByCompanyUuid(
+            company!.uuid,
+          );
         return this.calculatePositionState(position, company, companyState, fx);
       }),
     );

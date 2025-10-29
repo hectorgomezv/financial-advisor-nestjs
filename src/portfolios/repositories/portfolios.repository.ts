@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
@@ -86,12 +86,15 @@ export class PortfoliosRepository {
     contribution: PortfolioContribution,
   ): Promise<void> {
     const portfolio = await this.model.findOne({ uuid });
-    portfolio.contributions.push({
-      uuid: contribution.uuid,
-      timestamp: new Date(contribution.timestamp),
-      amountEUR: contribution.amountEUR,
-    });
-    await portfolio.save();
+    if (portfolio) {
+      portfolio.contributions.push({
+        uuid: contribution.uuid,
+        timestamp: new Date(contribution.timestamp),
+        amountEUR: contribution.amountEUR,
+      });
+      await portfolio.save();
+    }
+    throw new NotFoundException('Portfolio not found');
   }
 
   async deleteContribution(

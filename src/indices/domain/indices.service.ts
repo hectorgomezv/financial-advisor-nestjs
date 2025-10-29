@@ -41,12 +41,11 @@ export class IndicesService {
         avgValue: this.getAvgValue(indexValues, ts),
       };
     });
-    const firstValue = first(averageValues).avgValue;
+    const firstValue = first(averageValues)?.avgValue;
 
     return averageValues.map(({ timestamp, avgValue }, n) => ({
       timestamp,
-      value:
-        n === 0 || firstValue === 0 ? 0 : (avgValue * 100) / firstValue - 100,
+      value: n === 0 || !firstValue ? 0 : (avgValue * 100) / firstValue - 100,
     }));
   }
 
@@ -58,10 +57,10 @@ export class IndicesService {
     )
       return dataPoints[0].value;
     if (
-      isBefore(last(dataPoints).timestamp, timestamp) ||
-      isEqual(last(dataPoints).timestamp, timestamp)
+      isBefore(last(dataPoints)!.timestamp, timestamp) ||
+      isEqual(last(dataPoints)!.timestamp, timestamp)
     )
-      return last(dataPoints).value;
+      return last(dataPoints)!.value;
 
     const nextIndex = dataPoints.findIndex((i) => i.timestamp >= timestamp);
     return (dataPoints[nextIndex - 1].value + dataPoints[nextIndex].value) / 2;

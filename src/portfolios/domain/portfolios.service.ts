@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { isAfter, isBefore, isEqual } from 'date-fns';
-import { first, head, last, orderBy, sortBy } from 'lodash';
+import { first, head, isEmpty, last, orderBy, sortBy } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthService } from '../../common/auth/auth-service';
 import { User } from '../../common/auth/entities/user.entity';
@@ -47,7 +47,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
     user: User,
     createPortfolioDto: CreatePortfolioDto,
   ): Promise<Portfolio> {
-    return this.repository.create(<Portfolio>{
+    return this.repository.create(<Portfolio>(<unknown>{
       uuid: uuidv4(),
       name: createPortfolioDto.name,
       ownerId: user.id,
@@ -56,7 +56,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
       cash: 0,
       contributions: [],
       state: null,
-    });
+    }));
   }
 
   findByOwnerId(user: User) {
@@ -101,7 +101,17 @@ export class PortfoliosService implements OnApplicationBootstrap {
     return portfolio;
   }
 
-  async getAverageBalances(user: User, uuid: string, range: string) {
+  async getAverageBalances(
+    user: User,
+    uuid: string,
+    range: string,
+  ): Promise<
+    {
+      contributions: number;
+      timestamp?: Date | undefined;
+      average?: number | undefined;
+    }[]
+  > {
     const portfolio = await this.repository.findOne(uuid);
     if (!portfolio) {
       throw new NotFoundException('Portfolio not found');
@@ -117,7 +127,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
     return sortBy(balances, ['timestamp']).map((balance) => ({
       ...balance,
       contributions: this.getContributionsSumForTimestamp(
-        balance.timestamp,
+        balance.timestamp!,
         portfolio,
       ),
     }));
@@ -157,6 +167,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
       ['timestamp'],
     );
     const indices = await this.indicesService.findAll(user);
+    if (!balances.length) return [];
     const initialValue = first(balances);
     const indicesPerformance = await Promise.all(
       indices.map(async (index) => ({
@@ -169,7 +180,8 @@ export class PortfoliosService implements OnApplicationBootstrap {
       ({ timestamp, average }, n) =>
         <DataPoint>{
           timestamp,
-          value: n === 0 ? 0 : (average * 100) / initialValue.average - 100,
+          value:
+            n === 0 ? 0 : (average ?? 0 * 100) / initialValue!.average! - 100,
           ...indicesPerformance.reduce(
             (_, item) => ({ ..._, [item.name]: item.values[n] }),
             {},
@@ -241,8 +253,9 @@ export class PortfoliosService implements OnApplicationBootstrap {
     states: Partial<PortfolioState>[],
     date: Date,
   ): number {
+    if (isEmpty(states)) return 0;
     const targetState = orderBy(states, 'timestamp', 'desc').find((s) =>
-      isBefore(s.timestamp, date),
+      isBefore(s.timestamp!, date),
     );
 
     return targetState?.totalValueEUR ?? states[0].totalValueEUR ?? 0;
@@ -265,12 +278,13 @@ export class PortfoliosService implements OnApplicationBootstrap {
     index: Index,
     balances: Partial<PortfolioAverageBalance>[],
   ): Promise<number[]> {
-    const initialValue = head(balances);
+    if (isEmpty(balances)) return [];
+    const initialValue = head(balances)!;
     const indexPerformance =
       await this.indicesService.getIndexPerformanceForTimestamps(
         index,
-        initialValue.timestamp,
-        balances.map((i) => i.timestamp),
+        initialValue!.timestamp!,
+        balances.map((i) => i.timestamp!),
       );
     return indexPerformance.map((ip) => ip.value);
   }
@@ -279,10 +293,11 @@ export class PortfoliosService implements OnApplicationBootstrap {
     index: Index,
     timestamps: Date[],
   ): Promise<number[]> {
+    if (isEmpty(timestamps)) return [];
     const indexReturns =
       await this.indicesService.getIndexPerformanceForTimestamps(
         index,
-        head(timestamps),
+        head(timestamps)!,
         timestamps,
       );
     return indexReturns.map((i) => i.value);
