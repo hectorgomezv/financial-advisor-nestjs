@@ -182,6 +182,8 @@ describe('Portfolios e2e tests', () => {
   });
 
   afterAll(async () => {
+    const collection = await mongoClient.getCollection('portfolios');
+    await collection.deleteMany({});
     await app.close();
     await mongoClient.close();
   });
