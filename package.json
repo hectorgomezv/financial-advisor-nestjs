@@ -18,7 +18,7 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "lint-check": "eslint \"{src,apps,libs,test}/**/*.ts\"",
     "test": "vitest",
-    "test:cov": "vitest --coverage --runInBand"
+    "test:cov": "vitest --coverage"
   },
   "dependencies": {
     "@nestjs/axios": "^4.0.1",
