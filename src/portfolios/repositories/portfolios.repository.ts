@@ -96,8 +96,9 @@ export class PortfoliosRepository {
         amountEUR: contribution.amountEUR,
       });
       await portfolio.save();
+    } else {
+      throw new NotFoundException('Portfolio not found');
     }
-    throw new NotFoundException('Portfolio not found');
   }
 
   async deleteContribution(

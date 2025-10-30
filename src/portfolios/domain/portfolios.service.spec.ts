@@ -12,7 +12,7 @@ import { PortfolioDetailDto } from './dto/portfolio-detail.dto.js';
 import { addPortfolioContributionDtoFactory } from './dto/test/add-portfolio-contribution.dto.factory.js';
 import { positionDetailDtoFactory } from './dto/test/position-detail-dto.factory.js';
 import { updatePortfolioCashDtoFactory } from './dto/test/update-portfolio-cash.dto.factory.js';
-import { ContributionsMetadata } from './entities/contributions-metadata';
+import { ContributionsMetadata } from './entities/contributions-metadata.js';
 import { Portfolio } from './entities/portfolio.entity.js';
 import { portfolioAverageBalanceFactory } from './entities/__tests__/portfolio-average-metric.factory.js';
 import { portfolioContributionFactory } from './entities/__tests__/portfolio-contribution.factory.js';
@@ -21,37 +21,38 @@ import { portfolioFactory } from './entities/__tests__/portfolio.factory.js';
 import { PortfolioStatesService } from './portfolio-states.service.js';
 import { PortfoliosService } from './portfolios.service.js';
 import { PositionsService } from './positions.service.js';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('PortfoliosService', () => {
-  const portfoliosRepository = jest.mocked({
-    create: jest.fn(),
-    findByOwnerId: jest.fn(),
-    findAll: jest.fn(),
-    findOne: jest.fn(),
-    deleteOne: jest.fn(),
-    updateCash: jest.fn(),
-    getContributions: jest.fn(),
-    getContributionsMetadata: jest.fn(),
-    addContribution: jest.fn(),
-    deleteContribution: jest.fn(),
+  const portfoliosRepository = vi.mocked({
+    create: vi.fn(),
+    findByOwnerId: vi.fn(),
+    findAll: vi.fn(),
+    findOne: vi.fn(),
+    deleteOne: vi.fn(),
+    updateCash: vi.fn(),
+    getContributions: vi.fn(),
+    getContributionsMetadata: vi.fn(),
+    addContribution: vi.fn(),
+    deleteContribution: vi.fn(),
   } as unknown as PortfoliosRepository);
 
-  const portfolioStatesService = jest.mocked({
-    getLastByPortfolioUuid: jest.fn(),
-    deleteByPortfolioUuid: jest.fn(),
-    getAverageBalancesForRange: jest.fn(),
-    getPortfolioStatesInPeriod: jest.fn(),
+  const portfolioStatesService = vi.mocked({
+    getLastByPortfolioUuid: vi.fn(),
+    deleteByPortfolioUuid: vi.fn(),
+    getAverageBalancesForRange: vi.fn(),
+    getPortfolioStatesInPeriod: vi.fn(),
   } as unknown as PortfolioStatesService);
 
-  const positionsService = jest.mocked({
-    getPositionDetailsByPortfolioUuid: jest.fn(),
-    deleteByPortfolioUuid: jest.fn(),
-    updatePortfolioState: jest.fn(),
+  const positionsService = vi.mocked({
+    getPositionDetailsByPortfolioUuid: vi.fn(),
+    deleteByPortfolioUuid: vi.fn(),
+    updatePortfolioState: vi.fn(),
   } as unknown as PositionsService);
 
-  const indicesService = jest.mocked({
-    findAll: jest.fn(),
-    getIndexPerformanceForTimestamps: jest.fn(),
+  const indicesService = vi.mocked({
+    findAll: vi.fn(),
+    getIndexPerformanceForTimestamps: vi.fn(),
   } as unknown as IndicesService);
 
   const adminUser = <User>{

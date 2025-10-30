@@ -5,34 +5,34 @@ export type CompanyStateDocument = CompanyStateModel & Document;
 
 @Schema({ collection: 'companyStates' })
 export class CompanyStateModel {
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   uuid: string;
 
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   companyUuid: string;
 
-  @Prop({ required: true })
+  @Prop({ type: Date, required: true })
   timestamp: Date;
 
-  @Prop({ required: true })
+  @Prop({ type: Number, required: true })
   price: number;
 
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   currency: string;
 
-  @Prop({ required: true })
+  @Prop({ type: Number, required: true })
   forwardPE: number;
 
-  @Prop({ required: true })
+  @Prop({ type: Number, required: true })
   profitMargins: number;
 
-  @Prop({ required: true })
+  @Prop({ type: Number, required: true })
   enterpriseToRevenue: number;
 
-  @Prop({ required: true })
+  @Prop({ type: Number, required: true })
   enterpriseToEbitda: number;
 
-  @Prop({ required: true })
+  @Prop({ type: Number, required: true })
   shortPercentOfFloat: number;
 }
 

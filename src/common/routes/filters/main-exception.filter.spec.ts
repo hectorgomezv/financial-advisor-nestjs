@@ -1,7 +1,8 @@
+import { faker } from '@faker-js/faker';
 import { ArgumentsHost, NotFoundException } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
-import { faker } from '@faker-js/faker';
-import { MainExceptionFilter } from './main-exception.filter';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { MainExceptionFilter } from './main-exception.filter.js';
 
 describe('[unit] main-exception filter', () => {
   const fakeUrl = faker.internet.url();
@@ -12,23 +13,23 @@ describe('[unit] main-exception filter', () => {
     [faker.word.sample()]: faker.word.sample(),
   };
 
-  const mockedHttpAdapterHost = jest.mocked({
+  const mockedHttpAdapterHost = vi.mocked({
     httpAdapter: {
-      getRequestUrl: jest.fn().mockReturnValue(fakeUrl),
-      reply: jest.fn(),
+      getRequestUrl: vi.fn().mockReturnValue(fakeUrl),
+      reply: vi.fn(),
     },
   } as unknown as HttpAdapterHost);
 
-  const mockedHost = jest.mocked({
-    switchToHttp: jest.fn().mockReturnValue({
-      getRequest: jest.fn(),
-      getResponse: jest.fn().mockReturnValue(fakeResponse),
+  const mockedHost = vi.mocked({
+    switchToHttp: vi.fn().mockReturnValue({
+      getRequest: vi.fn(),
+      getResponse: vi.fn().mockReturnValue(fakeResponse),
     }),
   } as unknown as ArgumentsHost);
 
   const filter = new MainExceptionFilter(mockedHttpAdapterHost);
 
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => vi.clearAllMocks());
 
   it('should map a non-http exception to a 500 error', async () => {
     const exception = new Error(fakeErrMsg);

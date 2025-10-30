@@ -1,4 +1,5 @@
 import { random, range } from 'lodash';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '../../common/auth/auth-service.js';
 import { userFactory } from '../../common/auth/entities/__tests__/user.factory.js';
 import { dataPointFactory } from '../../common/domain/entities/__tests__/data-point.factory.js';
@@ -8,16 +9,16 @@ import { indexFactory } from './entities/__tests__/index.factory.js';
 import { IndicesService } from './indices.service.js';
 
 describe('IndicesService', () => {
-  const mockedIndicesRepository = jest.mocked({
-    findAll: jest.fn(),
-    getIndexValuesFrom: jest.fn(),
+  const mockedIndicesRepository = vi.mocked({
+    findAll: vi.fn(),
+    getIndexValuesFrom: vi.fn(),
   } as unknown as IndicesRepository);
 
-  const mockedAuthService = jest.mocked({
-    checkAdmin: jest.fn(),
+  const mockedAuthService = vi.mocked({
+    checkAdmin: vi.fn(),
   } as unknown as AuthService);
 
-  const mockedFinancialDataClient = jest.mocked(
+  const mockedFinancialDataClient = vi.mocked(
     {} as unknown as IFinancialDataClient,
   );
 
@@ -27,7 +28,7 @@ describe('IndicesService', () => {
     mockedFinancialDataClient,
   );
 
-  beforeEach(() => jest.resetAllMocks());
+  beforeEach(() => vi.resetAllMocks());
 
   describe('retrieving indices', () => {
     it('should return repository indices', async () => {

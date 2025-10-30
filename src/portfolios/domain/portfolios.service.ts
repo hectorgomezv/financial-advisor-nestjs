@@ -181,7 +181,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
         <DataPoint>{
           timestamp,
           value:
-            n === 0 ? 0 : (average ?? 0 * 100) / initialValue!.average! - 100,
+            n === 0 ? 0 : ((average ?? 0) * 100) / initialValue!.average! - 100,
           ...indicesPerformance.reduce(
             (_, item) => ({ ..._, [item.name]: item.values[n] }),
             {},

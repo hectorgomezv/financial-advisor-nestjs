@@ -61,14 +61,18 @@ export class PositionsService {
 
     const uuid = uuidv4();
 
-    await this.repository.create(<Position>{
-      ...upsertPositionDto,
-      portfolioUuid,
-      uuid,
-      companyUuid: company.uuid,
-      blocked: false,
-      sharesUpdatedAt: new Date(),
-    });
+    try {
+      await this.repository.create(<Position>{
+        ...upsertPositionDto,
+        portfolioUuid,
+        uuid,
+        companyUuid: company.uuid,
+        blocked: false,
+        sharesUpdatedAt: new Date(),
+      });
+    } catch (err) {
+      throw err;
+    }
 
     const created = await this.repository.findByUuid(uuid);
     await this.updatePortfolioState(portfolio);
@@ -176,7 +180,7 @@ export class PositionsService {
   ): Promise<PositionDetailDto> {
     let value = Number((companyState?.price ?? 0) * position.shares);
     if (companyState.currency !== 'EUR') {
-      value = await fx(value).from(companyState.currency).to('EUR');
+      value = fx.convert(value, { from: companyState.currency, to: 'EUR' });
     }
 
     return <PositionDetailDto>{
