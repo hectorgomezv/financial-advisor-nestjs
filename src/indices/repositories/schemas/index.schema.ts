@@ -15,7 +15,7 @@ export class IndexModel {
   @Prop({ type: String, required: true })
   symbol: string;
 
-  @Prop({ type: Array, required: true, schema: DataPointSchema })
+  @Prop({ type: [DataPointSchema], default: [] })
   values: DataPoint[];
 }
 

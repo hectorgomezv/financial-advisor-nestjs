@@ -22,7 +22,7 @@ export class PortfolioModel {
   @Prop({ type: Number, required: true })
   cash: number;
 
-  @Prop({ type: Array, required: true, schema: PortfolioContributionSchema })
+  @Prop({ type: [PortfolioContributionSchema], default: [] })
   contributions: PortfolioContribution[];
 
   // Transient properties

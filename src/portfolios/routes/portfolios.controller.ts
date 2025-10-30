@@ -57,9 +57,7 @@ export class PortfoliosController {
   constructor(
     private readonly portfoliosService: PortfoliosService,
     private readonly positionsService: PositionsService,
-  ) {
-    console.log('foo');
-  }
+  ) {}
 
   @Post()
   @CreatedResponse(Portfolio)
