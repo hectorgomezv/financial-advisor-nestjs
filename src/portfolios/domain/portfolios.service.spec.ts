@@ -21,7 +21,7 @@ import { portfolioFactory } from './entities/__tests__/portfolio.factory.js';
 import { PortfolioStatesService } from './portfolio-states.service.js';
 import { PortfoliosService } from './portfolios.service.js';
 import { PositionsService } from './positions.service.js';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 describe('PortfoliosService', () => {
   const portfoliosRepository = vi.mocked({
