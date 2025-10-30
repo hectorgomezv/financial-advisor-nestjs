@@ -6,7 +6,7 @@ import {
   OnApplicationBootstrap,
 } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { sortBy } from 'lodash';
+import _ from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthService } from '../../common/auth/auth-service.js';
 import { User } from '../../common/auth/entities/user.entity.js';
@@ -16,6 +16,7 @@ import { CompaniesRepository } from '../repositories/companies.repository.js';
 import { CompanyStatesService } from './company-states.service.js';
 import { CompanyMetrics } from './entities/company-metrics.entity.js';
 import { Company, CompanyWithState } from './entities/company.entity.js';
+const { sortBy } = _;
 
 @Injectable()
 export class CompaniesService implements OnApplicationBootstrap {

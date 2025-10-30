@@ -1,13 +1,14 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { isAfter, isBefore, isEqual } from 'date-fns';
-import { first, isEmpty, last, sortBy } from 'lodash';
+import _ from 'lodash';
 import { AuthService } from '../../common/auth/auth-service.js';
 import { User } from '../../common/auth/entities/user.entity.js';
 import { DataPoint } from '../../common/domain/entities/data-point.entity.js';
 import { IFinancialDataClient } from '../../companies/datasources/financial-data.client.interface.js';
 import { IndicesRepository } from '../repositories/indices.repository.js';
 import { Index } from './entities/index.entity.js';
+const { first, isEmpty, last, sortBy } = _;
 
 @Injectable()
 export class IndicesService {

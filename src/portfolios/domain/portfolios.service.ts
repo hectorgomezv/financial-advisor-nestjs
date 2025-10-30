@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { isAfter, isBefore, isEqual } from 'date-fns';
-import { first, head, isEmpty, last, orderBy, sortBy } from 'lodash';
+import _ from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthService } from '../../common/auth/auth-service.js';
 import { User } from '../../common/auth/entities/user.entity.js';
@@ -28,6 +28,7 @@ import { Portfolio } from './entities/portfolio.entity.js';
 import { timeRangeFromStr } from './entities/time-range.enum.js';
 import { PortfolioStatesService } from './portfolio-states.service.js';
 import { PositionsService } from './positions.service.js';
+const { first, head, isEmpty, last, orderBy, sortBy } = _;
 
 @Injectable()
 export class PortfoliosService implements OnApplicationBootstrap {

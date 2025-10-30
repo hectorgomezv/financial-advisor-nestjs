@@ -1,4 +1,4 @@
-import { random, range } from 'lodash';
+import _ from 'lodash';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '../../common/auth/auth-service.js';
 import { userFactory } from '../../common/auth/entities/__tests__/user.factory.js';
@@ -7,6 +7,7 @@ import { IFinancialDataClient } from '../../companies/datasources/financial-data
 import { IndicesRepository } from '../repositories/indices.repository.js';
 import { indexFactory } from './entities/__tests__/index.factory.js';
 import { IndicesService } from './indices.service.js';
+const { random, range } = _;
 
 describe('IndicesService', () => {
   const mockedIndicesRepository = vi.mocked({

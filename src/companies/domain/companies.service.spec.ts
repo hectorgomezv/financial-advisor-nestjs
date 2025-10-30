@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
-import { sortBy } from 'lodash';
+import _ from 'lodash';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '../../common/auth/auth-service.js';
 import { User, UserRole } from '../../common/auth/entities/user.entity.js';
 import { positionFactory } from '../../portfolios/domain/entities/__tests__/position.factory.js';
@@ -10,7 +11,7 @@ import { CompaniesService } from './companies.service.js';
 import { CompanyStatesService } from './company-states.service.js';
 import { companyStateFactory } from './entities/__tests__/company-state.factory.js';
 import { companyFactory } from './entities/__tests__/company.factory.js';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+const { sortBy } = _;
 
 describe('CompaniesService', () => {
   const mockedCompaniesRepository = vi.mocked({
