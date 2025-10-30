@@ -32,7 +32,7 @@ describe('YahooFinancialDataClient', () => {
   describe('retrieving chart', () => {
     it('should map Chart to DataPoint[]', async () => {
       const chart = new ChartBuilder().build();
-      // @ts-ignore
+      // @ts-expect-error todo: fix mock type
       mockedHttpService.axiosRef.get.mockResolvedValue({
         data: { chart: { result: [chart] } },
       });
