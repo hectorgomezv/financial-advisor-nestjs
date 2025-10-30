@@ -3849,7 +3849,6 @@ __metadata:
     ioredis: ^5.7.0
     lodash: ^4.17.21
     migrate-mongo: ^12.1.3
-    money: ^0.2.0
     mongoose: ^8.19.2
     nestjs-pino: ^4.1.0
     passport: ^0.7.0
@@ -5227,13 +5226,6 @@ __metadata:
   bin:
     mkdirp: bin/cmd.js
   checksum: 0c91b721bb12c3f9af4b77ebf73604baf350e64d80df91754dc509491ae93bf238581e59c7188360cec7cb62fc4100959245a42cfe01834efedc5e9d068376c2
-  languageName: node
-  linkType: hard
-
-"money@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "money@npm:0.2.0"
-  checksum: e880ccf24e85b044ad42b57f2aee661406b6dcf2e17ea7b5244704416183599a0dffb6fdc5fe75d0e621209883076c19e261d5bcd2c187953feb8711c66d2412
   languageName: node
   linkType: hard
 
