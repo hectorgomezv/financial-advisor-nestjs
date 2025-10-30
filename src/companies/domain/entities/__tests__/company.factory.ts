@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
-import { CompanyMetrics } from '../company-metrics.entity';
-import { Company } from '../company.entity';
-import { companyMetricsFactory } from './company-metrics.factory';
+import { CompanyMetrics } from '../company-metrics.entity.js';
+import { Company } from '../company.entity.js';
+import { companyMetricsFactory } from './company-metrics.factory.js';
 
 export function companyFactory(
   uuid?: string,

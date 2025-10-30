@@ -2,13 +2,14 @@ import { faker } from '@faker-js/faker';
 import { HttpModule } from '@nestjs/axios';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import Redis from 'ioredis';
+import * as ioredis from 'ioredis';
 import * as request from 'supertest';
-import { AppModule } from '../../app.module';
-import { AuthClient } from '../../common/__tests__/auth/auth.client';
-import { MongoDBClient } from '../../common/__tests__/database/mongodb.client';
-import { createCompanyDtoFactory } from '../domain/dto/test/create-company.dto.factory';
-import { CompaniesRepository } from '../repositories/companies.repository';
+import { beforeAll, beforeEach, describe, expect, it, afterAll } from 'vitest';
+import { AppModule } from '../../app.module.js';
+import { AuthClient } from '../../common/__tests__/auth/auth.client.js';
+import { MongoDBClient } from '../../common/__tests__/database/mongodb.client.js';
+import { createCompanyDtoFactory } from '../domain/dto/test/create-company.dto.factory.js';
+import { CompaniesRepository } from '../repositories/companies.repository.js';
 
 describe('Companies e2e tests', () => {
   let app: INestApplication;
@@ -18,7 +19,7 @@ describe('Companies e2e tests', () => {
 
   const dto = createCompanyDtoFactory(faker.word.words(), 'TSLA');
 
-  const redis = new Redis({
+  const redis = new ioredis.Redis({
     username: 'default',
     password: process.env.REDIS_PASSWORD,
   });
@@ -47,7 +48,8 @@ describe('Companies e2e tests', () => {
   });
 
   it('/GET companies', async () => {
-    return request(app.getHttpServer())
+    return request
+      .default(app.getHttpServer())
       .get('/companies')
       .set('Authorization', `Bearer ${accessToken}`)
       .expect(200)
@@ -60,7 +62,8 @@ describe('Companies e2e tests', () => {
   });
 
   it('/POST company', () => {
-    return request(app.getHttpServer())
+    return request
+      .default(app.getHttpServer())
       .post('/companies')
       .set('Authorization', `Bearer ${accessToken}`)
       .send(dto)
@@ -82,7 +85,8 @@ describe('Companies e2e tests', () => {
   });
 
   it('/GET company by uuid', () => {
-    return request(app.getHttpServer())
+    return request
+      .default(app.getHttpServer())
       .get(`/companies/${createdUuid}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .expect(200)
@@ -102,7 +106,8 @@ describe('Companies e2e tests', () => {
   });
 
   it('/DELETE company by uuid', () => {
-    return request(app.getHttpServer())
+    return request
+      .default(app.getHttpServer())
       .delete(`/companies/${createdUuid}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .expect(200)

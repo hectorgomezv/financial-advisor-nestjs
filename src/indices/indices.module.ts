@@ -2,13 +2,16 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AuthService } from '../common/auth/auth-service';
-import { IFinancialDataClient } from '../companies/datasources/financial-data.client.interface';
-import { YahooFinancialDataClient } from '../companies/datasources/yahoo-financial-data.client';
-import { IndicesService } from './domain/indices.service';
-import { IndicesRepository } from './repositories/indices.repository';
-import { IndexModel, IndexSchema } from './repositories/schemas/index.schema';
-import { IndicesController } from './routes/indices.controller';
+import { AuthService } from '../common/auth/auth-service.js';
+import { IFinancialDataClient } from '../companies/datasources/financial-data.client.interface.js';
+import { YahooFinancialDataClient } from '../companies/datasources/yahoo-financial-data.client.js';
+import { IndicesService } from './domain/indices.service.js';
+import { IndicesRepository } from './repositories/indices.repository.js';
+import {
+  IndexModel,
+  IndexSchema,
+} from './repositories/schemas/index.schema.js';
+import { IndicesController } from './routes/indices.controller.js';
 
 @Module({
   imports: [

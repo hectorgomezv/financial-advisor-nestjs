@@ -9,25 +9,25 @@ import { Cron } from '@nestjs/schedule';
 import { isAfter, isBefore, isEqual } from 'date-fns';
 import { first, head, isEmpty, last, orderBy, sortBy } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
-import { AuthService } from '../../common/auth/auth-service';
-import { User } from '../../common/auth/entities/user.entity';
-import { DataPoint } from '../../common/domain/entities/data-point.entity';
-import { TimePeriod } from '../../common/domain/entities/time-period.entity';
-import { Index } from '../../indices/domain/entities/index.entity';
-import { IndicesService } from '../../indices/domain/indices.service';
-import { PortfoliosRepository } from '../repositories/portfolios.repository';
-import { AddPortfolioContributionDto } from './dto/add-portfolio-contribution.dto';
-import { CreatePortfolioDto } from './dto/create-portfolio.dto';
-import { PortfolioDetailDto } from './dto/portfolio-detail.dto';
-import { UpdatePortfolioCashDto } from './dto/update-portfolio-cash.dto';
-import { ContributionsMetadata } from './entities/contributions-metadata';
-import { PortfolioAverageBalance } from './entities/portfolio-average-balance.entity';
-import { PortfolioContribution } from './entities/portfolio-contribution.entity';
-import { PortfolioState } from './entities/portfolio-state.entity';
-import { Portfolio } from './entities/portfolio.entity';
-import { timeRangeFromStr } from './entities/time-range.enum';
-import { PortfolioStatesService } from './portfolio-states.service';
-import { PositionsService } from './positions.service';
+import { AuthService } from '../../common/auth/auth-service.js';
+import { User } from '../../common/auth/entities/user.entity.js';
+import { DataPoint } from '../../common/domain/entities/data-point.entity.js';
+import { TimePeriod } from '../../common/domain/entities/time-period.entity.js';
+import { Index } from '../../indices/domain/entities/index.entity.js';
+import { IndicesService } from '../../indices/domain/indices.service.js';
+import { PortfoliosRepository } from '../repositories/portfolios.repository.js';
+import { AddPortfolioContributionDto } from './dto/add-portfolio-contribution.dto.js';
+import { CreatePortfolioDto } from './dto/create-portfolio.dto.js';
+import { PortfolioDetailDto } from './dto/portfolio-detail.dto.js';
+import { UpdatePortfolioCashDto } from './dto/update-portfolio-cash.dto.js';
+import { ContributionsMetadata } from './entities/contributions-metadata.js';
+import { PortfolioAverageBalance } from './entities/portfolio-average-balance.entity.js';
+import { PortfolioContribution } from './entities/portfolio-contribution.entity.js';
+import { PortfolioState } from './entities/portfolio-state.entity.js';
+import { Portfolio } from './entities/portfolio.entity.js';
+import { timeRangeFromStr } from './entities/time-range.enum.js';
+import { PortfolioStatesService } from './portfolio-states.service.js';
+import { PositionsService } from './positions.service.js';
 
 @Injectable()
 export class PortfoliosService implements OnApplicationBootstrap {
@@ -181,7 +181,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
         <DataPoint>{
           timestamp,
           value:
-            n === 0 ? 0 : (average ?? 0 * 100) / initialValue!.average! - 100,
+            n === 0 ? 0 : ((average ?? 0) * 100) / initialValue!.average! - 100,
           ...indicesPerformance.reduce(
             (_, item) => ({ ..._, [item.name]: item.values[n] }),
             {},

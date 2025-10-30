@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { PortfolioState as DomainPortfolioState } from '../../domain/entities/portfolio-state.entity';
+import { PortfolioState as DomainPortfolioState } from '../../domain/entities/portfolio-state.entity.js';
 
 export class PortfolioState implements DomainPortfolioState {
   @ApiProperty()

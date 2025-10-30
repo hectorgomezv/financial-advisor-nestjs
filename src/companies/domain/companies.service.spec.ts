@@ -1,36 +1,37 @@
 import { faker } from '@faker-js/faker';
 import { sortBy } from 'lodash';
-import { AuthService } from '../../common/auth/auth-service';
-import { User, UserRole } from '../../common/auth/entities/user.entity';
-import { positionFactory } from '../../portfolios/domain/entities/__tests__/position.factory';
-import { PositionsRepository } from '../../portfolios/repositories/positions.repository';
-import { CompaniesRepository } from '../repositories/companies.repository';
-import { CreateCompanyDto } from '../routes/dto/create-company.dto';
-import { CompaniesService } from './companies.service';
-import { CompanyStatesService } from './company-states.service';
-import { companyStateFactory } from './entities/__tests__/company-state.factory';
-import { companyFactory } from './entities/__tests__/company.factory';
+import { AuthService } from '../../common/auth/auth-service.js';
+import { User, UserRole } from '../../common/auth/entities/user.entity.js';
+import { positionFactory } from '../../portfolios/domain/entities/__tests__/position.factory.js';
+import { PositionsRepository } from '../../portfolios/repositories/positions.repository.js';
+import { CompaniesRepository } from '../repositories/companies.repository.js';
+import { CreateCompanyDto } from '../routes/dto/create-company.dto.js';
+import { CompaniesService } from './companies.service.js';
+import { CompanyStatesService } from './company-states.service.js';
+import { companyStateFactory } from './entities/__tests__/company-state.factory.js';
+import { companyFactory } from './entities/__tests__/company.factory.js';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('CompaniesService', () => {
-  const mockedCompaniesRepository = jest.mocked({
-    create: jest.fn(),
-    deleteOne: jest.fn(),
-    findAll: jest.fn(),
-    findOne: jest.fn(),
-    findBySymbol: jest.fn(),
+  const mockedCompaniesRepository = vi.mocked({
+    create: vi.fn(),
+    deleteOne: vi.fn(),
+    findAll: vi.fn(),
+    findOne: vi.fn(),
+    findBySymbol: vi.fn(),
   } as unknown as CompaniesRepository);
 
-  const mockedPositionsRepository = jest.mocked({
-    create: jest.fn(),
-    findBySymbol: jest.fn(),
-    findByCompanyUuid: jest.fn(),
+  const mockedPositionsRepository = vi.mocked({
+    create: vi.fn(),
+    findBySymbol: vi.fn(),
+    findByCompanyUuid: vi.fn(),
   } as unknown as PositionsRepository);
 
-  const mockedCompanyStateService = jest.mocked({
-    createCompanyState: jest.fn(),
-    deleteByCompanyUuid: jest.fn(),
-    getLastStateByCompanyUuid: jest.fn(),
-    getLastStateByCompanyUuids: jest.fn(),
+  const mockedCompanyStateService = vi.mocked({
+    createCompanyState: vi.fn(),
+    deleteByCompanyUuid: vi.fn(),
+    getLastStateByCompanyUuid: vi.fn(),
+    getLastStateByCompanyUuids: vi.fn(),
   } as unknown as CompanyStatesService);
 
   const service = new CompaniesService(
@@ -46,7 +47,7 @@ describe('CompaniesService', () => {
     role: UserRole.ADMIN,
   };
 
-  beforeEach(() => jest.resetAllMocks());
+  beforeEach(() => vi.resetAllMocks());
 
   describe('creation', () => {
     it('should fail if the requestor is not an admin', async () => {

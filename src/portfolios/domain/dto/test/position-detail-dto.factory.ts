@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { PositionDetailDto } from '../position-detail.dto';
+import { PositionDetailDto } from '../position-detail.dto.js';
 
 export function positionDetailDtoFactory(
   uuid?: string,

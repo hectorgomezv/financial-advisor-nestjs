@@ -1,6 +1,6 @@
-import { PortfolioContribution } from './portfolio-contribution.entity';
-import { PortfolioState } from './portfolio-state.entity';
-import { Position } from './position.entity';
+import { PortfolioContribution } from './portfolio-contribution.entity.js';
+import { PortfolioState } from './portfolio-state.entity.js';
+import { Position } from './position.entity.js';
 
 export class Portfolio {
   uuid: string;

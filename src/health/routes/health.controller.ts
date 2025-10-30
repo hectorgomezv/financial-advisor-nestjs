@@ -1,10 +1,10 @@
 import { Controller, Get, UseFilters, UseInterceptors } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { OkResponse } from '../../common/routes/entities/ok-response.entity';
-import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
-import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
-import { HealthService } from '../domain/health.service';
-import { Health } from './entities/health.entity';
+import { OkResponse } from '../../common/routes/entities/ok-response.entity.js';
+import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter.js';
+import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor.js';
+import { HealthService } from '../domain/health.service.js';
+import { Health } from './entities/health.entity.js';
 
 @UseInterceptors(DataInterceptor)
 @UseFilters(MainExceptionFilter)
@@ -19,6 +19,10 @@ export class HealthController {
   @Get()
   @OkResponse(Health)
   findOne() {
-    return this.healthService.findOne();
+    try {
+      return this.healthService.findOne();
+    } catch (err) {
+      throw err;
+    }
   }
 }

@@ -22,7 +22,7 @@ A comprehensive NestJS-based financial advisor application that provides portfol
 - **API Documentation**: Swagger/OpenAPI
 - **Validation**: class-validator & class-transformer
 - **Logging**: Pino logger
-- **Testing**: Jest
+- **Testing**: Vitest
 - **Containerization**: Docker & Docker Compose
 
 ## 📋 Prerequisites

@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { UpdatePortfolioCashDto } from '../update-portfolio-cash.dto';
+import { UpdatePortfolioCashDto } from '../update-portfolio-cash.dto.js';
 
 export function updatePortfolioCashDtoFactory(
   cash?: number,

@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { UpsertPositionDto } from '../upsert-position.dto';
+import { UpsertPositionDto } from '../upsert-position.dto.js';
 
 export function upsertPositionDtoFactory(
   symbol?: string,

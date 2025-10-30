@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { QuoteSummary } from '../quote-summary.entity';
+import { QuoteSummary } from '../quote-summary.entity.js';
 
 export function quoteSummaryFactory(
   uuid?: string,

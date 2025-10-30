@@ -1,57 +1,58 @@
 import { faker } from '@faker-js/faker';
 import { random, range } from 'lodash';
-import { AuthService } from '../../common/auth/auth-service';
-import { User, UserRole } from '../../common/auth/entities/user.entity';
-import { TimePeriod } from '../../common/domain/entities/time-period.entity';
-import { dataPointFactory } from '../../common/domain/entities/__tests__/data-point.factory';
-import { indexFactory } from '../../indices/domain/entities/__tests__/index.factory';
-import { IndicesService } from '../../indices/domain/indices.service';
-import { PortfoliosRepository } from '../repositories/portfolios.repository';
-import { CreatePortfolioDto } from './dto/create-portfolio.dto';
-import { PortfolioDetailDto } from './dto/portfolio-detail.dto';
-import { addPortfolioContributionDtoFactory } from './dto/test/add-portfolio-contribution.dto.factory';
-import { positionDetailDtoFactory } from './dto/test/position-detail-dto.factory';
-import { updatePortfolioCashDtoFactory } from './dto/test/update-portfolio-cash.dto.factory';
-import { ContributionsMetadata } from './entities/contributions-metadata';
-import { Portfolio } from './entities/portfolio.entity';
-import { portfolioAverageBalanceFactory } from './entities/__tests__/portfolio-average-metric.factory';
-import { portfolioContributionFactory } from './entities/__tests__/portfolio-contribution.factory';
-import { portfolioStateFactory } from './entities/__tests__/portfolio-state.factory';
-import { portfolioFactory } from './entities/__tests__/portfolio.factory';
-import { PortfolioStatesService } from './portfolio-states.service';
-import { PortfoliosService } from './portfolios.service';
-import { PositionsService } from './positions.service';
+import { AuthService } from '../../common/auth/auth-service.js';
+import { User, UserRole } from '../../common/auth/entities/user.entity.js';
+import { TimePeriod } from '../../common/domain/entities/time-period.entity.js';
+import { dataPointFactory } from '../../common/domain/entities/__tests__/data-point.factory.js';
+import { indexFactory } from '../../indices/domain/entities/__tests__/index.factory.js';
+import { IndicesService } from '../../indices/domain/indices.service.js';
+import { PortfoliosRepository } from '../repositories/portfolios.repository.js';
+import { CreatePortfolioDto } from './dto/create-portfolio.dto.js';
+import { PortfolioDetailDto } from './dto/portfolio-detail.dto.js';
+import { addPortfolioContributionDtoFactory } from './dto/test/add-portfolio-contribution.dto.factory.js';
+import { positionDetailDtoFactory } from './dto/test/position-detail-dto.factory.js';
+import { updatePortfolioCashDtoFactory } from './dto/test/update-portfolio-cash.dto.factory.js';
+import { ContributionsMetadata } from './entities/contributions-metadata.js';
+import { Portfolio } from './entities/portfolio.entity.js';
+import { portfolioAverageBalanceFactory } from './entities/__tests__/portfolio-average-metric.factory.js';
+import { portfolioContributionFactory } from './entities/__tests__/portfolio-contribution.factory.js';
+import { portfolioStateFactory } from './entities/__tests__/portfolio-state.factory.js';
+import { portfolioFactory } from './entities/__tests__/portfolio.factory.js';
+import { PortfolioStatesService } from './portfolio-states.service.js';
+import { PortfoliosService } from './portfolios.service.js';
+import { PositionsService } from './positions.service.js';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('PortfoliosService', () => {
-  const portfoliosRepository = jest.mocked({
-    create: jest.fn(),
-    findByOwnerId: jest.fn(),
-    findAll: jest.fn(),
-    findOne: jest.fn(),
-    deleteOne: jest.fn(),
-    updateCash: jest.fn(),
-    getContributions: jest.fn(),
-    getContributionsMetadata: jest.fn(),
-    addContribution: jest.fn(),
-    deleteContribution: jest.fn(),
+  const portfoliosRepository = vi.mocked({
+    create: vi.fn(),
+    findByOwnerId: vi.fn(),
+    findAll: vi.fn(),
+    findOne: vi.fn(),
+    deleteOne: vi.fn(),
+    updateCash: vi.fn(),
+    getContributions: vi.fn(),
+    getContributionsMetadata: vi.fn(),
+    addContribution: vi.fn(),
+    deleteContribution: vi.fn(),
   } as unknown as PortfoliosRepository);
 
-  const portfolioStatesService = jest.mocked({
-    getLastByPortfolioUuid: jest.fn(),
-    deleteByPortfolioUuid: jest.fn(),
-    getAverageBalancesForRange: jest.fn(),
-    getPortfolioStatesInPeriod: jest.fn(),
+  const portfolioStatesService = vi.mocked({
+    getLastByPortfolioUuid: vi.fn(),
+    deleteByPortfolioUuid: vi.fn(),
+    getAverageBalancesForRange: vi.fn(),
+    getPortfolioStatesInPeriod: vi.fn(),
   } as unknown as PortfolioStatesService);
 
-  const positionsService = jest.mocked({
-    getPositionDetailsByPortfolioUuid: jest.fn(),
-    deleteByPortfolioUuid: jest.fn(),
-    updatePortfolioState: jest.fn(),
+  const positionsService = vi.mocked({
+    getPositionDetailsByPortfolioUuid: vi.fn(),
+    deleteByPortfolioUuid: vi.fn(),
+    updatePortfolioState: vi.fn(),
   } as unknown as PositionsService);
 
-  const indicesService = jest.mocked({
-    findAll: jest.fn(),
-    getIndexPerformanceForTimestamps: jest.fn(),
+  const indicesService = vi.mocked({
+    findAll: vi.fn(),
+    getIndexPerformanceForTimestamps: vi.fn(),
   } as unknown as IndicesService);
 
   const adminUser = <User>{

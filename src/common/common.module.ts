@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import {
   DataPointModel,
   DataPointSchema,
-} from './domain/schemas/data-point.schema';
+} from './domain/schemas/data-point.schema.js';
 
 @Module({
   imports: [

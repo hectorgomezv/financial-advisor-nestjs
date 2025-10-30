@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { DataPoint } from '../data-point.entity';
+import { DataPoint } from '../data-point.entity.js';
 
 export function dataPointFactory(timestamp?: Date, value?: number) {
   return <DataPoint>{

@@ -4,7 +4,7 @@ import {
   ApiExtraModels,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { Response } from './response.entity';
+import { Response } from './response.entity.js';
 
 export const CreatedResponse = <DataDto extends Type<unknown>>(
   dataDto: DataDto,

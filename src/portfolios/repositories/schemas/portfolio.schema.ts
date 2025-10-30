@@ -1,36 +1,36 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { PortfolioContribution } from '../../domain/entities/portfolio-contribution.entity';
-import { PortfolioContributionSchema } from './portfolio-contribution.schema';
+import { PortfolioContribution } from '../../domain/entities/portfolio-contribution.entity.js';
+import { PortfolioContributionSchema } from './portfolio-contribution.schema.js';
 
 export type PortfolioDocument = PortfolioModel & Document;
 
 @Schema({ collection: 'portfolios' })
 export class PortfolioModel {
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   uuid: string;
 
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   name: string;
 
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   ownerId: string;
 
-  @Prop({ required: true })
+  @Prop({ type: Date, required: true })
   created: Date;
 
-  @Prop({ required: true })
+  @Prop({ type: Number, required: true })
   cash: number;
 
-  @Prop({ required: true, schema: PortfolioContributionSchema })
+  @Prop({ type: [PortfolioContributionSchema], default: [] })
   contributions: PortfolioContribution[];
 
   // Transient properties
 
-  @Prop({ required: false })
+  @Prop({ type: Number, required: false })
   contributionsCount: number;
 
-  @Prop({ required: false })
+  @Prop({ type: Number, required: false })
   contributionsSum: number;
 }
 

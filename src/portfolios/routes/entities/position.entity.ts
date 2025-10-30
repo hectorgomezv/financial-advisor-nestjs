@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Position as DomainPosition } from '../../domain/entities/position.entity';
+import { Position as DomainPosition } from '../../domain/entities/position.entity.js';
 
 export class Position implements DomainPosition {
   @ApiProperty()

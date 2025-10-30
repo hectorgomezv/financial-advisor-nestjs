@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Company as DomainCompany } from '../../domain/entities/company.entity';
-import { CompanyMetrics } from './company-metrics.entity';
-import { CompanyState } from './company-state.entity';
+import { Company as DomainCompany } from '../../domain/entities/company.entity.js';
+import { CompanyMetrics } from './company-metrics.entity.js';
+import { CompanyState } from './company-state.entity.js';
 
 export class Company implements DomainCompany {
   @ApiProperty()

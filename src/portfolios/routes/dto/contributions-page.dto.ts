@@ -1,5 +1,5 @@
 import { ApiExtraModels, ApiProperty } from '@nestjs/swagger';
-import { PortfolioContribution } from '../entities/portfolio-contribution.entity';
+import { PortfolioContribution } from '../entities/portfolio-contribution.entity.js';
 
 @ApiExtraModels(PortfolioContribution)
 export class ContributionsPage {

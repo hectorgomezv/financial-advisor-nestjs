@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { readFileSync } from 'fs';
-import { About } from './entities/about.entity';
+import { About } from './entities/about.entity.js';
 
 @Injectable()
 export class AboutService {

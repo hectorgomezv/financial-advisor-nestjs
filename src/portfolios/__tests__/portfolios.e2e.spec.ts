@@ -1,14 +1,15 @@
-import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { AppModule } from '../../app.module';
-import { createPortfolioDtoFactory } from '../domain/dto/test/create-portfolio-dto.factory';
-import { createCompanyDtoFactory } from '../../companies/domain/dto/test/create-company.dto.factory';
-import { upsertPositionDtoFactory } from '../domain/dto/test/upsert-position-dto.factory';
-import { PortfoliosRepository } from '../repositories/portfolios.repository';
-import { MongoDBClient } from '../../common/__tests__/database/mongodb.client';
-import { AuthClient } from '../../common/__tests__/auth/auth.client';
-import { User } from '../../common/auth/entities/user.entity';
+import * as request from 'supertest';
+import { beforeAll, afterAll, describe, expect, it } from 'vitest';
+import { AppModule } from '../../app.module.js';
+import { AuthClient } from '../../common/__tests__/auth/auth.client.js';
+import { MongoDBClient } from '../../common/__tests__/database/mongodb.client.js';
+import { User } from '../../common/auth/entities/user.entity.js';
+import { createCompanyDtoFactory } from '../../companies/domain/dto/test/create-company.dto.factory.js';
+import { createPortfolioDtoFactory } from '../domain/dto/test/create-portfolio-dto.factory.js';
+import { upsertPositionDtoFactory } from '../domain/dto/test/upsert-position-dto.factory.js';
+import { PortfoliosRepository } from '../repositories/portfolios.repository.js';
 
 describe('Portfolios e2e tests', () => {
   let app: INestApplication;
@@ -47,7 +48,8 @@ describe('Portfolios e2e tests', () => {
   });
 
   it('/GET portfolios', () => {
-    return request(app.getHttpServer())
+    return request
+      .default(app.getHttpServer())
       .get('/portfolios')
       .set('Authorization', `Bearer ${accessToken}`)
       .expect(200)
@@ -60,7 +62,8 @@ describe('Portfolios e2e tests', () => {
   });
 
   it('/POST portfolio, company and two positions', async () => {
-    await request(app.getHttpServer())
+    await request
+      .default(app.getHttpServer())
       .post('/portfolios')
       .set('Authorization', `Bearer ${accessToken}`)
       .send(createPortfolioDto)
@@ -79,7 +82,8 @@ describe('Portfolios e2e tests', () => {
         });
       });
 
-    await request(app.getHttpServer())
+    await request
+      .default(app.getHttpServer())
       .post('/companies')
       .set('Authorization', `Bearer ${accessToken}`)
       .send(createCompanyDto)
@@ -98,7 +102,8 @@ describe('Portfolios e2e tests', () => {
         });
       });
 
-    return request(app.getHttpServer())
+    return request
+      .default(app.getHttpServer())
       .post(`/portfolios/${createdPortfolioUuid}/positions`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send(upsertPositionDto)
@@ -121,7 +126,8 @@ describe('Portfolios e2e tests', () => {
   });
 
   it('/GET portfolio by uuid', () => {
-    return request(app.getHttpServer())
+    return request
+      .default(app.getHttpServer())
       .get(`/portfolios/${createdPortfolioUuid}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .expect(200)
@@ -139,7 +145,8 @@ describe('Portfolios e2e tests', () => {
   });
 
   it('/DELETE portfolio and company by uuid', async () => {
-    await request(app.getHttpServer())
+    await request
+      .default(app.getHttpServer())
       .delete(`/portfolios/${createdPortfolioUuid}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .expect(200)
@@ -155,7 +162,8 @@ describe('Portfolios e2e tests', () => {
         });
       });
 
-    return request(app.getHttpServer())
+    return request
+      .default(app.getHttpServer())
       .delete(`/companies/${createdCompanyUuid}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .expect(200)
@@ -174,6 +182,8 @@ describe('Portfolios e2e tests', () => {
   });
 
   afterAll(async () => {
+    const collection = await mongoClient.getCollection('portfolios');
+    await collection.deleteMany({});
     await app.close();
     await mongoClient.close();
   });

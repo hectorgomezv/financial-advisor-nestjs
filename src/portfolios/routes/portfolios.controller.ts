@@ -20,30 +20,30 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { User } from '../../common/auth/entities/user.entity';
-import { JwtAuthGuard } from '../../common/auth/jwt-auth.guard';
-import { TimePeriod } from '../../common/domain/entities/time-period.entity';
-import { CreatedResponse } from '../../common/routes/entities/created-response.entity';
-import { DataPoint } from '../../common/routes/entities/data-point.entity';
-import { OkArrayResponse } from '../../common/routes/entities/ok-array-response.entity';
-import { OkResponse } from '../../common/routes/entities/ok-response.entity';
-import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
-import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
-import { PortfolioDetailDto } from '../domain/dto/portfolio-detail.dto';
+import { User } from '../../common/auth/entities/user.entity.js';
+import { JwtAuthGuard } from '../../common/auth/jwt-auth.guard.js';
+import { TimePeriod } from '../../common/domain/entities/time-period.entity.js';
+import { CreatedResponse } from '../../common/routes/entities/created-response.entity.js';
+import { DataPoint } from '../../common/routes/entities/data-point.entity.js';
+import { OkArrayResponse } from '../../common/routes/entities/ok-array-response.entity.js';
+import { OkResponse } from '../../common/routes/entities/ok-response.entity.js';
+import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter.js';
+import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor.js';
+import { PortfolioDetailDto } from '../domain/dto/portfolio-detail.dto.js';
 import {
   getRangeStartTimestamp,
   timeRangeFromStr,
-} from '../domain/entities/time-range.enum';
-import { PortfoliosService } from '../domain/portfolios.service';
-import { PositionsService } from '../domain/positions.service';
-import { AddPortfolioContributionDto } from './dto/add-portfolio-contribution.dto';
-import { ContributionsPage } from './dto/contributions-page.dto';
-import { CreatePortfolioDto } from './dto/create-portfolio.dto';
-import { UpdatePortfolioCashDto } from './dto/update-portfolio-cash.dto';
-import { UpsertPositionDto } from './dto/upsert-position.dto';
-import { PortfolioAverageMetric as PortfolioAverageBalance } from './entities/portfolio-average-balance.entity';
-import { Portfolio } from './entities/portfolio.entity';
-import { Position } from './entities/position.entity';
+} from '../domain/entities/time-range.enum.js';
+import { PortfoliosService } from '../domain/portfolios.service.js';
+import { PositionsService } from '../domain/positions.service.js';
+import { AddPortfolioContributionDto } from './dto/add-portfolio-contribution.dto.js';
+import { ContributionsPage } from './dto/contributions-page.dto.js';
+import { CreatePortfolioDto } from './dto/create-portfolio.dto.js';
+import { UpdatePortfolioCashDto } from './dto/update-portfolio-cash.dto.js';
+import { UpsertPositionDto } from './dto/upsert-position.dto.js';
+import { PortfolioAverageMetric as PortfolioAverageBalance } from './entities/portfolio-average-balance.entity.js';
+import { Portfolio } from './entities/portfolio.entity.js';
+import { Position } from './entities/position.entity.js';
 
 @UseInterceptors(DataInterceptor)
 @UseFilters(MainExceptionFilter)

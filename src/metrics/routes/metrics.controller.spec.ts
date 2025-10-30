@@ -1,6 +1,7 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
-import { MetricsService } from '../domain/metrics.service';
-import { MetricsController } from './metrics.controller';
+import { MetricsService } from '../domain/metrics.service.js';
+import { MetricsController } from './metrics.controller.js';
 
 describe('MetricsController', () => {
   let controller: MetricsController;

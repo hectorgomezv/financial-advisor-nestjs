@@ -1,4 +1,4 @@
-import { DataPoint } from '../../../common/domain/entities/data-point.entity';
+import { DataPoint } from '../../../common/domain/entities/data-point.entity.js';
 
 export class Index {
   uuid: string;

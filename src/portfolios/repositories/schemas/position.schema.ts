@@ -5,25 +5,25 @@ export type PositionDocument = PositionModel & Document;
 
 @Schema({ collection: 'positions' })
 export class PositionModel {
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   uuid: string;
 
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   portfolioUuid: string;
 
-  @Prop({ required: true })
+  @Prop({ type: Number, required: true })
   targetWeight: number;
 
-  @Prop({ required: true })
+  @Prop({ type: Number, required: true })
   shares: number;
 
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   companyUuid: string;
 
-  @Prop({ required: true })
+  @Prop({ type: Boolean, required: true })
   blocked: boolean;
 
-  @Prop({ required: true })
+  @Prop({ type: Date, required: true })
   sharesUpdatedAt: Date;
 }
 

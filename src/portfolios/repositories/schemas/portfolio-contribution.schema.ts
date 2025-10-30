@@ -6,13 +6,13 @@ export type PortfolioContributionDocument = PortfolioContributionModel &
 
 @Schema()
 export class PortfolioContributionModel {
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   uuid: string;
 
-  @Prop({ required: true })
+  @Prop({ type: Date, required: true })
   timestamp: Date;
 
-  @Prop({ required: true })
+  @Prop({ type: Number, required: true })
   amountEUR: number;
 }
 

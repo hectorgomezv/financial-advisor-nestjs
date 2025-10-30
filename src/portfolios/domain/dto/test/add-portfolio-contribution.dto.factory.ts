@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { AddPortfolioContributionDto } from '../add-portfolio-contribution.dto';
+import { AddPortfolioContributionDto } from '../add-portfolio-contribution.dto.js';
 
 export function addPortfolioContributionDtoFactory(
   timestamp?: Date,

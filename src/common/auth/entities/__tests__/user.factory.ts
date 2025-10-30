@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { User, UserRole } from '../user.entity';
+import { User, UserRole } from '../user.entity.js';
 
 export function userFactory(id?: string, email?: string, role?: string): User {
   return <User>{

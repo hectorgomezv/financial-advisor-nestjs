@@ -1,28 +1,29 @@
 import { faker } from '@faker-js/faker';
 import { ExecutionContext } from '@nestjs/common';
-import { DataInterceptor } from './data.interceptor';
+import { describe, expect, it, vi } from 'vitest';
+import { DataInterceptor } from './data.interceptor.js';
 
 describe('[unit] data-interceptor', () => {
   const interceptor = new DataInterceptor();
 
   it('should pipe data', () => {
     const ctx = {
-      getRequest: jest.fn().mockReturnValue({ statusCode: 200 }),
-      getResponse: jest
+      getRequest: vi.fn().mockReturnValue({ statusCode: 200 }),
+      getResponse: vi
         .fn()
         .mockReturnValue({ originalUrl: faker.internet.url() }),
     };
 
-    const pipeFn = jest.fn();
+    const pipeFn = vi.fn();
 
     const next = {
-      handle: jest.fn().mockReturnValue({
+      handle: vi.fn().mockReturnValue({
         pipe: pipeFn,
       }),
     };
 
     const executionContext = {
-      switchToHttp: jest.fn().mockReturnValue(ctx),
+      switchToHttp: vi.fn().mockReturnValue(ctx),
     } as unknown as ExecutionContext;
 
     interceptor.intercept(executionContext, next);

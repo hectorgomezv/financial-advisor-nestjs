@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { Chart, Indicators, Quote } from '../domain/entities/chart.entity';
+import { Chart, Indicators, Quote } from '../domain/entities/chart.entity.js';
 
 class IndicatorsBuilder {
   private quote: Quote[] = [

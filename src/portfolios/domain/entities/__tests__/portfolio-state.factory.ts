@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { PortfolioState } from '../portfolio-state.entity';
+import { PortfolioState } from '../portfolio-state.entity.js';
 
 export function portfolioStateFactory(
   uuid?: string,

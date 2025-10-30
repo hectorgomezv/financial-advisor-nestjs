@@ -1,11 +1,11 @@
 import { faker } from '@faker-js/faker';
-import { PortfolioContribution } from '../portfolio-contribution.entity';
-import { PortfolioState } from '../portfolio-state.entity';
-import { Portfolio } from '../portfolio.entity';
-import { Position } from '../position.entity';
-import { portfolioContributionFactory } from './portfolio-contribution.factory';
-import { portfolioStateFactory } from './portfolio-state.factory';
-import { positionFactory } from './position.factory';
+import { PortfolioContribution } from '../portfolio-contribution.entity.js';
+import { PortfolioState } from '../portfolio-state.entity.js';
+import { Portfolio } from '../portfolio.entity.js';
+import { Position } from '../position.entity.js';
+import { portfolioContributionFactory } from './portfolio-contribution.factory.js';
+import { portfolioStateFactory } from './portfolio-state.factory.js';
+import { positionFactory } from './position.factory.js';
 
 export function portfolioFactory(
   uuid?: string,

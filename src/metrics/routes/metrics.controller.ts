@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { MetricsService } from '../domain/metrics.service';
+import { MetricsService } from '../domain/metrics.service.js';
 
 @ApiTags('metrics')
 @Controller({

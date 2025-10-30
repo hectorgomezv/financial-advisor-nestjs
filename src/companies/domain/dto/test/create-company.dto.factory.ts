@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { CreateCompanyDto } from '../create-company.dto';
+import { CreateCompanyDto } from '../create-company.dto.js';
 
 export function createCompanyDtoFactory(
   name?: string,

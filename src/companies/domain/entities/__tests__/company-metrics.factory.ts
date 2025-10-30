@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { CompanyMetrics } from '../company-metrics.entity';
+import { CompanyMetrics } from '../company-metrics.entity.js';
 
 export function companyMetricsFactory(
   avgEnterpriseToRevenue?: number,

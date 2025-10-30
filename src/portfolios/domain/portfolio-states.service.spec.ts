@@ -1,17 +1,18 @@
 import { faker } from '@faker-js/faker';
-import { PortfolioStatesRepository } from '../repositories/portfolio-states.repository';
-import { TimeRange } from './entities/time-range.enum';
-import { portfolioFactory } from './entities/__tests__/portfolio.factory';
-import { positionFactory } from './entities/__tests__/position.factory';
-import { PortfolioStatesService } from './portfolio-states.service';
 import { round } from 'lodash';
+import { describe, expect, it, vi } from 'vitest';
+import { PortfolioStatesRepository } from '../repositories/portfolio-states.repository.js';
+import { portfolioFactory } from './entities/__tests__/portfolio.factory.js';
+import { positionFactory } from './entities/__tests__/position.factory.js';
+import { TimeRange } from './entities/time-range.enum.js';
+import { PortfolioStatesService } from './portfolio-states.service.js';
 
 describe('PortfolioStatesService', () => {
-  const portfolioStatesRepository = jest.mocked({
-    create: jest.fn(),
-    getLastByPortfolioUuid: jest.fn(),
-    getAverageBalancesForRange: jest.fn(),
-    deleteByPortfolioUuid: jest.fn(),
+  const portfolioStatesRepository = vi.mocked({
+    create: vi.fn(),
+    getLastByPortfolioUuid: vi.fn(),
+    getAverageBalancesForRange: vi.fn(),
+    deleteByPortfolioUuid: vi.fn(),
   } as unknown as PortfolioStatesRepository);
 
   const service: PortfolioStatesService = new PortfolioStatesService(
