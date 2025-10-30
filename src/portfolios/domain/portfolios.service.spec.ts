@@ -1,5 +1,4 @@
 import { faker } from '@faker-js/faker';
-import { random, range } from 'lodash';
 import { AuthService } from '../../common/auth/auth-service.js';
 import { User, UserRole } from '../../common/auth/entities/user.entity.js';
 import { TimePeriod } from '../../common/domain/entities/time-period.entity.js';
@@ -22,6 +21,8 @@ import { PortfolioStatesService } from './portfolio-states.service.js';
 import { PortfoliosService } from './portfolios.service.js';
 import { PositionsService } from './positions.service.js';
 import { describe, expect, it, vi } from 'vitest';
+import _ from 'lodash';
+const { random, range } = _;
 
 describe('PortfoliosService', () => {
   const portfoliosRepository = vi.mocked({

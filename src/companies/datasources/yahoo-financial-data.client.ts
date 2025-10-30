@@ -7,12 +7,13 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AxiosError } from 'axios';
-import { sample } from 'lodash';
+import _ from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { DataPoint } from '../../common/domain/entities/data-point.entity.js';
 import { Chart, Quote } from '../domain/entities/chart.entity.js';
 import { QuoteSummary } from '../domain/entities/quote-summary.entity.js';
 import { IFinancialDataClient } from './financial-data.client.interface.js';
+const { sample } = _;
 
 @Injectable()
 export class YahooFinancialDataClient implements IFinancialDataClient {

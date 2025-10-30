@@ -1,11 +1,12 @@
 import { faker } from '@faker-js/faker';
-import { round } from 'lodash';
+import _ from 'lodash';
 import { describe, expect, it, vi } from 'vitest';
 import { PortfolioStatesRepository } from '../repositories/portfolio-states.repository.js';
 import { portfolioFactory } from './entities/__tests__/portfolio.factory.js';
 import { positionFactory } from './entities/__tests__/position.factory.js';
 import { TimeRange } from './entities/time-range.enum.js';
 import { PortfolioStatesService } from './portfolio-states.service.js';
+const { round } = _;
 
 describe('PortfolioStatesService', () => {
   const portfolioStatesRepository = vi.mocked({

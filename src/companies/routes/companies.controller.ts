@@ -15,7 +15,7 @@ import {
   ApiNotFoundResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { omit } from 'lodash';
+import _ from 'lodash';
 import { User } from '../../common/auth/entities/user.entity.js';
 import { JwtAuthGuard } from '../../common/auth/jwt-auth.guard.js';
 import { CreatedResponse } from '../../common/routes/entities/created-response.entity.js';
@@ -26,6 +26,7 @@ import { DataInterceptor } from '../../common/routes/interceptors/data.intercept
 import { CompaniesService } from '../domain/companies.service.js';
 import { CreateCompanyDto } from './dto/create-company.dto.js';
 import { Company, CompanyWithState } from './entities/company.entity.js';
+const { omit } = _;
 
 @UseInterceptors(DataInterceptor)
 @UseFilters(MainExceptionFilter)
