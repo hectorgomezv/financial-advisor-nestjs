@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { faker } from '@faker-js/faker';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
@@ -6,21 +7,21 @@ import { ChartBuilder } from '../__tests__/chart.factory.js';
 import { YahooFinancialDataClient } from './yahoo-financial-data.client.js';
 
 describe('YahooFinancialDataClient', () => {
-  const mockedConfigService = jest.mocked({
-    get: jest.fn(),
+  const mockedConfigService = vi.mocked({
+    get: vi.fn(),
+    getOrThrow: vi.fn(),
   } as unknown as ConfigService);
 
-  const mockedHttpService = jest.mocked(
-    { axiosRef: { get: jest.fn() } } as unknown as HttpService,
-    { shallow: false },
-  );
+  const mockedHttpService = vi.mocked({
+    axiosRef: { get: vi.fn() },
+  } as unknown as HttpService);
 
   const client = new YahooFinancialDataClient(
     mockedConfigService,
     mockedHttpService,
   );
 
-  beforeEach(() => jest.resetAllMocks());
+  beforeEach(() => vi.resetAllMocks());
 
   describe('definition', () => {
     it('should be defined', () => {
@@ -31,6 +32,7 @@ describe('YahooFinancialDataClient', () => {
   describe('retrieving chart', () => {
     it('should map Chart to DataPoint[]', async () => {
       const chart = new ChartBuilder().build();
+      // @ts-ignore
       mockedHttpService.axiosRef.get.mockResolvedValue({
         data: { chart: { result: [chart] } },
       });

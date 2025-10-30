@@ -4,10 +4,10 @@ export type DataPointDocument = DataPointModel & Document;
 
 @Schema({ autoCreate: false })
 export class DataPointModel {
-  @Prop({ required: true })
+  @Prop({ type: Number, required: true })
   timestamp: number;
 
-  @Prop({ required: true })
+  @Prop({ type: Number, required: true })
   value: number;
 }
 

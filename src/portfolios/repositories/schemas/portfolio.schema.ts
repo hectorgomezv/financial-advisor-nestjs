@@ -7,30 +7,30 @@ export type PortfolioDocument = PortfolioModel & Document;
 
 @Schema({ collection: 'portfolios' })
 export class PortfolioModel {
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   uuid: string;
 
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   name: string;
 
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   ownerId: string;
 
-  @Prop({ required: true })
+  @Prop({ type: Date, required: true })
   created: Date;
 
-  @Prop({ required: true })
+  @Prop({ type: Number, required: true })
   cash: number;
 
-  @Prop({ required: true, schema: PortfolioContributionSchema })
+  @Prop({ type: Array, required: true, schema: PortfolioContributionSchema })
   contributions: PortfolioContribution[];
 
   // Transient properties
 
-  @Prop({ required: false })
+  @Prop({ type: Number, required: false })
   contributionsCount: number;
 
-  @Prop({ required: false })
+  @Prop({ type: Number, required: false })
   contributionsSum: number;
 }
 

@@ -6,16 +6,16 @@ export type IndexDocument = IndexModel & Document;
 
 @Schema({ collection: 'indices' })
 export class IndexModel {
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   uuid: string;
 
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   name: string;
 
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   symbol: string;
 
-  @Prop({ required: true, schema: DataPointSchema })
+  @Prop({ type: Array, required: true, schema: DataPointSchema })
   values: DataPoint[];
 }
 

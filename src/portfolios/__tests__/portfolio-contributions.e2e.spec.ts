@@ -9,6 +9,7 @@ import { AuthClient } from '../../common/__tests__/auth/auth.client.js';
 import { addPortfolioContributionDtoFactory } from '../domain/dto/test/add-portfolio-contribution.dto.factory.js';
 import { PortfoliosService } from '../domain/portfolios.service.js';
 import { faker } from '@faker-js/faker';
+import { describe, expect, it } from 'vitest';
 
 describe('Portfolio contributions e2e tests', () => {
   let app: INestApplication;
@@ -40,7 +41,8 @@ describe('Portfolio contributions e2e tests', () => {
   });
 
   it('POST portfolio', async () => {
-    await request(app.getHttpServer())
+    await request
+      .default(app.getHttpServer())
       .post('/portfolios')
       .set('Authorization', `Bearer ${accessToken}`)
       .send(createPortfolioDto)
@@ -61,7 +63,8 @@ describe('Portfolio contributions e2e tests', () => {
   });
 
   it('POST portfolio contributions', () => {
-    return request(app.getHttpServer())
+    return request
+      .default(app.getHttpServer())
       .post(`/portfolios/${createdPortfolioUuid}/contributions`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send(addContributionDto)
@@ -88,7 +91,8 @@ describe('Portfolio contributions e2e tests', () => {
   });
 
   it('POST portfolio contributions', () => {
-    return request(app.getHttpServer())
+    return request
+      .default(app.getHttpServer())
       .post(`/portfolios/${createdPortfolioUuid}/contributions`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send(addContributionDto)
@@ -115,7 +119,8 @@ describe('Portfolio contributions e2e tests', () => {
   });
 
   it('GET portfolio contributions', () => {
-    return request(app.getHttpServer())
+    return request
+      .default(app.getHttpServer())
       .get(`/portfolios/${createdPortfolioUuid}/contributions`)
       .set('Authorization', `Bearer ${accessToken}`)
       .expect(200)
@@ -145,7 +150,8 @@ describe('Portfolio contributions e2e tests', () => {
   it('GET portfolio contributions page', () => {
     const offset = 1;
     const limit = faker.number.int({ min: 0, max: 100 });
-    return request(app.getHttpServer())
+    return request
+      .default(app.getHttpServer())
       .get(
         `/portfolios/${createdPortfolioUuid}/contributions?offset=${offset}&limit=${limit}`,
       )
@@ -175,7 +181,8 @@ describe('Portfolio contributions e2e tests', () => {
   });
 
   it('DELETE portfolio contributions', () => {
-    return request(app.getHttpServer())
+    return request
+      .default(app.getHttpServer())
       .delete(
         `/portfolios/${createdPortfolioUuid}/contributions/${firstContributionUuid}`,
       )
@@ -196,7 +203,8 @@ describe('Portfolio contributions e2e tests', () => {
   });
 
   it('DELETE portfolio contributions', () => {
-    return request(app.getHttpServer())
+    return request
+      .default(app.getHttpServer())
       .delete(
         `/portfolios/${createdPortfolioUuid}/contributions/${secondContributionUuid}`,
       )
@@ -217,7 +225,8 @@ describe('Portfolio contributions e2e tests', () => {
   });
 
   it('DELETE portfolio', async () => {
-    return request(app.getHttpServer())
+    return request
+      .default(app.getHttpServer())
       .delete(`/portfolios/${createdPortfolioUuid}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .expect(200)

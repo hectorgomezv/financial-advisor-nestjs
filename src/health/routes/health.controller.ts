@@ -19,6 +19,10 @@ export class HealthController {
   @Get()
   @OkResponse(Health)
   findOne() {
-    return this.healthService.findOne();
+    try {
+      return this.healthService.findOne();
+    } catch (err) {
+      throw err;
+    }
   }
 }

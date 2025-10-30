@@ -5,28 +5,28 @@ export type PortfolioStateDocument = PortfolioStateModel & Document;
 
 @Schema({ collection: 'portfolioStates' })
 export class PortfolioStateModel {
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   uuid: string;
 
-  @Prop({ required: true })
+  @Prop({ type: Date, required: true })
   timestamp: Date;
 
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   portfolioUuid: string;
 
-  @Prop({ required: true })
+  @Prop({ type: Boolean, required: true })
   isValid: boolean;
 
-  @Prop({ required: true })
+  @Prop({ type: Number, required: true })
   sumWeights: number;
 
-  @Prop({ required: true })
+  @Prop({ type: Number, required: true })
   cash: number;
 
-  @Prop({ required: true })
+  @Prop({ type: Number, required: true })
   roicEUR: number;
 
-  @Prop({ required: true })
+  @Prop({ type: Number, required: true })
   totalValueEUR: number;
 }
 
