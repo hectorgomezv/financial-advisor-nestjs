@@ -34,7 +34,7 @@ export class PortfoliosRepository {
     return plainToInstance(Portfolio, result, { excludePrefixes: ['_', '__'] });
   }
 
-  async findOne(uuid: string): Promise<Portfolio> {
+  async findOne(uuid: string): Promise<Portfolio | null> {
     const result = await this.model.findOne({ uuid }).lean();
     return plainToInstance(Portfolio, result, { excludePrefixes: ['_', '__'] });
   }

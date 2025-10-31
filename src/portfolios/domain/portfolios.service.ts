@@ -366,6 +366,9 @@ export class PortfoliosService implements OnApplicationBootstrap {
       amountEUR,
     });
     const updated = await this.repository.findOne(uuid);
+    if (!updated) {
+      throw new NotFoundException(`Portfolio not found`);
+    }
     await this.positionService.updatePortfolioState(updated);
     return updated;
   }
@@ -384,6 +387,9 @@ export class PortfoliosService implements OnApplicationBootstrap {
 
     await this.repository.deleteContribution(portfolioUuid, contributionUuid);
     const updated = await this.repository.findOne(portfolioUuid);
+    if (!updated) {
+      throw new NotFoundException(`Portfolio not found`);
+    }
     await this.positionService.updatePortfolioState(updated);
     return updated;
   }
