@@ -38,6 +38,9 @@ export class PositionsService {
     upsertPositionDto: UpsertPositionDto,
   ): Promise<Position> {
     const portfolio = await this.portfoliosRepository.findOne(portfolioUuid);
+    if (!portfolio) {
+      throw new NotFoundException(`Portfolio not found`);
+    }
     this.checkOwner(user, portfolio);
     const company = await this.companiesRepository.findBySymbol(
       upsertPositionDto.symbol,
@@ -153,6 +156,9 @@ export class PositionsService {
 
   async deleteByPortfolioUuid(user: User, portfolioUuid: string) {
     const portfolio = await this.portfoliosRepository.findOne(portfolioUuid);
+    if (!portfolio) {
+      throw new NotFoundException(`Portfolio not found`);
+    }
     this.checkOwner(user, portfolio);
     const result = await this.repository.deleteByPortfolioUuid(portfolioUuid);
     await this.updatePortfolioState(portfolio);
@@ -166,6 +172,9 @@ export class PositionsService {
   ) {
     const position = await this.repository.findByUuid(uuid);
     const portfolio = await this.portfoliosRepository.findOne(portfolioUuid);
+    if (!portfolio) {
+      throw new NotFoundException(`Portfolio not found`);
+    }
     this.checkOwner(user, portfolio);
     await this.repository.deleteByUuidAndPortfolioUuid(portfolioUuid, uuid);
     await this.updatePortfolioState(portfolio);

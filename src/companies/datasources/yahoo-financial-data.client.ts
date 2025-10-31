@@ -7,13 +7,12 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AxiosError } from 'axios';
-import _ from 'lodash';
+import * as _ from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { DataPoint } from '../../common/domain/entities/data-point.entity.js';
 import { Chart, Quote } from '../domain/entities/chart.entity.js';
 import { QuoteSummary } from '../domain/entities/quote-summary.entity.js';
 import { IFinancialDataClient } from './financial-data.client.interface.js';
-const { sample } = _;
 
 @Injectable()
 export class YahooFinancialDataClient implements IFinancialDataClient {
@@ -37,7 +36,7 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
     try {
       response = await this.httpService.axiosRef.get(
         `${this.baseUrl}/v8/finance/chart/${symbol}?range=5y&interval=1d`,
-        { headers: { 'x-api-key': sample(this.providerApiTokens) } },
+        { headers: { 'x-api-key': _.sample(this.providerApiTokens) } },
       );
     } catch (err) {
       return this.mapYahooErrorResponse(err);
@@ -59,7 +58,7 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
     try {
       response = await this.httpService.axiosRef.get(
         `${this.baseUrl}/v11/finance/quoteSummary/${symbol}?modules=summaryDetail,defaultKeyStatistics,price`,
-        { headers: { 'x-api-key': sample(this.providerApiTokens) } },
+        { headers: { 'x-api-key': _.sample(this.providerApiTokens) } },
       );
     } catch (err) {
       return this.mapYahooErrorResponse(err);

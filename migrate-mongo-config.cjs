@@ -13,9 +13,8 @@ const config = {
   },
   migrationsDir: 'migrations',
   changelogCollectionName: 'changelog',
-  migrationFileExtension: '.js',
+  migrationFileExtension: '.cjs',
   useFileHash: false,
-  moduleSystem: 'commonjs',
 };
 
 module.exports = config;
