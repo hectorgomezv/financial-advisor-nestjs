@@ -66,6 +66,7 @@ jobs:
           E2E_AUTH_URL: ${{ secrets.E2E_AUTH_URL }}
 
   build:
+    if: (github.event_name == 'release' && github.event.action == 'released')
     runs-on: ubuntu-latest
     needs:
       - prettier
