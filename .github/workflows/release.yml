@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  prettier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+          cache: 'yarn'
+      - run: yarn install --immutable
+      - run: yarn run format-check
+
+  es-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+          cache: 'yarn'
+      - run: yarn install --immutable
+      - run: yarn run lint-check
+
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.x]
+        mongodb-version: ['6.0']
+        redis-version: ['7']
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+          cache: 'yarn'
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.8.0
+        with:
+          mongodb-version: ${{ matrix.mongodb-version }}
+      - name: Start Redis
+        uses: supercharge/redis-github-action@1.4.0
+        with:
+          redis-version: ${{ matrix.redis-version }}
+      - run: yarn install --immutable
+      - run: yarn run build
+      - run: yarn run test:cov
+        env:
+          EXCHANGE_RATES_PROVIDER_APP_ID: ${{ secrets.EXCHANGE_RATES_PROVIDER_APP_ID }}
+          MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
+          MONGO_DATABASE_NAME: ${{ secrets.MONGO_DATABASE_NAME }}
+          PROVIDER_API_TOKEN: ${{ secrets.PROVIDER_API_TOKEN }}
+          PROVIDER_BASE_URL: ${{ secrets.PROVIDER_BASE_URL }}
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          E2E_AUTH_EMAIL: ${{ secrets.E2E_AUTH_EMAIL }}
+          E2E_AUTH_PASSWORD: ${{ secrets.E2E_AUTH_PASSWORD }}
+          E2E_AUTH_URL: ${{ secrets.E2E_AUTH_URL }}
+
+  build:
+    if: (github.event_name == 'release')
+    runs-on: ubuntu-latest
+    needs:
+      - prettier
+      - es-lint
+      - tests
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v4
+        env:
+          DOCKER_IMAGE_TAG: hectorgomezv1/financial-advisor-nestjs:${{ github.ref_name }}
+        with:
+          push: true
+          tags: ${{ env.DOCKER_IMAGE_TAG }}
