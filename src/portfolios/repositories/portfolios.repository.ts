@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
@@ -31,7 +31,7 @@ export class PortfoliosRepository {
     return plainToInstance(Portfolio, result, { excludePrefixes: ['_', '__'] });
   }
 
-  async findOne(uuid: string): Promise<Portfolio> {
+  async findOne(uuid: string): Promise<Portfolio | null> {
     const result = await this.model.findOne({ uuid }).lean();
     return plainToInstance(Portfolio, result, { excludePrefixes: ['_', '__'] });
   }
@@ -86,12 +86,16 @@ export class PortfoliosRepository {
     contribution: PortfolioContribution,
   ): Promise<void> {
     const portfolio = await this.model.findOne({ uuid });
-    portfolio.contributions.push({
-      uuid: contribution.uuid,
-      timestamp: new Date(contribution.timestamp),
-      amountEUR: contribution.amountEUR,
-    });
-    await portfolio.save();
+    if (portfolio) {
+      portfolio.contributions.push({
+        uuid: contribution.uuid,
+        timestamp: new Date(contribution.timestamp),
+        amountEUR: contribution.amountEUR,
+      });
+      await portfolio.save();
+    } else {
+      throw new NotFoundException('Portfolio not found');
+    }
   }
 
   async deleteContribution(
