@@ -10,5 +10,5 @@ export class Portfolio {
   positions: Position[];
   cash: number;
   contributions: PortfolioContribution[];
-  state: PortfolioState;
+  state: PortfolioState | null;
 }

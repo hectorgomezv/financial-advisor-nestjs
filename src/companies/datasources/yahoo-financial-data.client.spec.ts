@@ -8,6 +8,7 @@ import { YahooFinancialDataClient } from './yahoo-financial-data.client';
 describe('YahooFinancialDataClient', () => {
   const mockedConfigService = jest.mocked({
     get: jest.fn(),
+    getOrThrow: jest.fn(),
   } as unknown as ConfigService);
 
   const mockedHttpService = jest.mocked(

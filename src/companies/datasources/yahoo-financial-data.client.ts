@@ -23,9 +23,9 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,
   ) {
-    this.baseUrl = this.configService.get<string>('PROVIDER_BASE_URL');
+    this.baseUrl = this.configService.getOrThrow<string>('PROVIDER_BASE_URL');
     this.providerApiTokens = [
-      this.configService.get<string>('PROVIDER_API_TOKEN'),
+      this.configService.getOrThrow<string>('PROVIDER_API_TOKEN'),
     ];
     const altToken = this.configService.get<string>('PROVIDER_API_TOKEN_ALT');
     if (altToken) this.providerApiTokens.push(altToken);

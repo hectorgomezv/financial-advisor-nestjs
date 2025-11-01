@@ -40,12 +40,12 @@ export class CompaniesRepository {
     return plainToInstance(Company, result, { excludePrefixes: ['_', '__'] });
   }
 
-  async findOne(uuid: string): Promise<Company> {
+  async findOne(uuid: string): Promise<Company | null> {
     const result = await this.model.findOne({ uuid }).lean();
     return plainToInstance(Company, result, { excludePrefixes: ['_', '__'] });
   }
 
-  async findBySymbol(symbol: string): Promise<Company> {
+  async findBySymbol(symbol: string): Promise<Company | null> {
     const result = await this.model.findOne({ symbol }).lean();
     return plainToInstance(Company, result, { excludePrefixes: ['_', '__'] });
   }

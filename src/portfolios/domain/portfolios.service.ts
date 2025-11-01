@@ -101,7 +101,11 @@ export class PortfoliosService implements OnApplicationBootstrap {
     return portfolio;
   }
 
-  async getAverageBalances(user: User, uuid: string, range: string) {
+  async getAverageBalances(
+    user: User,
+    uuid: string,
+    range: string,
+  ): Promise<Array<PortfolioAverageBalance>> {
     const portfolio = await this.repository.findOne(uuid);
     if (!portfolio) {
       throw new NotFoundException('Portfolio not found');
@@ -115,9 +119,10 @@ export class PortfoliosService implements OnApplicationBootstrap {
       );
 
     return sortBy(balances, ['timestamp']).map((balance) => ({
-      ...balance,
+      timestamp: balance.timestamp!,
+      average: balance.average!,
       contributions: this.getContributionsSumForTimestamp(
-        balance.timestamp,
+        balance.timestamp!,
         portfolio,
       ),
     }));
@@ -169,7 +174,8 @@ export class PortfoliosService implements OnApplicationBootstrap {
       ({ timestamp, average }, n) =>
         <DataPoint>{
           timestamp,
-          value: n === 0 ? 0 : (average * 100) / initialValue.average - 100,
+          value:
+            n === 0 ? 0 : ((average ?? 0) * 100) / initialValue!.average! - 100,
           ...indicesPerformance.reduce(
             (_, item) => ({ ..._, [item.name]: item.values[n] }),
             {},
@@ -242,7 +248,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
     date: Date,
   ): number {
     const targetState = orderBy(states, 'timestamp', 'desc').find((s) =>
-      isBefore(s.timestamp, date),
+      isBefore(s.timestamp!, date),
     );
 
     return targetState?.totalValueEUR ?? states[0].totalValueEUR ?? 0;
@@ -265,12 +271,13 @@ export class PortfoliosService implements OnApplicationBootstrap {
     index: Index,
     balances: Partial<PortfolioAverageBalance>[],
   ): Promise<number[]> {
+    if (!balances.length) return [];
     const initialValue = head(balances);
     const indexPerformance =
       await this.indicesService.getIndexPerformanceForTimestamps(
         index,
-        initialValue.timestamp,
-        balances.map((i) => i.timestamp),
+        initialValue!.timestamp!,
+        balances.map((i) => i.timestamp!),
       );
     return indexPerformance.map((ip) => ip.value);
   }
@@ -282,7 +289,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
     const indexReturns =
       await this.indicesService.getIndexPerformanceForTimestamps(
         index,
-        head(timestamps),
+        head(timestamps)!,
         timestamps,
       );
     return indexReturns.map((i) => i.value);
@@ -350,6 +357,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
       amountEUR,
     });
     const updated = await this.repository.findOne(uuid);
+    if (!updated) throw new NotFoundException('Portfolio not found');
     await this.positionService.updatePortfolioState(updated);
     return updated;
   }
@@ -368,6 +376,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
 
     await this.repository.deleteContribution(portfolioUuid, contributionUuid);
     const updated = await this.repository.findOne(portfolioUuid);
+    if (!updated) throw new NotFoundException('Portfolio not found');
     await this.positionService.updatePortfolioState(updated);
     return updated;
   }

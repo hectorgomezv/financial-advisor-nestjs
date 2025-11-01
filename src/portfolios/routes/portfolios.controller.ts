@@ -93,14 +93,15 @@ export class PortfoliosController {
   getPortfolioMetrics(
     @Request() req,
     @Param('uuid') uuid: string,
-    @Query('range') range?: string,
-  ) {
+    @Query('range', new DefaultValuePipe('week')) range: string,
+  ): Promise<Array<PortfolioAverageBalance>> {
     return this.portfoliosService.getAverageBalances(
       req.user as User,
       uuid,
       range,
     );
   }
+
   @Get(':uuid/metrics/performance')
   @OkArrayResponse(DataPoint)
   @ApiNotFoundResponse()
@@ -108,7 +109,7 @@ export class PortfoliosController {
   getPerformance(
     @Request() req,
     @Param('uuid') uuid: string,
-    @Query('range') range?: string,
+    @Query('range', new DefaultValuePipe('week')) range: string,
   ): Promise<DataPoint[]> {
     return this.portfoliosService.getPerformance(req.user as User, uuid, range);
   }
@@ -120,7 +121,7 @@ export class PortfoliosController {
   getReturnRates(
     @Request() req,
     @Param('uuid') uuid: string,
-    @Query('range') range?: string,
+    @Query('range', new DefaultValuePipe('week')) range: string,
   ): Promise<DataPoint[]> {
     return this.portfoliosService.getReturnRates(
       req.user as User,
@@ -193,13 +194,13 @@ export class PortfoliosController {
       new DefaultValuePipe(PortfoliosService.DEFAULT_OFFSET),
       ParseIntPipe,
     )
-    offset?: number,
+    offset: number,
     @Query(
       'limit',
       new DefaultValuePipe(PortfoliosService.DEFAULT_LIMIT),
       ParseIntPipe,
     )
-    limit?: number,
+    limit: number,
   ): Promise<ContributionsPage> {
     const contributionsMetadata =
       await this.portfoliosService.getContributionsMetadata(

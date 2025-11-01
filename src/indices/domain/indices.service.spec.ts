@@ -49,7 +49,7 @@ describe('IndicesService', () => {
         dataPointFactory(new Date(2022, 0, 1, 1, 32), 85),
         dataPointFactory(new Date(2022, 0, 1, 1, 39), 150),
       ];
-      const index = indexFactory(null, null, null, dataPoints);
+      const index = indexFactory(undefined, undefined, undefined, dataPoints);
       mockedIndicesRepository.getIndexValuesFrom.mockResolvedValueOnce(
         dataPoints,
       );
