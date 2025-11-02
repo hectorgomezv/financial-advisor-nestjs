@@ -69,6 +69,14 @@ services:
     volumes:
       - mongo_data:/data/db
 
+  fa-postgres:
+    image: postgres:18
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
   fa-redis:
     image: redis:7
     ports:

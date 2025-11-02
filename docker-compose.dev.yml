@@ -22,5 +22,9 @@ services:
   fa-mongo:
     command: []
 
+  fa-postgres:
+    ports:
+      - '5432:5432'
+
   fa-redis:
     command: redis-server --save 20 1 --loglevel warning
