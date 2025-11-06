@@ -54,7 +54,7 @@ export class CompaniesService implements OnApplicationBootstrap {
   async findAll(): Promise<CompanyWithState[]> {
     const companies = await this.repository.findAll();
     const states = await this.companyStatesService.getLastStateByCompanyUuids(
-      companies.map((company) => company.uuid),
+      companies.map((company) => company.uuid!), // TODO: id or JOIN instead of uuid
     );
 
     return sortBy(
@@ -134,9 +134,9 @@ export class CompaniesService implements OnApplicationBootstrap {
             await this.companyStatesService.createCompanyState(company);
           const metrics =
             await this.companyStatesService.getMetricsByCompanyUuid(
-              company.uuid,
+              company.uuid!, // TODO: id or JOIN instead of uuid
             );
-          await this.repository.updateMetricsByUuid(company.uuid, metrics);
+          await this.repository.updateMetricsByUuid(company.uuid!, metrics); // TODO: id or JOIN instead of uuid
           this.logger.log(
             `${company.symbol} refreshed: price ${companyState.price} [ForwardPE: ${companyState.forwardPE} (avg: ${metrics.avgForwardPE}), profitMargins: ${companyState.profitMargins} (avg: ${metrics.avgProfitMargins}), EV/Rev: ${companyState.enterpriseToRevenue} (avg: ${metrics.avgEnterpriseToRevenue}), EV/Ebitda: ${companyState.enterpriseToEbitda} (avg: ${metrics.avgEnterpriseToEbitda}), Short %: ${companyState.shortPercentOfFloat}]`,
           );
