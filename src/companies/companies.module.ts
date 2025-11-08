@@ -21,7 +21,7 @@ import {
 } from './repositories/schemas/company.schema';
 import { CompaniesController } from './routes/companies.controller';
 import { CompaniesPgRepository } from './repositories/companies.pg.repository';
-import { CompaniesMigrator } from './repositories/companies.pg.migrator';
+import { PgMigrator } from '../common/pg.migrator';
 import { DbModule } from '../common/db.module';
 
 @Module({
@@ -38,7 +38,6 @@ import { DbModule } from '../common/db.module';
   controllers: [CompaniesController],
   providers: [
     AuthService,
-    CompaniesMigrator,
     CompaniesPgRepository,
     CompaniesRepository,
     CompaniesService,

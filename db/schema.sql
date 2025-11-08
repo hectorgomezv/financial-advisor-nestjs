@@ -1,4 +1,4 @@
-\restrict 2s6tZqmLUFqL8I5dg9RMuopqxEKSu3TzMEkEsDgeKleIWncS2C47GCNd5BGb6dF
+\restrict eUUveSnsLJjOive680LAlIbqXIvbm7JvFtVJYifoatKJEFKRW2EKDniNVnCgpNx
 
 -- Dumped from database version 18.0 (Debian 18.0-1.pgdg13+3)
 -- Dumped by pg_dump version 18.0
@@ -57,8 +57,13 @@ ALTER SEQUENCE public.companies_id_seq OWNED BY public.companies.id;
 CREATE TABLE public.company_states (
     id integer NOT NULL,
     company_id integer NOT NULL,
-    peg numeric(10,5),
-    price numeric(18,2),
+    currency character varying(8) NOT NULL,
+    enterprise_to_ebitda numeric(10,5),
+    enterprise_to_revenue numeric(10,5),
+    forward_pe numeric(10,5),
+    price numeric(18,2) NOT NULL,
+    profit_margin numeric(10,5),
+    short_percent numeric(10,5),
     "timestamp" timestamp with time zone DEFAULT now() NOT NULL
 );
 
@@ -84,6 +89,48 @@ ALTER SEQUENCE public.company_states_id_seq OWNED BY public.company_states.id;
 
 
 --
+-- Name: index_states; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.index_states (
+    index_id integer NOT NULL,
+    "timestamp" timestamp with time zone,
+    value numeric(10,5)
+);
+
+
+--
+-- Name: indices; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.indices (
+    id integer NOT NULL,
+    name character varying(64) NOT NULL,
+    symbol character varying(8) NOT NULL
+);
+
+
+--
+-- Name: indices_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.indices_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: indices_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.indices_id_seq OWNED BY public.indices.id;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -104,6 +151,13 @@ ALTER TABLE ONLY public.companies ALTER COLUMN id SET DEFAULT nextval('public.co
 --
 
 ALTER TABLE ONLY public.company_states ALTER COLUMN id SET DEFAULT nextval('public.company_states_id_seq'::regclass);
+
+
+--
+-- Name: indices id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.indices ALTER COLUMN id SET DEFAULT nextval('public.indices_id_seq'::regclass);
 
 
 --
@@ -131,6 +185,22 @@ ALTER TABLE ONLY public.company_states
 
 
 --
+-- Name: indices indices_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.indices
+    ADD CONSTRAINT indices_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: indices indices_symbol_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.indices
+    ADD CONSTRAINT indices_symbol_key UNIQUE (symbol);
+
+
+--
 -- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -153,6 +223,20 @@ CREATE INDEX idx_company_states_timestamp_desc ON public.company_states USING bt
 
 
 --
+-- Name: idx_index_states_index_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_index_states_index_id ON public.index_states USING btree (index_id);
+
+
+--
+-- Name: idx_index_states_timestamp_desc; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_index_states_timestamp_desc ON public.index_states USING btree ("timestamp" DESC);
+
+
+--
 -- Name: company_states company_states_company_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -161,10 +245,18 @@ ALTER TABLE ONLY public.company_states
 
 
 --
+-- Name: index_states index_states_index_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.index_states
+    ADD CONSTRAINT index_states_index_id_fkey FOREIGN KEY (index_id) REFERENCES public.indices(id) ON DELETE CASCADE;
+
+
+--
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 2s6tZqmLUFqL8I5dg9RMuopqxEKSu3TzMEkEsDgeKleIWncS2C47GCNd5BGb6dF
+\unrestrict eUUveSnsLJjOive680LAlIbqXIvbm7JvFtVJYifoatKJEFKRW2EKDniNVnCgpNx
 
 
 --
@@ -173,4 +265,5 @@ ALTER TABLE ONLY public.company_states
 
 INSERT INTO public.schema_migrations (version) VALUES
     ('20251105230327'),
-    ('20251106000608');
+    ('20251106000608'),
+    ('20251108155033');

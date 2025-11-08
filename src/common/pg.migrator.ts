@@ -1,0 +1,133 @@
+import { Injectable, OnModuleInit } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { PgCompany } from '../companies/repositories/companies.pg.repository';
+import {
+  CompanyStateDocument,
+  CompanyStateModel,
+} from '../companies/repositories/schemas/company-state.schema';
+import {
+  CompanyDocument,
+  CompanyModel,
+} from '../companies/repositories/schemas/company.schema';
+import {
+  PgIndex,
+  PgIndexState,
+} from '../indices/repositories/indices.pg.repository';
+import {
+  IndexDocument,
+  IndexModel,
+} from '../indices/repositories/schemas/index.schema';
+import { DbService } from './db.service';
+
+@Injectable()
+export class PgMigrator implements OnModuleInit {
+  private ONE_YEAR_AGO = new Date(Date.now() - 1000 * 60 * 60 * 24 * 365);
+
+  // uuid-id dictionaries
+  private companiesMap: Map<string, number> = new Map();
+  private indicesMap: Map<string, number> = new Map();
+
+  constructor(
+    @InjectModel(CompanyModel.name)
+    public companyModel: Model<CompanyDocument>,
+    @InjectModel(CompanyStateModel.name)
+    public companyStateModel: Model<CompanyStateDocument>,
+    @InjectModel(IndexModel.name)
+    public indexIndexModelModel: Model<IndexDocument>,
+    private readonly db: DbService,
+  ) {}
+
+  async onModuleInit() {
+    await this.migrateCompanies();
+    await this.migrateStates();
+    await this.migrateIndices();
+  }
+
+  private async migrateCompanies(): Promise<void> {
+    const existing = await this.db.query('SELECT * FROM companies;', []);
+    if (existing.rowCount === 0) {
+      const toMigrate = await this.companyModel.find({}).lean();
+      let count = 0;
+      for (const c of toMigrate) {
+        const inserted = await this.db.query<PgCompany>(
+          'INSERT INTO companies (name, symbol) VALUES ($1, $2) RETURNING *;',
+          [c.name, c.symbol],
+        );
+        this.companiesMap.set(c.uuid, inserted.rows[0].id);
+        count += 1;
+        console.log(`Migrated ${count} companies of ${toMigrate.length}`);
+      }
+    }
+  }
+
+  /**
+   * Migrate last year states only.
+   */
+  private async migrateStates(): Promise<void> {
+    const existing = await this.db.query('SELECT * FROM company_states;', []);
+    if (existing.rowCount === 0) {
+      const toMigrate = await this.companyStateModel
+        .find({ timestamp: { $gte: this.ONE_YEAR_AGO } })
+        .lean();
+      let count = 0;
+      for (const state of toMigrate) {
+        const companyId = this.companiesMap.get(state.companyUuid);
+        await this.db.query(
+          `INSERT INTO company_states (
+              company_id,
+              currency,
+              enterprise_to_ebitda,
+              enterprise_to_revenue,
+              forward_pe,
+              price,
+              profit_margin,
+              short_percent,
+              timestamp
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);`,
+          [
+            companyId!,
+            state.currency,
+            state.enterpriseToEbitda,
+            state.enterpriseToRevenue,
+            state.forwardPE,
+            state.price,
+            state.profitMargins,
+            state.shortPercentOfFloat,
+            state.timestamp,
+          ],
+        );
+        count += 1;
+        console.log(`Migrated ${count} states of ${toMigrate.length}`);
+      }
+    }
+  }
+
+  private async migrateIndices(): Promise<void> {
+    const existing = await this.db.query('SELECT * FROM indices;', []);
+    if (existing.rowCount === 0) {
+      const toMigrate = await this.indexIndexModelModel.find().lean();
+      let indicesCount = 0;
+      for (const index of toMigrate) {
+        const result = await this.db.query<PgIndex>(
+          'INSERT INTO indices (name, symbol) VALUES ($1, $2) RETURNING *;',
+          [index.name, index.symbol],
+        );
+        this.indicesMap.set(index.uuid, result.rows[0].id);
+        indicesCount += 1;
+        console.log(`Migrated ${indicesCount} indices of ${toMigrate.length}`);
+        let statesCount = 0;
+        for (const state of index.values) {
+          await this.db.query<PgIndexState>(
+            'INSERT INTO index_states (index_id, timestamp, value) VALUES ($1, $2, $3);',
+            [result.rows[0].id, state.timestamp, state.value],
+          );
+          statesCount += 1;
+          console.log(
+            `Migrated ${statesCount} of ${index.values.length} index states for index ${index.name}`,
+          );
+        }
+      }
+    }
+  }
+}

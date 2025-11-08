@@ -2,8 +2,13 @@
 CREATE TABLE company_states (
   id SERIAL PRIMARY KEY,
   company_id INTEGER NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
-  peg NUMERIC(10, 5),
-  price NUMERIC(18, 2),
+  currency VARCHAR(8) NOT NULL,
+  enterprise_to_ebitda NUMERIC(10, 5),
+  enterprise_to_revenue NUMERIC(10, 5),
+  forward_pe NUMERIC(10, 5),
+  price NUMERIC(18, 2) NOT NULL,
+  profit_margin NUMERIC(10, 5),
+  short_percent NUMERIC(10, 5),
   timestamp TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 CREATE INDEX idx_company_states_timestamp_desc ON company_states(timestamp DESC);
