@@ -20,6 +20,7 @@ import {
 } from '../indices/repositories/schemas/index.schema';
 import {
   PgPortfolio,
+  PgPortfolioContribution,
   PgPortfolioState,
 } from '../portfolios/repositories/portfolios.pg.repository';
 import {
@@ -31,6 +32,11 @@ import {
   PortfolioModel,
 } from '../portfolios/repositories/schemas/portfolio.schema';
 import { DbService } from './db.service';
+import {
+  PositionDocument,
+  PositionModel,
+} from '../portfolios/repositories/schemas/position.schema';
+import { PgPosition } from '../portfolios/repositories/positions.pg.repository';
 
 @Injectable()
 export class PgMigrator implements OnModuleInit {
@@ -51,6 +57,8 @@ export class PgMigrator implements OnModuleInit {
     public portfolioModel: Model<PortfolioDocument>,
     @InjectModel(PortfolioStateModel.name)
     public portfolioStateModel: Model<PortfolioStateDocument>,
+    @InjectModel(PositionModel.name)
+    public positionModel: Model<PositionDocument>,
     private readonly db: DbService,
   ) {}
 
@@ -59,6 +67,7 @@ export class PgMigrator implements OnModuleInit {
     await this.migrateStates();
     await this.migrateIndices();
     await this.migratePortfolios();
+    await this.migratePositions();
   }
 
   private async migrateCompanies(): Promise<void> {
@@ -115,7 +124,7 @@ export class PgMigrator implements OnModuleInit {
           ],
         );
         count += 1;
-        console.log(`Migrated ${count} states of ${toMigrate.length}`);
+        console.log(`Migrated ${count} company states of ${toMigrate.length}`);
       }
     }
   }
@@ -210,6 +219,51 @@ export class PgMigrator implements OnModuleInit {
             `Migrated ${statesCount} of ${statesToMigrate.length} portfolio states for portfolio ${portfolio.name}`,
           );
         }
+        let contributionsCount = 0;
+        for (const contribution of portfolio.contributions) {
+          await this.db.query<PgPortfolioContribution>(
+            `
+            INSERT INTO portfolio_contributions (portfolio_id, timestamp, amount_eur)
+            VALUES ($1, $2, ROUND($3::NUMERIC, 2));
+          `,
+            [result.rows[0].id, contribution.timestamp, contribution.amountEUR],
+          );
+          contributionsCount += 1;
+          console.log(
+            `Migrated ${contributionsCount} of ${portfolio.contributions.length} portfolio contributions for portfolio ${portfolio.name}`,
+          );
+        }
+      }
+    }
+  }
+
+  private async migratePositions(): Promise<void> {
+    const existing = await this.db.query<PgPosition>(
+      'SELECT * FROM positions;',
+      [],
+    );
+    if (existing.rowCount === 0) {
+      const toMigrate = await this.positionModel.find().lean();
+      let positionsCount = 0;
+      for (const position of toMigrate) {
+        await this.db.query(
+          `
+          INSERT INTO positions (portfolio_id, company_id, target_weight, shares, blocked, shares_updated_at)
+          VALUES ($1, $2, ROUND($3::NUMERIC, 2), ROUND($4::NUMERIC, 2), $5, $6);
+        `,
+          [
+            this.portfoliosMap.get(position.portfolioUuid)!,
+            this.companiesMap.get(position.companyUuid)!,
+            position.targetWeight,
+            position.shares,
+            position.blocked,
+            position.sharesUpdatedAt ?? this.ONE_YEAR_AGO,
+          ],
+        );
+        positionsCount += 1;
+        console.log(
+          `Migrated ${positionsCount} of ${toMigrate.length} positions`,
+        );
       }
     }
   }

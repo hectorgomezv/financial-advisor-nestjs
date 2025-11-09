@@ -1,4 +1,4 @@
-\restrict CfURkJOmG8ikZuH5abCPRmvo8rOKdSIdEZlM96hbFdepToJVcwkhwL83ehmwhxi
+\restrict EItj89W02oloSgax00bF3IxkGMue5p6bX4P1N588FLEn7HpDDcIpxDShbaLycNB
 
 -- Dumped from database version 18.0 (Debian 18.0-1.pgdg13+3)
 -- Dumped by pg_dump version 18.0
@@ -94,8 +94,8 @@ ALTER SEQUENCE public.company_states_id_seq OWNED BY public.company_states.id;
 
 CREATE TABLE public.index_states (
     index_id integer NOT NULL,
-    "timestamp" timestamp with time zone,
-    value numeric(18,5)
+    "timestamp" timestamp with time zone NOT NULL,
+    value numeric(18,5) NOT NULL
 );
 
 
@@ -128,6 +128,17 @@ CREATE SEQUENCE public.indices_id_seq
 --
 
 ALTER SEQUENCE public.indices_id_seq OWNED BY public.indices.id;
+
+
+--
+-- Name: portfolio_contributions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.portfolio_contributions (
+    portfolio_id integer NOT NULL,
+    "timestamp" timestamp with time zone NOT NULL,
+    amount_eur numeric(10,2) NOT NULL
+);
 
 
 --
@@ -200,6 +211,41 @@ ALTER SEQUENCE public.portfolios_id_seq OWNED BY public.portfolios.id;
 
 
 --
+-- Name: positions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.positions (
+    id integer NOT NULL,
+    portfolio_id integer NOT NULL,
+    company_id integer NOT NULL,
+    target_weight numeric(5,2) NOT NULL,
+    shares numeric(10,2) NOT NULL,
+    blocked boolean NOT NULL,
+    shares_updated_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: positions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.positions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: positions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.positions_id_seq OWNED BY public.positions.id;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -241,6 +287,13 @@ ALTER TABLE ONLY public.portfolio_states ALTER COLUMN id SET DEFAULT nextval('pu
 --
 
 ALTER TABLE ONLY public.portfolios ALTER COLUMN id SET DEFAULT nextval('public.portfolios_id_seq'::regclass);
+
+
+--
+-- Name: positions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.positions ALTER COLUMN id SET DEFAULT nextval('public.positions_id_seq'::regclass);
 
 
 --
@@ -308,6 +361,14 @@ ALTER TABLE ONLY public.portfolios
 
 
 --
+-- Name: positions positions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.positions
+    ADD CONSTRAINT positions_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -344,6 +405,20 @@ CREATE INDEX idx_index_states_timestamp_desc ON public.index_states USING btree 
 
 
 --
+-- Name: idx_portfolio_contributions_portfolio_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_portfolio_contributions_portfolio_id ON public.portfolio_contributions USING btree (portfolio_id);
+
+
+--
+-- Name: idx_portfolio_contributions_timestamp_desc; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_portfolio_contributions_timestamp_desc ON public.portfolio_contributions USING btree ("timestamp" DESC);
+
+
+--
 -- Name: idx_portfolio_states_portfolio_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -355,6 +430,13 @@ CREATE INDEX idx_portfolio_states_portfolio_id ON public.portfolio_states USING 
 --
 
 CREATE INDEX idx_portfolio_states_timestamp_desc ON public.portfolio_states USING btree ("timestamp" DESC);
+
+
+--
+-- Name: idx_uniq_positions_portfolio_id_company_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX idx_uniq_positions_portfolio_id_company_id ON public.positions USING btree (portfolio_id, company_id);
 
 
 --
@@ -374,6 +456,14 @@ ALTER TABLE ONLY public.index_states
 
 
 --
+-- Name: portfolio_contributions portfolio_contributions_portfolio_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.portfolio_contributions
+    ADD CONSTRAINT portfolio_contributions_portfolio_id_fkey FOREIGN KEY (portfolio_id) REFERENCES public.portfolios(id) ON DELETE CASCADE;
+
+
+--
 -- Name: portfolio_states portfolio_states_portfolio_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -382,10 +472,26 @@ ALTER TABLE ONLY public.portfolio_states
 
 
 --
+-- Name: positions positions_company_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.positions
+    ADD CONSTRAINT positions_company_id_fkey FOREIGN KEY (company_id) REFERENCES public.companies(id) ON DELETE CASCADE;
+
+
+--
+-- Name: positions positions_portfolio_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.positions
+    ADD CONSTRAINT positions_portfolio_id_fkey FOREIGN KEY (portfolio_id) REFERENCES public.portfolios(id) ON DELETE CASCADE;
+
+
+--
 -- PostgreSQL database dump complete
 --
 
-\unrestrict CfURkJOmG8ikZuH5abCPRmvo8rOKdSIdEZlM96hbFdepToJVcwkhwL83ehmwhxi
+\unrestrict EItj89W02oloSgax00bF3IxkGMue5p6bX4P1N588FLEn7HpDDcIpxDShbaLycNB
 
 
 --
@@ -396,4 +502,6 @@ INSERT INTO public.schema_migrations (version) VALUES
     ('20251105230327'),
     ('20251106000608'),
     ('20251108155033'),
-    ('20251108234900');
+    ('20251108234900'),
+    ('20251109071528'),
+    ('20251109071603');

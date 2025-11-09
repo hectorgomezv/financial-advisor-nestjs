@@ -8,6 +8,12 @@ export interface PgPortfolio {
   owner_id: string;
 }
 
+export interface PgPortfolioContribution {
+  portfolio_id: number;
+  timestamp: Date;
+  amount_eur: string;
+}
+
 export interface PgPortfolioState {
   id: number;
   portfolio_id: number;

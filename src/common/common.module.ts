@@ -28,6 +28,14 @@ import {
   DataPointSchema,
 } from './domain/schemas/data-point.schema';
 import { PgMigrator } from './pg.migrator';
+import {
+  PortfolioContributionModel,
+  PortfolioContributionSchema,
+} from '../portfolios/repositories/schemas/portfolio-contribution.schema';
+import {
+  PositionModel,
+  PositionSchema,
+} from '../portfolios/repositories/schemas/position.schema';
 
 @Module({
   imports: [
@@ -39,6 +47,11 @@ import { PgMigrator } from './pg.migrator';
       { name: IndexModel.name, schema: IndexSchema },
       { name: PortfolioModel.name, schema: PortfolioSchema },
       { name: PortfolioStateModel.name, schema: PortfolioStateSchema },
+      {
+        name: PortfolioContributionModel.name,
+        schema: PortfolioContributionSchema,
+      },
+      { name: PositionModel.name, schema: PositionSchema },
     ]),
     ConfigModule,
     HttpModule,
