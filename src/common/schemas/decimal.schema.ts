@@ -17,7 +17,7 @@ export const DecimalSchema = z.coerce
     } catch (err) {
       ctx.addIssue({
         code: 'custom',
-        error: 'Invalid numeric string',
+        error: `Invalid numeric string (${(err as Error).message})`,
       });
       return z.NEVER;
     }
