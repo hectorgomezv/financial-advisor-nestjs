@@ -18,6 +18,7 @@ services:
       - MONGO_CONNECTION_STRING=${MONGO_CONNECTION_STRING}
       - MONGO_DATABASE_NAME=${MONGO_DATABASE_NAME}
       - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=${POSTGRES_HOST}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_USER=${POSTGRES_USER}
       - PROVIDER_API_TOKEN_ALT=${PROVIDER_API_TOKEN_ALT}
@@ -28,9 +29,11 @@ services:
     links:
       - fa-mongo
       - fa-redis
+      - fa-postgres
     depends_on:
       - fa-mongo
       - fa-redis
+      - fa-postgres
 
   fa-auth-service:
     ports:
@@ -78,6 +81,7 @@ services:
     shm_size: 128mb
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_HOST: ${POSTGRES_HOST}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_USER: ${POSTGRES_USER}
 

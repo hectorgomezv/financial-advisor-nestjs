@@ -60,6 +60,7 @@ jobs:
           MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
           MONGO_DATABASE_NAME: ${{ secrets.MONGO_DATABASE_NAME }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           PROVIDER_API_TOKEN: ${{ secrets.PROVIDER_API_TOKEN }}

@@ -13,6 +13,8 @@ export class DbService implements OnModuleDestroy {
       user: this.configService.getOrThrow<string>('POSTGRES_USER'),
       password: this.configService.getOrThrow<string>('POSTGRES_PASSWORD'),
       database: this.configService.getOrThrow<string>('POSTGRES_DB'),
+      host: this.configService.getOrThrow<string>('POSTGRES_HOST'),
+      port: this.configService.get<number>('POSTGRES_PORT') || 5432,
     });
   }
 
