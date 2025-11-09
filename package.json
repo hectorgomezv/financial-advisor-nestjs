@@ -62,7 +62,7 @@
     "@faker-js/faker": "^9.9.0",
     "@nestjs/cli": "^11.0.6",
     "@nestjs/schematics": "^11.0.5",
-    "@nestjs/testing": "^11.1.6",
+    "@nestjs/testing": "^11.1.8",
     "@types/cron": "^2.4.0",
     "@types/express": "^5.0.3",
     "@types/jest": "29.5.14",
