@@ -8,7 +8,7 @@ CREATE TABLE indices (
 CREATE TABLE index_states (
   index_id INTEGER NOT NULL REFERENCES indices(id) ON DELETE CASCADE,
   timestamp TIMESTAMPTZ,
-  value NUMERIC(10, 5)
+  value NUMERIC(18, 5)
 );
 CREATE INDEX idx_index_states_timestamp_desc ON index_states(timestamp DESC);
 CREATE INDEX idx_index_states_index_id ON index_states(index_id);

@@ -14,6 +14,14 @@ import {
   IndexModel,
   IndexSchema,
 } from '../indices/repositories/schemas/index.schema';
+import {
+  PortfolioStateModel,
+  PortfolioStateSchema,
+} from '../portfolios/repositories/schemas/portfolio-state.schema';
+import {
+  PortfolioModel,
+  PortfolioSchema,
+} from '../portfolios/repositories/schemas/portfolio.schema';
 import { DbModule } from './db.module';
 import {
   DataPointModel,
@@ -29,6 +37,8 @@ import { PgMigrator } from './pg.migrator';
       { name: CompanyModel.name, schema: CompanySchema },
       { name: CompanyStateModel.name, schema: CompanyStateSchema },
       { name: IndexModel.name, schema: IndexSchema },
+      { name: PortfolioModel.name, schema: PortfolioSchema },
+      { name: PortfolioStateModel.name, schema: PortfolioStateSchema },
     ]),
     ConfigModule,
     HttpModule,

@@ -18,6 +18,18 @@ import {
   IndexDocument,
   IndexModel,
 } from '../indices/repositories/schemas/index.schema';
+import {
+  PgPortfolio,
+  PgPortfolioState,
+} from '../portfolios/repositories/portfolios.pg.repository';
+import {
+  PortfolioStateDocument,
+  PortfolioStateModel,
+} from '../portfolios/repositories/schemas/portfolio-state.schema';
+import {
+  PortfolioDocument,
+  PortfolioModel,
+} from '../portfolios/repositories/schemas/portfolio.schema';
 import { DbService } from './db.service';
 
 @Injectable()
@@ -26,7 +38,7 @@ export class PgMigrator implements OnModuleInit {
 
   // uuid-id dictionaries
   private companiesMap: Map<string, number> = new Map();
-  private indicesMap: Map<string, number> = new Map();
+  private portfoliosMap: Map<string, number> = new Map();
 
   constructor(
     @InjectModel(CompanyModel.name)
@@ -34,7 +46,11 @@ export class PgMigrator implements OnModuleInit {
     @InjectModel(CompanyStateModel.name)
     public companyStateModel: Model<CompanyStateDocument>,
     @InjectModel(IndexModel.name)
-    public indexIndexModelModel: Model<IndexDocument>,
+    public indexModel: Model<IndexDocument>,
+    @InjectModel(PortfolioModel.name)
+    public portfolioModel: Model<PortfolioDocument>,
+    @InjectModel(PortfolioStateModel.name)
+    public portfolioStateModel: Model<PortfolioStateDocument>,
     private readonly db: DbService,
   ) {}
 
@@ -42,6 +58,7 @@ export class PgMigrator implements OnModuleInit {
     await this.migrateCompanies();
     await this.migrateStates();
     await this.migrateIndices();
+    await this.migratePortfolios();
   }
 
   private async migrateCompanies(): Promise<void> {
@@ -106,14 +123,13 @@ export class PgMigrator implements OnModuleInit {
   private async migrateIndices(): Promise<void> {
     const existing = await this.db.query('SELECT * FROM indices;', []);
     if (existing.rowCount === 0) {
-      const toMigrate = await this.indexIndexModelModel.find().lean();
+      const toMigrate = await this.indexModel.find().lean();
       let indicesCount = 0;
       for (const index of toMigrate) {
         const result = await this.db.query<PgIndex>(
           'INSERT INTO indices (name, symbol) VALUES ($1, $2) RETURNING *;',
           [index.name, index.symbol],
         );
-        this.indicesMap.set(index.uuid, result.rows[0].id);
         indicesCount += 1;
         console.log(`Migrated ${indicesCount} indices of ${toMigrate.length}`);
         let statesCount = 0;
@@ -125,6 +141,73 @@ export class PgMigrator implements OnModuleInit {
           statesCount += 1;
           console.log(
             `Migrated ${statesCount} of ${index.values.length} index states for index ${index.name}`,
+          );
+        }
+      }
+    }
+  }
+
+  private async migratePortfolios(): Promise<void> {
+    const existing = await this.db.query<PgPortfolio>(
+      'SELECT * FROM portfolios;',
+      [],
+    );
+    if (existing.rowCount === 0) {
+      const toMigrate = await this.portfolioModel.find().lean();
+      let portfoliosCount = 0;
+      for (const portfolio of toMigrate) {
+        const result = await this.db.query<PgPortfolio>(
+          'INSERT INTO portfolios (cash, created, name, owner_id) VALUES ($1, $2, $3, $4) RETURNING *;',
+          [
+            portfolio.cash,
+            portfolio.created,
+            portfolio.name,
+            portfolio.ownerId,
+          ],
+        );
+        this.portfoliosMap.set(portfolio.uuid, result.rows[0].id);
+        portfoliosCount += 1;
+        console.log(
+          `Migrated ${portfoliosCount} portfolios of ${toMigrate.length}`,
+        );
+        let statesCount = 0;
+        const statesToMigrate = await this.portfolioStateModel
+          .find({
+            portfolioUuid: portfolio.uuid,
+          })
+          .lean();
+        for (const state of statesToMigrate) {
+          await this.db.query<PgPortfolioState>(
+            `INSERT INTO portfolio_states (
+                portfolio_id,
+                cash,
+                is_valid,
+                roic_eur,
+                sum_weights,
+                timestamp,
+                total_value_eur
+              ) VALUES (
+                $1,
+                ROUND($2::NUMERIC, 2),
+                $3,
+                ROUND($4::NUMERIC, 5),
+                ROUND($5::NUMERIC, 5),
+                $6,
+                ROUND($7::NUMERIC, 5)
+              );`,
+            [
+              result.rows[0].id,
+              state.cash,
+              state.isValid,
+              state.roicEUR,
+              state.sumWeights,
+              state.timestamp,
+              state.totalValueEUR,
+            ],
+          );
+          statesCount += 1;
+          console.log(
+            `Migrated ${statesCount} of ${statesToMigrate.length} portfolio states for portfolio ${portfolio.name}`,
           );
         }
       }

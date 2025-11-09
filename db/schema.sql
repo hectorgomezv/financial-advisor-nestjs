@@ -1,4 +1,4 @@
-\restrict eUUveSnsLJjOive680LAlIbqXIvbm7JvFtVJYifoatKJEFKRW2EKDniNVnCgpNx
+\restrict CfURkJOmG8ikZuH5abCPRmvo8rOKdSIdEZlM96hbFdepToJVcwkhwL83ehmwhxi
 
 -- Dumped from database version 18.0 (Debian 18.0-1.pgdg13+3)
 -- Dumped by pg_dump version 18.0
@@ -95,7 +95,7 @@ ALTER SEQUENCE public.company_states_id_seq OWNED BY public.company_states.id;
 CREATE TABLE public.index_states (
     index_id integer NOT NULL,
     "timestamp" timestamp with time zone,
-    value numeric(10,5)
+    value numeric(18,5)
 );
 
 
@@ -131,6 +131,75 @@ ALTER SEQUENCE public.indices_id_seq OWNED BY public.indices.id;
 
 
 --
+-- Name: portfolio_states; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.portfolio_states (
+    id integer NOT NULL,
+    portfolio_id integer NOT NULL,
+    cash numeric(10,2),
+    is_valid boolean NOT NULL,
+    roic_eur numeric(18,5),
+    sum_weights numeric(10,5) NOT NULL,
+    "timestamp" timestamp with time zone DEFAULT now() NOT NULL,
+    total_value_eur numeric(18,2) NOT NULL
+);
+
+
+--
+-- Name: portfolio_states_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.portfolio_states_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: portfolio_states_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.portfolio_states_id_seq OWNED BY public.portfolio_states.id;
+
+
+--
+-- Name: portfolios; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.portfolios (
+    id integer NOT NULL,
+    cash numeric(18,2),
+    created timestamp with time zone DEFAULT now() NOT NULL,
+    name character varying(64) NOT NULL,
+    owner_id character varying(64)
+);
+
+
+--
+-- Name: portfolios_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.portfolios_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: portfolios_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.portfolios_id_seq OWNED BY public.portfolios.id;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -158,6 +227,20 @@ ALTER TABLE ONLY public.company_states ALTER COLUMN id SET DEFAULT nextval('publ
 --
 
 ALTER TABLE ONLY public.indices ALTER COLUMN id SET DEFAULT nextval('public.indices_id_seq'::regclass);
+
+
+--
+-- Name: portfolio_states id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.portfolio_states ALTER COLUMN id SET DEFAULT nextval('public.portfolio_states_id_seq'::regclass);
+
+
+--
+-- Name: portfolios id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.portfolios ALTER COLUMN id SET DEFAULT nextval('public.portfolios_id_seq'::regclass);
 
 
 --
@@ -201,6 +284,30 @@ ALTER TABLE ONLY public.indices
 
 
 --
+-- Name: portfolio_states portfolio_states_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.portfolio_states
+    ADD CONSTRAINT portfolio_states_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: portfolios portfolios_name_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.portfolios
+    ADD CONSTRAINT portfolios_name_key UNIQUE (name);
+
+
+--
+-- Name: portfolios portfolios_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.portfolios
+    ADD CONSTRAINT portfolios_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -237,6 +344,20 @@ CREATE INDEX idx_index_states_timestamp_desc ON public.index_states USING btree 
 
 
 --
+-- Name: idx_portfolio_states_portfolio_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_portfolio_states_portfolio_id ON public.portfolio_states USING btree (portfolio_id);
+
+
+--
+-- Name: idx_portfolio_states_timestamp_desc; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_portfolio_states_timestamp_desc ON public.portfolio_states USING btree ("timestamp" DESC);
+
+
+--
 -- Name: company_states company_states_company_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -253,10 +374,18 @@ ALTER TABLE ONLY public.index_states
 
 
 --
+-- Name: portfolio_states portfolio_states_portfolio_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.portfolio_states
+    ADD CONSTRAINT portfolio_states_portfolio_id_fkey FOREIGN KEY (portfolio_id) REFERENCES public.portfolios(id) ON DELETE CASCADE;
+
+
+--
 -- PostgreSQL database dump complete
 --
 
-\unrestrict eUUveSnsLJjOive680LAlIbqXIvbm7JvFtVJYifoatKJEFKRW2EKDniNVnCgpNx
+\unrestrict CfURkJOmG8ikZuH5abCPRmvo8rOKdSIdEZlM96hbFdepToJVcwkhwL83ehmwhxi
 
 
 --
@@ -266,4 +395,5 @@ ALTER TABLE ONLY public.index_states
 INSERT INTO public.schema_migrations (version) VALUES
     ('20251105230327'),
     ('20251106000608'),
-    ('20251108155033');
+    ('20251108155033'),
+    ('20251108234900');
