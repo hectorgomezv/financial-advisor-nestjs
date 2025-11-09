@@ -9,6 +9,7 @@ import { AuthClient } from '../../common/__tests__/auth/auth.client';
 import { addPortfolioContributionDtoFactory } from '../domain/dto/test/add-portfolio-contribution.dto.factory';
 import { PortfoliosService } from '../domain/portfolios.service';
 import { faker } from '@faker-js/faker';
+import { PgMigrator } from '../../common/pg.migrator';
 
 describe('Portfolio contributions e2e tests', () => {
   let app: INestApplication;
@@ -32,7 +33,10 @@ describe('Portfolio contributions e2e tests', () => {
 
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    })
+      .overrideProvider(PgMigrator) // TODO: delete this after migration
+      .useValue({})
+      .compile();
 
     await moduleRef.get(PortfoliosRepository).model.db.dropDatabase();
     app = moduleRef.createNestApplication();

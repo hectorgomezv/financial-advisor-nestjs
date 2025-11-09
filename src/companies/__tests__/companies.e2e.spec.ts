@@ -7,6 +7,7 @@ import * as request from 'supertest';
 import { AppModule } from '../../app.module';
 import { AuthClient } from '../../common/__tests__/auth/auth.client';
 import { MongoDBClient } from '../../common/__tests__/database/mongodb.client';
+import { PgMigrator } from '../../common/pg.migrator';
 import { createCompanyDtoFactory } from '../domain/dto/test/create-company.dto.factory';
 import { CompaniesRepository } from '../repositories/companies.repository';
 
@@ -35,7 +36,10 @@ describe('Companies e2e tests', () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, HttpModule],
       providers: [AuthClient],
-    }).compile();
+    })
+      .overrideProvider(PgMigrator) // TODO: delete this after migration
+      .useValue({})
+      .compile();
 
     await moduleRef.get(CompaniesRepository).model.db.dropDatabase();
     app = moduleRef.createNestApplication();

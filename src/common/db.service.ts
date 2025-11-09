@@ -12,7 +12,7 @@ export class DbService implements OnModuleDestroy {
     this.pool = new Pool({
       user: this.configService.getOrThrow<string>('POSTGRES_USER'),
       password: this.configService.getOrThrow<string>('POSTGRES_PASSWORD'),
-      database: this.configService.getOrThrow<string>('POSTGRES_USER'),
+      database: this.configService.getOrThrow<string>('POSTGRES_DB'),
     });
   }
 
