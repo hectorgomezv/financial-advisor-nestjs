@@ -20,6 +20,9 @@ import {
   CompanySchema,
 } from './repositories/schemas/company.schema';
 import { CompaniesController } from './routes/companies.controller';
+import { CompaniesPgRepository } from './repositories/companies.pg.repository';
+import { PgMigrator } from '../common/pg.migrator';
+import { DbModule } from '../common/db.module';
 
 @Module({
   imports: [
@@ -28,19 +31,25 @@ import { CompaniesController } from './routes/companies.controller';
       { name: CompanyStateModel.name, schema: CompanyStateSchema },
     ]),
     ConfigModule,
+    DbModule,
     HttpModule,
     forwardRef(() => PortfoliosModule),
   ],
   controllers: [CompaniesController],
   providers: [
-    { provide: IFinancialDataClient, useClass: YahooFinancialDataClient },
     AuthService,
+    CompaniesPgRepository,
     CompaniesRepository,
     CompaniesService,
     CompanyStatesRepository,
     CompanyStatesService,
     RedisClient,
+    { provide: IFinancialDataClient, useClass: YahooFinancialDataClient },
   ],
-  exports: [CompaniesRepository, CompanyStatesRepository],
+  exports: [
+    CompaniesPgRepository,
+    CompaniesRepository,
+    CompanyStatesRepository,
+  ],
 })
 export class CompaniesModule {}

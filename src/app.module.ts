@@ -13,11 +13,13 @@ import { HealthModule } from './health/health.module';
 import { IndicesModule } from './indices/indices.module';
 import { MetricsModule } from './metrics/metrics.module';
 import { PortfoliosModule } from './portfolios/portfolios.module';
+import { DbModule } from './common/db.module';
 
 const { NODE_ENV } = process.env;
 
 @Module({
   imports: [
+    DbModule,
     ConfigModule.forRoot({
       envFilePath: NODE_ENV ? `.env.${NODE_ENV}` : '.env',
     }),

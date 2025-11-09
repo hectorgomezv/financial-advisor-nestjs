@@ -151,7 +151,7 @@ describe('CompaniesService', () => {
         state,
       );
 
-      const actual = await service.findOne(company.uuid);
+      const actual = await service.findOne(company.uuid!);
 
       expect(actual).toEqual({ ...company, state });
       expect(mockedCompaniesRepository.findOne).toHaveBeenCalledTimes(1);
@@ -199,7 +199,7 @@ describe('CompaniesService', () => {
       mockedCompaniesRepository.findOne.mockResolvedValue(company);
       mockedPositionsRepository.findByCompanyUuid.mockResolvedValue([position]);
 
-      await expect(service.remove(adminUser, company.uuid)).rejects.toThrow(
+      await expect(service.remove(adminUser, company.uuid!)).rejects.toThrow(
         `Positions for company ${company.symbol} still exist`,
       );
     });
@@ -209,7 +209,7 @@ describe('CompaniesService', () => {
       mockedCompaniesRepository.findOne.mockResolvedValue(company);
       mockedPositionsRepository.findByCompanyUuid.mockResolvedValue([]);
 
-      const deleted = await service.remove(adminUser, company.uuid);
+      const deleted = await service.remove(adminUser, company.uuid!);
 
       expect(deleted).toEqual(company);
       expect(

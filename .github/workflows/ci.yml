@@ -52,16 +52,19 @@ jobs:
       - run: yarn run build
       - run: yarn run test:cov --runInBand
         env:
-          EXCHANGE_RATES_PROVIDER_APP_ID: ${{ secrets.EXCHANGE_RATES_PROVIDER_APP_ID }}
-          MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
-          MONGO_DATABASE_NAME: ${{ secrets.MONGO_DATABASE_NAME }}
-          PROVIDER_API_TOKEN: ${{ secrets.PROVIDER_API_TOKEN }}
-          PROVIDER_BASE_URL: ${{ secrets.PROVIDER_BASE_URL }}
-          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
           E2E_AUTH_EMAIL: ${{ secrets.E2E_AUTH_EMAIL }}
           E2E_AUTH_PASSWORD: ${{ secrets.E2E_AUTH_PASSWORD }}
           E2E_AUTH_URL: ${{ secrets.E2E_AUTH_URL }}
+          EXCHANGE_RATES_PROVIDER_APP_ID: ${{ secrets.EXCHANGE_RATES_PROVIDER_APP_ID }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
+          MONGO_DATABASE_NAME: ${{ secrets.MONGO_DATABASE_NAME }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          PROVIDER_API_TOKEN: ${{ secrets.PROVIDER_API_TOKEN }}
+          PROVIDER_BASE_URL: ${{ secrets.PROVIDER_BASE_URL }}
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
 
   build:
     runs-on: ubuntu-latest

@@ -50,7 +50,7 @@ export class PositionsService {
 
     const existentPosition =
       await this.repository.findByCompanyUuidAndPortfolioUuid(
-        company.uuid,
+        company.uuid!, // TODO: id or JOIN instead of uuid
         portfolioUuid,
       );
 
@@ -95,7 +95,7 @@ export class PositionsService {
 
     const existentPosition =
       await this.repository.findByCompanyUuidAndPortfolioUuid(
-        company.uuid,
+        company.uuid!, // TODO: id or JOIN instead of uuid
         portfolioUuid,
       );
 
@@ -137,7 +137,7 @@ export class PositionsService {
         const company = companies.find((c) => c.uuid === position.companyUuid);
         const companyState =
           await this.companyStatesRepository.getLastByCompanyUuid(
-            company!.uuid,
+            company!.uuid!, // TODO: id or JOIN instead of uuid
           );
         return this.calculatePositionState(position, company, companyState, fx);
       }),

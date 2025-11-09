@@ -9,6 +9,7 @@ import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { MongoDBClient } from '../../common/__tests__/database/mongodb.client';
 import { AuthClient } from '../../common/__tests__/auth/auth.client';
 import { User } from '../../common/auth/entities/user.entity';
+import { PgMigrator } from '../../common/pg.migrator';
 
 describe('Portfolios e2e tests', () => {
   let app: INestApplication;
@@ -39,7 +40,10 @@ describe('Portfolios e2e tests', () => {
 
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    })
+      .overrideProvider(PgMigrator) // TODO: delete this after migration
+      .useValue({})
+      .compile();
 
     await moduleRef.get(PortfoliosRepository).model.db.dropDatabase();
     app = moduleRef.createNestApplication();
