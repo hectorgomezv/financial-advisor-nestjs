@@ -1478,15 +1478,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/schedule@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@nestjs/schedule@npm:6.0.0"
+"@nestjs/schedule@npm:^6.0.1":
+  version: 6.0.1
+  resolution: "@nestjs/schedule@npm:6.0.1"
   dependencies:
-    cron: 4.3.0
+    cron: 4.3.3
   peerDependencies:
     "@nestjs/common": ^10.0.0 || ^11.0.0
     "@nestjs/core": ^10.0.0 || ^11.0.0
-  checksum: 0adadc62838af60ef8800d7dc18ec99378fb13b6b6bacbba1b0b7cd035d4c4674d7494202018456657b2f263577eb20a4cf4e0247be24412cabd253b2f8f6eb0
+  checksum: a9e91f70387e4858ba991b7d7e5d7378681ff6c0dbc6bc416c3757fcbb7aa58d0abcdbcd310d91021af4c42f0179a8e18a6ca9215b150767710f4d48ad152556
   languageName: node
   linkType: hard
 
@@ -1925,13 +1925,6 @@ __metadata:
   version: 4.17.20
   resolution: "@types/lodash@npm:4.17.20"
   checksum: dc7bb4653514dd91117a4c4cec2c37e2b5a163d7643445e4757d76a360fabe064422ec7a42dde7450c5e7e0e7e678d5e6eae6d2a919abcddf581d81e63e63839
-  languageName: node
-  linkType: hard
-
-"@types/luxon@npm:~3.6.0":
-  version: 3.6.2
-  resolution: "@types/luxon@npm:3.6.2"
-  checksum: fa7bf7d74544c77c2010739337d359c5d6f9b0424de0e0eb273f7bae203996168cc33c2ad6f3b35771eac8fea8b7e5bcce72b91d129924d0f84b91dc216de42e
   languageName: node
   linkType: hard
 
@@ -3362,23 +3355,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cron@npm:*, cron@npm:^4.3.3":
+"cron@npm:*, cron@npm:4.3.3, cron@npm:^4.3.3":
   version: 4.3.3
   resolution: "cron@npm:4.3.3"
   dependencies:
     "@types/luxon": ~3.7.0
     luxon: ~3.7.0
   checksum: 08294d1813335584b828f1e980ac7655de77aa0963597e04881d6abd48167801abc6a59fa746ae7d8f4a2cd85537f93af31dffb0dd23c436be37e91b5f3bf830
-  languageName: node
-  linkType: hard
-
-"cron@npm:4.3.0":
-  version: 4.3.0
-  resolution: "cron@npm:4.3.0"
-  dependencies:
-    "@types/luxon": ~3.6.0
-    luxon: ~3.6.0
-  checksum: 3577c759190bae89708bef65237cae8b393f3bce46b3457f292318a989dc8a7ae3a5ef7c3bff676567175a33176d94391164598c71ac8477af7c413047badd39
   languageName: node
   linkType: hard
 
@@ -4175,7 +4158,7 @@ __metadata:
     "@nestjs/mongoose": ^11.0.3
     "@nestjs/passport": ^11.0.5
     "@nestjs/platform-express": ^11.1.6
-    "@nestjs/schedule": ^6.0.0
+    "@nestjs/schedule": ^6.0.1
     "@nestjs/schematics": ^11.0.5
     "@nestjs/swagger": ^11.2.0
     "@nestjs/testing": ^11.1.6
@@ -5832,13 +5815,6 @@ __metadata:
   dependencies:
     yallist: ^3.0.2
   checksum: c154ae1cbb0c2206d1501a0e94df349653c92c8cbb25236d7e85190bcaf4567a03ac6eb43166fabfa36fd35623694da7233e88d9601fbf411a9a481d85dbd2cb
-  languageName: node
-  linkType: hard
-
-"luxon@npm:~3.6.0":
-  version: 3.6.1
-  resolution: "luxon@npm:3.6.1"
-  checksum: bc6c24dde90f4263f548cc5a4ea3328e9c9511bee0b2255bd319639712862f1eb14a39c1b2dcbff8a8bf6686996d28f45b8fc902994a72dd05a29cef1269a6a4
   languageName: node
   linkType: hard
 
