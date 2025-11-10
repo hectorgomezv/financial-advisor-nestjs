@@ -7,7 +7,7 @@ import { DbModule } from '../common/db.module';
 import { IFinancialDataClient } from '../companies/datasources/financial-data.client.interface';
 import { YahooFinancialDataClient } from '../companies/datasources/yahoo-financial-data.client';
 import { IndicesService } from './domain/indices.service';
-import { IndicesPgRepository } from './repositories/indices.pg.repository';
+import { IndicesRepository } from './repositories/indices.repository';
 import { IndexModel, IndexSchema } from './repositories/schemas/index.schema';
 import { IndicesController } from './routes/indices.controller';
 
@@ -23,8 +23,8 @@ import { IndicesController } from './routes/indices.controller';
     { provide: IFinancialDataClient, useClass: YahooFinancialDataClient },
     AuthService,
     IndicesService,
-    IndicesPgRepository,
+    IndicesRepository,
   ],
-  exports: [IndicesService, IndicesPgRepository],
+  exports: [IndicesService, IndicesRepository],
 })
 export class IndicesModule {}
