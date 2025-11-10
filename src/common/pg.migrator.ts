@@ -11,9 +11,9 @@ import {
   CompanyModel,
 } from '../companies/repositories/schemas/company.schema';
 import {
-  PgIndex,
-  PgIndexState,
-} from '../indices/repositories/indices.pg.repository';
+  DbIndex,
+  DbIndexState,
+} from '../indices/repositories/indices.repository';
 import {
   IndexDocument,
   IndexModel,
@@ -135,7 +135,7 @@ export class PgMigrator implements OnModuleInit {
       const toMigrate = await this.indexModel.find().lean();
       let indicesCount = 0;
       for (const index of toMigrate) {
-        const result = await this.db.query<PgIndex>(
+        const result = await this.db.query<DbIndex>(
           'INSERT INTO indices (name, symbol) VALUES ($1, $2) RETURNING *;',
           [index.name, index.symbol],
         );
@@ -143,7 +143,7 @@ export class PgMigrator implements OnModuleInit {
         console.log(`Migrated ${indicesCount} indices of ${toMigrate.length}`);
         let statesCount = 0;
         for (const state of index.values) {
-          await this.db.query<PgIndexState>(
+          await this.db.query<DbIndexState>(
             'INSERT INTO index_states (index_id, timestamp, value) VALUES ($1, $2, $3);',
             [result.rows[0].id, state.timestamp, state.value],
           );

@@ -5,13 +5,13 @@ import { dataPointFactory } from '../../../../common/domain/entities/__tests__/d
 import { Index } from '../index.entity';
 
 export function indexFactory(
-  uuid?: string,
+  id?: number,
   name?: string,
   symbol?: string,
   values?: DataPoint[],
 ) {
   return <Index>{
-    uuid: uuid ?? faker.string.uuid(),
+    id: id ?? faker.number.int(),
     name: name ?? faker.word.sample(),
     symbol: symbol ?? faker.word.sample(),
     values: values ?? range(random(4)).map(() => dataPointFactory()),

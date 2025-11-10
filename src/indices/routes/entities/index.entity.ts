@@ -5,7 +5,7 @@ import { DataPoint } from '../../../common/routes/entities/data-point.entity';
 @ApiExtraModels(DataPoint)
 export class Index implements DomainIndex {
   @ApiProperty()
-  uuid: string;
+  id: number;
   @ApiProperty()
   name: string;
   @ApiProperty()

@@ -31,7 +31,7 @@ export class IndicesService {
     timestamps: Date[],
   ): Promise<DataPoint[]> {
     const indexValues = sortBy(
-      await this.repository.getIndexValuesFrom(index.uuid, initialTimestamp),
+      await this.repository.getIndexValuesFrom(index.id, initialTimestamp),
       'timestamp',
     );
 
@@ -83,7 +83,7 @@ export class IndicesService {
         const dataPoints = await this.financialDataClient.getChartDataPoints(
           index.symbol,
         );
-        await this.repository.persistDataPoints(index.uuid, dataPoints);
+        await this.repository.persistDataPoints(index.id, dataPoints);
       }),
     );
   }

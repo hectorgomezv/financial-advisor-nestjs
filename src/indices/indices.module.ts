@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthService } from '../common/auth/auth-service';
+import { DbModule } from '../common/db.module';
 import { IFinancialDataClient } from '../companies/datasources/financial-data.client.interface';
 import { YahooFinancialDataClient } from '../companies/datasources/yahoo-financial-data.client';
 import { IndicesService } from './domain/indices.service';
@@ -14,6 +15,7 @@ import { IndicesController } from './routes/indices.controller';
   imports: [
     MongooseModule.forFeature([{ name: IndexModel.name, schema: IndexSchema }]),
     ConfigModule,
+    DbModule,
     HttpModule,
   ],
   controllers: [IndicesController],
