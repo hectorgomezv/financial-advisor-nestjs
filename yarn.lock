@@ -1505,16 +1505,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/swagger@npm:^11.2.0":
-  version: 11.2.0
-  resolution: "@nestjs/swagger@npm:11.2.0"
+"@nestjs/swagger@npm:^11.2.1":
+  version: 11.2.1
+  resolution: "@nestjs/swagger@npm:11.2.1"
   dependencies:
     "@microsoft/tsdoc": 0.15.1
     "@nestjs/mapped-types": 2.1.0
     js-yaml: 4.1.0
     lodash: 4.17.21
-    path-to-regexp: 8.2.0
-    swagger-ui-dist: 5.21.0
+    path-to-regexp: 8.3.0
+    swagger-ui-dist: 5.29.4
   peerDependencies:
     "@fastify/static": ^8.0.0
     "@nestjs/common": ^11.0.1
@@ -1529,7 +1529,7 @@ __metadata:
       optional: true
     class-validator:
       optional: true
-  checksum: ba4a7e56be0586df3e63f20b89f5a10416366cf42513df6f99096f8f19d1ea547f425a98cd50f84873dd70c0b9fe07e9a10832294610d8473786158ebf13c535
+  checksum: 18658d157056b6bcf15e6894566d30a738862357923456eb9eeabdf1d6ece97201c646307afe4a2401c63cfaea749d07323cc179bb75fa5c3eadb957ff8adca3
   languageName: node
   linkType: hard
 
@@ -4130,7 +4130,7 @@ __metadata:
     "@nestjs/platform-express": ^11.1.6
     "@nestjs/schedule": ^6.0.1
     "@nestjs/schematics": ^11.0.5
-    "@nestjs/swagger": ^11.2.0
+    "@nestjs/swagger": ^11.2.1
     "@nestjs/testing": ^11.1.8
     "@types/cron": ^2.4.0
     "@types/express": ^5.0.3
@@ -6585,6 +6585,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"path-to-regexp@npm:8.3.0":
+  version: 8.3.0
+  resolution: "path-to-regexp@npm:8.3.0"
+  checksum: 73e0d3db449f9899692b10be8480bbcfa294fd575be2d09bce3e63f2f708d1fccd3aaa8591709f8b82062c528df116e118ff9df8f5c52ccc4c2443a90be73e10
+  languageName: node
+  linkType: hard
+
 "path-type@npm:^4.0.0":
   version: 4.0.0
   resolution: "path-type@npm:4.0.0"
@@ -7694,12 +7701,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"swagger-ui-dist@npm:5.21.0":
-  version: 5.21.0
-  resolution: "swagger-ui-dist@npm:5.21.0"
+"swagger-ui-dist@npm:5.29.4":
+  version: 5.29.4
+  resolution: "swagger-ui-dist@npm:5.29.4"
   dependencies:
     "@scarf/scarf": =1.4.0
-  checksum: 7780be7b0f77a7be40d854d33117e7e4be77f63ac19859b0ef4243bc0dd6ba9af3b103beb8526911d6e09718f0ef5ea43854f5c7b61c5f1a7352730388a2fecf
+  checksum: 8fbc5d8522dc298a05f6000908bd7e4b45e3a81782e2348c4054ae0c52a7dc84ebe2d1d3774b9981ea39a8b95fb97220d683f22a6756ec8ede4a56528fb729e3
   languageName: node
   linkType: hard
 
