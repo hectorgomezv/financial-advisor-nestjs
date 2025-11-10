@@ -3,11 +3,12 @@ import { forwardRef, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthService } from '../common/auth/auth-service';
+import { DbModule } from '../common/db.module';
 import { CompaniesModule } from '../companies/companies.module';
 import { IFinancialDataClient } from '../companies/datasources/financial-data.client.interface';
 import { YahooFinancialDataClient } from '../companies/datasources/yahoo-financial-data.client';
 import { IndicesService } from '../indices/domain/indices.service';
-import { IndicesRepository } from '../indices/repositories/indices.repository';
+import { IndicesPgRepository } from '../indices/repositories/indices.pg.repository';
 import {
   IndexModel,
   IndexSchema,
@@ -43,6 +44,7 @@ import { PortfoliosController } from './routes/portfolios.controller';
       { name: PositionModel.name, schema: PositionSchema },
     ]),
     ConfigModule,
+    DbModule,
     HttpModule,
     forwardRef(() => CompaniesModule),
   ],
@@ -51,7 +53,7 @@ import { PortfoliosController } from './routes/portfolios.controller';
     { provide: IFinancialDataClient, useClass: YahooFinancialDataClient },
     AuthService,
     CurrencyExchangeClient,
-    IndicesRepository,
+    IndicesPgRepository,
     IndicesService,
     OpenExchangeRatesClient,
     PortfoliosRepository,

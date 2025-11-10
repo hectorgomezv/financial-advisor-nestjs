@@ -3,7 +3,7 @@ import { AuthService } from '../../common/auth/auth-service';
 import { userFactory } from '../../common/auth/entities/__tests__/user.factory';
 import { dataPointFactory } from '../../common/domain/entities/__tests__/data-point.factory';
 import { IFinancialDataClient } from '../../companies/datasources/financial-data.client.interface';
-import { IndicesRepository } from '../repositories/indices.repository';
+import { IndicesPgRepository } from '../repositories/indices.pg.repository';
 import { indexFactory } from './entities/__tests__/index.factory';
 import { IndicesService } from './indices.service';
 
@@ -11,7 +11,7 @@ describe('IndicesService', () => {
   const mockedIndicesRepository = jest.mocked({
     findAll: jest.fn(),
     getIndexValuesFrom: jest.fn(),
-  } as unknown as IndicesRepository);
+  } as unknown as IndicesPgRepository);
 
   const mockedAuthService = jest.mocked({
     checkAdmin: jest.fn(),

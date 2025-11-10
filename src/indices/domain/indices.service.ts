@@ -6,7 +6,7 @@ import { AuthService } from '../../common/auth/auth-service';
 import { User } from '../../common/auth/entities/user.entity';
 import { DataPoint } from '../../common/domain/entities/data-point.entity';
 import { IFinancialDataClient } from '../../companies/datasources/financial-data.client.interface';
-import { IndicesRepository } from '../repositories/indices.repository';
+import { IndicesPgRepository } from '../repositories/indices.pg.repository';
 import { Index } from './entities/index.entity';
 
 @Injectable()
@@ -14,7 +14,7 @@ export class IndicesService {
   private readonly logger = new Logger(IndicesService.name);
 
   constructor(
-    private readonly repository: IndicesRepository,
+    private readonly repository: IndicesPgRepository,
     private readonly authService: AuthService,
     @Inject(IFinancialDataClient)
     private readonly financialDataClient: IFinancialDataClient,
@@ -31,7 +31,7 @@ export class IndicesService {
     timestamps: Date[],
   ): Promise<DataPoint[]> {
     const indexValues = sortBy(
-      await this.repository.getIndexValuesFrom(index.uuid, initialTimestamp),
+      await this.repository.getIndexValuesFrom(index.id, initialTimestamp),
       'timestamp',
     );
 
@@ -83,7 +83,7 @@ export class IndicesService {
         const dataPoints = await this.financialDataClient.getChartDataPoints(
           index.symbol,
         );
-        await this.repository.persistDataPoints(index.uuid, dataPoints);
+        await this.repository.persistDataPoints(index.id, dataPoints);
       }),
     );
   }
