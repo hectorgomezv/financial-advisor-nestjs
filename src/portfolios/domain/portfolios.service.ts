@@ -15,7 +15,7 @@ import { DataPoint } from '../../common/domain/entities/data-point.entity';
 import { TimePeriod } from '../../common/domain/entities/time-period.entity';
 import { Index } from '../../indices/domain/entities/index.entity';
 import { IndicesService } from '../../indices/domain/indices.service';
-import { PortfoliosRepository } from '../repositories/portfolios.repository';
+import { PortfoliosPgRepository } from '../repositories/portfolios.pg.repository';
 import { AddPortfolioContributionDto } from './dto/add-portfolio-contribution.dto';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { PortfolioDetailDto } from './dto/portfolio-detail.dto';
@@ -36,7 +36,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
   private readonly logger = new Logger(PortfoliosService.name);
 
   constructor(
-    private readonly repository: PortfoliosRepository,
+    private readonly repository: PortfoliosPgRepository,
     private readonly authService: AuthService,
     private readonly portfolioStatesService: PortfolioStatesService,
     private readonly positionService: PositionsService,
@@ -47,16 +47,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
     user: User,
     createPortfolioDto: CreatePortfolioDto,
   ): Promise<Portfolio> {
-    return this.repository.create(<Portfolio>{
-      uuid: uuidv4(),
-      name: createPortfolioDto.name,
-      ownerId: user.id,
-      created: Date.now(),
-      positions: [],
-      cash: 0,
-      contributions: [],
-      state: null,
-    });
+    return this.repository.create(createPortfolioDto, user);
   }
 
   findByOwnerId(user: User) {
@@ -65,8 +56,8 @@ export class PortfoliosService implements OnApplicationBootstrap {
       : this.repository.findByOwnerId(user.id);
   }
 
-  async findOne(user: User, uuid: string): Promise<PortfolioDetailDto> {
-    const portfolio = await this.repository.findOne(uuid);
+  async findById(user: User, id: number): Promise<PortfolioDetailDto> {
+    const portfolio = await this.repository.findById(id);
     if (!portfolio) {
       throw new NotFoundException('Portfolio not found');
     }
@@ -74,8 +65,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
 
     const positions =
       await this.positionService.getPositionDetailsByPortfolioUuid(portfolio);
-    const state =
-      await this.portfolioStatesService.getLastByPortfolioUuid(uuid);
+    const state = await this.portfolioStatesService.getLast(uuid);
 
     return <PortfolioDetailDto>{
       uuid,

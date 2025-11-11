@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { RedisClient } from '../../common/cache/redis.client';
 import { DbService } from '../../common/db.service';
 import { Company } from '../domain/entities/company.entity';
+import { CreateCompanyDto } from '../domain/dto/create-company.dto';
 
 export interface PgCompany {
   id: number;
@@ -18,16 +19,13 @@ export class CompaniesPgRepository {
     private readonly redisClient: RedisClient,
   ) {}
 
-  async create(company: Company): Promise<Company> {
+  async create(dto: CreateCompanyDto): Promise<Company> {
     const query = `
       INSERT INTO companies (name, symbol)
       VALUES ($1, $2)
       RETURNING *
     `;
-    const res = await this.db.query<PgCompany>(query, [
-      company.name,
-      company.symbol,
-    ]);
+    const res = await this.db.query<PgCompany>(query, [dto.name, dto.symbol]);
     return res.rows[0];
   }
 

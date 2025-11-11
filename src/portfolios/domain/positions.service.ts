@@ -8,8 +8,8 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import { User } from '../../common/auth/entities/user.entity';
 import { CompanyState } from '../../companies/domain/entities/company-state.entity';
-import { CompaniesRepository } from '../../companies/repositories/companies.repository';
-import { CompanyStatesRepository } from '../../companies/repositories/company-states.repository';
+import { CompaniesPgRepository } from '../../companies/repositories/companies.pg.repository';
+import { CompanyStatesPgRepository } from '../../companies/repositories/company-states.pg.repository';
 import { CurrencyExchangeClient } from '../datasources/currency-exchange.client';
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { PositionsRepository } from '../repositories/positions.repository';
@@ -27,8 +27,8 @@ export class PositionsService {
     private readonly repository: PositionsRepository,
     private readonly portfoliosRepository: PortfoliosRepository,
     private readonly portfolioStatesService: PortfolioStatesService,
-    private readonly companiesRepository: CompaniesRepository,
-    private readonly companyStatesRepository: CompanyStatesRepository,
+    private readonly companiesRepository: CompaniesPgRepository,
+    private readonly companyStatesRepository: CompanyStatesPgRepository,
     private readonly exchangeClient: CurrencyExchangeClient,
   ) {}
 

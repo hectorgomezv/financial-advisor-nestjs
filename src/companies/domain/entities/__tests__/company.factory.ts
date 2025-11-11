@@ -4,13 +4,13 @@ import { Company } from '../company.entity';
 import { companyMetricsFactory } from './company-metrics.factory';
 
 export function companyFactory(
-  uuid?: string,
+  id?: number,
   name?: string,
   symbol?: string,
   metrics?: CompanyMetrics,
 ): Company {
   return <Company>{
-    uuid: uuid ?? faker.string.uuid(),
+    id: id ?? faker.number.int(),
     name: name ?? faker.word.words(),
     symbol: symbol ?? faker.word.sample(),
     metrics: metrics ?? companyMetricsFactory(),

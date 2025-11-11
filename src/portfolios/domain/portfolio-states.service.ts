@@ -29,13 +29,13 @@ export class PortfolioStatesService {
 
     return this.repository.create(<PortfolioState>{
       uuid: uuidv4(),
-      timestamp: new Date(),
       portfolioUuid: portfolio.uuid,
-      isValid: sumWeights === 100,
-      sumWeights,
       cash,
-      totalValueEUR,
+      isValid: sumWeights === 100,
       roicEUR: totalValueEUR - contributionsAmount,
+      sumWeights,
+      timestamp: new Date(),
+      totalValueEUR,
     });
   }
 

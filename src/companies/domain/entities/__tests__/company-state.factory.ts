@@ -1,28 +1,29 @@
 import { faker } from '@faker-js/faker';
 import { CompanyState } from '../company-state.entity';
+import Decimal from 'decimal.js';
 
 export function companyStateFactory(
-  uuid?: string,
+  id?: string,
   timestamp?: number,
   price?: number,
   forwardPE?: number,
   profitMargins?: number,
   currency?: string,
-  companyUuid?: string,
+  companyId?: number,
   enterpriseToRevenue?: number,
   enterpriseToEbitda?: number,
   shortPercentOfFloat?: number,
 ): CompanyState {
   return <CompanyState>{
-    uuid: uuid ?? faker.string.uuid(),
-    timestamp: timestamp ?? Date.now(),
-    price: price ?? faker.number.int(),
+    id: id ?? faker.number.int(),
+    companyId: companyId ?? faker.number.int(),
+    timestamp: timestamp ?? new Date(),
+    price: price ?? new Decimal(faker.number.int()),
     currency: currency ?? faker.finance.currencyCode(),
-    forwardPE: forwardPE ?? faker.number.int(),
-    profitMargins: profitMargins ?? faker.number.int(),
-    companyUuid: companyUuid ?? faker.string.uuid(),
-    enterpriseToRevenue: enterpriseToRevenue ?? faker.number.int(),
-    enterpriseToEbitda: enterpriseToEbitda ?? faker.number.int(),
-    shortPercentOfFloat: shortPercentOfFloat ?? faker.number.int(),
+    forwardPE: forwardPE ?? new Decimal(faker.number.int()),
+    profitMargins: profitMargins ?? new Decimal(faker.number.int()),
+    enterpriseToRevenue: enterpriseToRevenue ?? new Decimal(faker.number.int()),
+    enterpriseToEbitda: enterpriseToEbitda ?? new Decimal(faker.number.int()),
+    shortPercentOfFloat: shortPercentOfFloat ?? new Decimal(faker.number.int()),
   };
 }

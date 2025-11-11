@@ -1,55 +1,68 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import Decimal from 'decimal.js';
 import { IFinancialDataClient } from '../datasources/financial-data.client.interface';
 import { CompanyState } from '../domain/entities/company-state.entity';
 import { Company } from '../domain/entities/company.entity';
 import { QuoteSummary } from '../domain/entities/quote-summary.entity';
-import { CompanyStatesRepository } from '../repositories/company-states.repository';
+import { CompanyStatesPgRepository } from '../repositories/company-states.pg.repository';
 import { CompanyMetrics } from './entities/company-metrics.entity';
+
+export interface CompanyStateDto {
+  companyId: number;
+  currency: string;
+  enterpriseToEbitda: Decimal;
+  enterpriseToRevenue: Decimal;
+  forwardPE: Decimal;
+  price: Decimal;
+  profitMargins: Decimal;
+  shortPercentOfFloat: Decimal;
+  timestamp: Date;
+}
 
 @Injectable()
 export class CompanyStatesService {
   constructor(
-    private readonly companyStatesRepository: CompanyStatesRepository,
+    private readonly repository: CompanyStatesPgRepository,
     @Inject(IFinancialDataClient)
     private readonly financialDataClient: IFinancialDataClient,
   ) {}
 
-  async getLastStateByCompanyUuid(companyUuid: string): Promise<CompanyState> {
-    return this.companyStatesRepository.getLastByCompanyUuid(companyUuid);
+  async getLastByCompanyId(companyId: number): Promise<CompanyState> {
+    const state = await this.repository.getLastByCompanyId(companyId);
+    if (state === null) throw new NotFoundException('State not found');
+    return state;
   }
 
-  async getLastStateByCompanyUuids(
-    companyUuids: string[],
-  ): Promise<CompanyState[]> {
-    return this.companyStatesRepository.getLastByCompanyUuids(companyUuids);
+  async getLastByCompanyIds(ids: Array<number>): Promise<Array<CompanyState>> {
+    return this.repository.getLastByCompanyIds(ids);
   }
 
   async createCompanyState(company: Company): Promise<CompanyState> {
     const quoteSummary: QuoteSummary =
       await this.financialDataClient.getQuoteSummary(company.symbol);
 
-    const companyState: CompanyState = <CompanyState>{
-      uuid: uuidv4(),
-      timestamp: Date.now(),
-      price: quoteSummary?.price || 0,
+    const dto: CompanyStateDto = <CompanyStateDto>{
+      companyId: company.id,
       currency: quoteSummary.currency,
-      forwardPE: quoteSummary?.forwardPE || 0,
-      profitMargins: quoteSummary?.profitMargins || 0,
-      enterpriseToRevenue: quoteSummary?.enterpriseToRevenue || 0,
-      enterpriseToEbitda: quoteSummary?.enterpriseToEbitda || 0,
-      shortPercentOfFloat: quoteSummary?.shortPercentOfFloat || 0,
-      companyUuid: company.uuid,
+      enterpriseToEbitda: new Decimal(quoteSummary?.enterpriseToEbitda || 0),
+      enterpriseToRevenue: new Decimal(quoteSummary?.enterpriseToRevenue || 0),
+      forwardPE: new Decimal(quoteSummary?.forwardPE || 0),
+      price: new Decimal(quoteSummary?.price || 0),
+      profitMargins: new Decimal(quoteSummary?.profitMargins || 0),
+      shortPercentOfFloat: new Decimal(quoteSummary?.shortPercentOfFloat || 0),
+      timestamp: new Date(),
     };
 
-    return this.companyStatesRepository.create(companyState);
+    return this.repository.create(dto);
   }
 
-  deleteByCompanyUuid(companyUuid: string): Promise<void> {
-    return this.companyStatesRepository.deleteByCompanyUuid(companyUuid);
+  deleteByCompanyId(companyId: number): Promise<void> {
+    return this.repository.deleteByCompanyId(companyId);
   }
 
-  getMetricsByCompanyUuid(companyUuid: string): Promise<CompanyMetrics> {
-    return this.companyStatesRepository.getMetricsByCompanyUuid(companyUuid);
+  async getMetricsByCompanyId(companyId: number): Promise<CompanyMetrics> {
+    const metrics = await this.repository.getMetricsByCompanyId(companyId);
+    if (metrics === null) throw new NotFoundException('Company not found');
+    return metrics;
   }
 }

@@ -1,8 +1,10 @@
+import Decimal from 'decimal.js';
+
 export class ContributionsMetadata {
   count: number;
-  sum: number;
+  sum: Decimal;
 
-  constructor(count: number, sum: number) {
+  constructor(count: number, sum: Decimal) {
     this.count = count;
     this.sum = sum;
   }

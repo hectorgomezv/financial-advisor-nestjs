@@ -59,7 +59,7 @@ export class IndicesRepository {
 
   async getIndexValuesFrom(id: number, timestamp: Date): Promise<DataPoint[]> {
     const { rows } = await this.db.query<{ timestamp: Date; value: string }>(
-      `SELECT timestamp, value FROM index_states WHERE index_id = $1 AND timestamp > $2::timestamp;`,
+      `SELECT timestamp, value FROM index_states WHERE index_id = $1 AND timestamp > $2::TIMESTAMP;`,
       [id, timestamp],
     );
     return rows.map((r) => ({

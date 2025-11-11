@@ -59,7 +59,7 @@ export class CompaniesController {
   @OkResponse(CompanyWithState)
   @ApiNotFoundResponse()
   async findOne(@Param('uuid') uuid: string) {
-    const company = await this.companiesService.findOne(uuid);
+    const company = await this.companiesService.findById(uuid);
     return {
       ...company,
       state: omit(company.state, 'companyUuid'),

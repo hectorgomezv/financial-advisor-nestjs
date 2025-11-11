@@ -1,12 +1,14 @@
+import Decimal from 'decimal.js';
+
 export class CompanyState {
-  uuid: string;
-  companyUuid: string;
-  timestamp: number;
-  price: number;
+  id: number;
+  companyId: number;
   currency: string;
-  forwardPE: number;
-  profitMargins: number;
-  enterpriseToRevenue: number;
-  enterpriseToEbitda: number;
-  shortPercentOfFloat: number;
+  enterpriseToEbitda: Decimal;
+  enterpriseToRevenue: Decimal;
+  forwardPE: Decimal;
+  price: Decimal;
+  profitMargins: Decimal;
+  shortPercentOfFloat: Decimal;
+  timestamp: Date;
 }

@@ -19,9 +19,9 @@ import {
   IndexModel,
 } from '../indices/repositories/schemas/index.schema';
 import {
-  PgPortfolio,
-  PgPortfolioContribution,
-  PgPortfolioState,
+  DbPortfolio,
+  DbPortfolioContribution,
+  DbPortfolioState,
 } from '../portfolios/repositories/portfolios.pg.repository';
 import {
   PortfolioStateDocument,
@@ -157,7 +157,7 @@ export class PgMigrator implements OnModuleInit {
   }
 
   private async migratePortfolios(): Promise<void> {
-    const existing = await this.db.query<PgPortfolio>(
+    const existing = await this.db.query<DbPortfolio>(
       'SELECT * FROM portfolios;',
       [],
     );
@@ -165,7 +165,7 @@ export class PgMigrator implements OnModuleInit {
       const toMigrate = await this.portfolioModel.find().lean();
       let portfoliosCount = 0;
       for (const portfolio of toMigrate) {
-        const result = await this.db.query<PgPortfolio>(
+        const result = await this.db.query<DbPortfolio>(
           'INSERT INTO portfolios (cash, created, name, owner_id) VALUES ($1, $2, $3, $4) RETURNING *;',
           [
             portfolio.cash,
@@ -186,7 +186,7 @@ export class PgMigrator implements OnModuleInit {
           })
           .lean();
         for (const state of statesToMigrate) {
-          await this.db.query<PgPortfolioState>(
+          await this.db.query<DbPortfolioState>(
             `INSERT INTO portfolio_states (
                 portfolio_id,
                 cash,
@@ -221,7 +221,7 @@ export class PgMigrator implements OnModuleInit {
         }
         let contributionsCount = 0;
         for (const contribution of portfolio.contributions) {
-          await this.db.query<PgPortfolioContribution>(
+          await this.db.query<DbPortfolioContribution>(
             `
             INSERT INTO portfolio_contributions (portfolio_id, timestamp, amount_eur)
             VALUES ($1, $2, ROUND($3::NUMERIC, 2));

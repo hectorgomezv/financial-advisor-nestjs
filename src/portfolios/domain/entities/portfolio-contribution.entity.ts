@@ -1,5 +1,8 @@
+import Decimal from 'decimal.js';
+
 export class PortfolioContribution {
-  uuid: string;
+  id: number;
+  portfolioId: number;
   timestamp: Date;
-  amountEUR: number;
+  amountEUR: Decimal;
 }

@@ -7,22 +7,20 @@ import {
 } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { sortBy } from 'lodash';
-import { v4 as uuidv4 } from 'uuid';
 import { AuthService } from '../../common/auth/auth-service';
 import { User } from '../../common/auth/entities/user.entity';
 import { PositionsRepository } from '../../portfolios/repositories/positions.repository';
 import { CreateCompanyDto } from '../domain/dto/create-company.dto';
-import { CompaniesRepository } from '../repositories/companies.repository';
+import { CompaniesPgRepository } from '../repositories/companies.pg.repository';
 import { CompanyStatesService } from './company-states.service';
-import { CompanyMetrics } from './entities/company-metrics.entity';
-import { Company, CompanyWithState } from './entities/company.entity';
+import { CompanyWithState } from './entities/company.entity';
 
 @Injectable()
 export class CompaniesService implements OnApplicationBootstrap {
   private readonly logger = new Logger(CompaniesService.name);
 
   constructor(
-    private readonly repository: CompaniesRepository,
+    private readonly repository: CompaniesPgRepository,
     private readonly positionsRepository: PositionsRepository,
     private readonly authService: AuthService,
     private readonly companyStatesService: CompanyStatesService,
@@ -33,19 +31,11 @@ export class CompaniesService implements OnApplicationBootstrap {
     createCompanyDto: CreateCompanyDto,
   ): Promise<CompanyWithState> {
     this.authService.checkAdmin(user);
-
     const exists = await this.repository.findBySymbol(createCompanyDto.symbol);
-
     if (exists) {
       throw new ConflictException(`Company ${exists.symbol} already exists`);
     }
-
-    const company = await this.repository.create(<Company>{
-      ...createCompanyDto,
-      uuid: uuidv4(),
-      metrics: new CompanyMetrics(0, 0, 0, 0),
-    });
-
+    const company = await this.repository.create(createCompanyDto);
     const state = await this.companyStatesService.createCompanyState(company);
 
     return <CompanyWithState>{ ...company, state };
@@ -53,53 +43,45 @@ export class CompaniesService implements OnApplicationBootstrap {
 
   async findAll(): Promise<CompanyWithState[]> {
     const companies = await this.repository.findAll();
-    const states = await this.companyStatesService.getLastStateByCompanyUuids(
-      companies.map((company) => company.uuid!), // TODO: id or JOIN instead of uuid
+    const states = await this.companyStatesService.getLastByCompanyIds(
+      companies.map((company) => company.id),
     );
+
+    // TODO: return CompanyWithState from companyStatesService.getLastByCompanyIds (from DB)
 
     return sortBy(
       companies.map(
         (company) =>
           <CompanyWithState>{
             ...company,
-            state: states.find((state) => state.companyUuid === company.uuid),
+            state: states.find((state) => state.companyId === company.id),
           },
       ),
       'symbol',
     );
   }
 
-  async findOne(uuid: string): Promise<CompanyWithState> {
-    const company = await this.repository.findOne(uuid);
-
+  async findById(id: number): Promise<CompanyWithState> {
+    const company = await this.repository.findById(id);
     if (!company) {
       throw new NotFoundException('Company not found');
     }
-
-    const state =
-      await this.companyStatesService.getLastStateByCompanyUuid(uuid);
-
+    const state = await this.companyStatesService.getLastByCompanyId(id);
     return <CompanyWithState>{ ...company, state };
   }
 
-  async remove(user: User, uuid: string) {
+  async remove(user: User, id: number) {
     this.authService.checkAdmin(user);
-    const company = await this.repository.findOne(uuid);
+    const company = await this.repository.findById(id);
 
     if (!company) {
       throw new NotFoundException('Company not found');
     }
 
-    const positions = await this.positionsRepository.findByCompanyUuid(uuid);
+    // TODO: check if positions for company exist
 
-    if (positions.length) {
-      throw new ConflictException(
-        `Positions for company ${company.symbol} still exist`,
-      );
-    }
-
-    await this.companyStatesService.deleteByCompanyUuid(uuid);
-    await this.repository.deleteOne(uuid);
+    await this.companyStatesService.deleteByCompanyId(id);
+    await this.repository.deleteById(id);
 
     return company;
   }
@@ -130,16 +112,14 @@ export class CompaniesService implements OnApplicationBootstrap {
       const companies = await this.repository.findAll();
       await Promise.all(
         companies.map(async (company) => {
-          const companyState =
-            await this.companyStatesService.createCompanyState(company);
-          const metrics =
-            await this.companyStatesService.getMetricsByCompanyUuid(
-              company.uuid!, // TODO: id or JOIN instead of uuid
-            );
-          await this.repository.updateMetricsByUuid(company.uuid!, metrics); // TODO: id or JOIN instead of uuid
-          this.logger.log(
-            `${company.symbol} refreshed: price ${companyState.price} [ForwardPE: ${companyState.forwardPE} (avg: ${metrics.avgForwardPE}), profitMargins: ${companyState.profitMargins} (avg: ${metrics.avgProfitMargins}), EV/Rev: ${companyState.enterpriseToRevenue} (avg: ${metrics.avgEnterpriseToRevenue}), EV/Ebitda: ${companyState.enterpriseToEbitda} (avg: ${metrics.avgEnterpriseToEbitda}), Short %: ${companyState.shortPercentOfFloat}]`,
-          );
+          await this.companyStatesService.createCompanyState(company);
+          // const metrics = await this.companyStatesService.getMetricsByCompanyId(
+          //   company.id,
+          // );
+          // await this.repository.updateMetricsByUuid(company.uuid!, metrics); // TODO: id or JOIN instead of uuid
+          // this.logger.log(
+          //   `${company.symbol} refreshed: price ${companyState.price} [ForwardPE: ${companyState.forwardPE} (avg: ${metrics.avgForwardPE}), profitMargins: ${companyState.profitMargins} (avg: ${metrics.avgProfitMargins}), EV/Rev: ${companyState.enterpriseToRevenue} (avg: ${metrics.avgEnterpriseToRevenue}), EV/Ebitda: ${companyState.enterpriseToEbitda} (avg: ${metrics.avgEnterpriseToEbitda}), Short %: ${companyState.shortPercentOfFloat}]`,
+          // );
         }),
       );
     } catch (err) {

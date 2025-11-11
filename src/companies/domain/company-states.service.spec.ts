@@ -3,7 +3,7 @@ import { IFinancialDataClient } from '../datasources/financial-data.client.inter
 import { companyStateFactory } from '../domain/entities/__tests__/company-state.factory';
 import { companyFactory } from '../domain/entities/__tests__/company.factory';
 import { quoteSummaryFactory } from '../domain/entities/__tests__/quote-summary.factory';
-import { CompanyStatesRepository } from '../repositories/company-states.repository';
+import { CompanyStatesPgRepository } from '../repositories/company-states.pg.repository';
 import { CompanyStatesService } from './company-states.service';
 
 describe('CompanyStatesService', () => {
@@ -11,7 +11,7 @@ describe('CompanyStatesService', () => {
     create: jest.fn(),
     deleteByCompanyUuid: jest.fn(),
     getLastByCompanyUuids: jest.fn(),
-  } as unknown as CompanyStatesRepository);
+  } as unknown as CompanyStatesPgRepository);
 
   const mockedFinancialDataClient = jest.mocked({
     getQuoteSummary: jest.fn(),
@@ -42,28 +42,28 @@ describe('CompanyStatesService', () => {
 
   describe('retrieving', () => {
     it('should call repository to obtain the last states for an array of company uuids', async () => {
-      const companyUuids = [faker.string.uuid(), faker.string.uuid()];
+      const companyIds = [faker.number.int(), faker.number.int()];
 
-      await service.getLastStateByCompanyUuids(companyUuids);
+      await service.getLastByCompanyIds(companyIds);
 
       expect(
-        mockedCompanyStatesRepository.getLastByCompanyUuids,
-      ).toBeCalledTimes(1);
+        mockedCompanyStatesRepository.getLastByCompanyIds,
+      ).toHaveBeenCalledTimes(1);
       expect(
-        mockedCompanyStatesRepository.getLastByCompanyUuids,
-      ).toHaveBeenCalledWith(companyUuids);
+        mockedCompanyStatesRepository.getLastByCompanyIds,
+      ).toHaveBeenCalledWith(companyIds);
     });
   });
 
   describe('deletion', () => {
     it('should call repository for deletion', async () => {
-      const companyUuid = faker.string.uuid();
+      const companyId = faker.number.int();
 
-      service.deleteByCompanyUuid(companyUuid);
+      service.deleteByCompanyId(companyId);
 
       expect(
-        mockedCompanyStatesRepository.deleteByCompanyUuid,
-      ).toHaveBeenCalledWith(companyUuid);
+        mockedCompanyStatesRepository.deleteByCompanyId,
+      ).toHaveBeenCalledWith(companyId);
     });
   });
 });
