@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Request,
   UseFilters,
@@ -55,21 +56,21 @@ export class CompaniesController {
     }));
   }
 
-  @Get(':uuid')
+  @Get(':id')
   @OkResponse(CompanyWithState)
   @ApiNotFoundResponse()
-  async findOne(@Param('uuid') uuid: string) {
-    const company = await this.companiesService.findById(uuid);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    const company = await this.companiesService.findById(id);
     return {
       ...company,
-      state: omit(company.state, 'companyUuid'),
+      state: omit(company.state, 'companyId'),
     };
   }
 
-  @Delete(':uuid')
+  @Delete(':id')
   @OkResponse(Company)
   @ApiNotFoundResponse()
-  remove(@Request() req, @Param('uuid') uuid: string) {
-    return this.companiesService.remove(req.user as User, uuid);
+  remove(@Request() req, @Param('id', ParseIntPipe) id: number) {
+    return this.companiesService.remove(req.user as User, id);
   }
 }

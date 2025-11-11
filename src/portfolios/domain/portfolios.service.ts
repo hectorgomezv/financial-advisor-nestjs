@@ -77,16 +77,16 @@ export class PortfoliosService implements OnApplicationBootstrap {
     };
   }
 
-  async deleteOne(user: User, uuid: string) {
-    const portfolio = await this.repository.findOne(uuid);
+  async deleteOne(user: User, id: number) {
+    const portfolio = await this.repository.findById(id);
     if (!portfolio) {
       throw new NotFoundException('Portfolio not found');
     }
     this.checkOwner(user, portfolio);
 
-    await this.positionService.deleteByPortfolioUuid(user, uuid);
-    await this.portfolioStatesService.deleteByPortfolioUuid(uuid);
-    await this.repository.deleteOne(uuid);
+    await this.positionService.deleteByPortfolioId(user, id);
+    await this.portfolioStatesService.deleteByPortfolioId(id);
+    await this.repository.deleteById(id);
 
     return portfolio;
   }

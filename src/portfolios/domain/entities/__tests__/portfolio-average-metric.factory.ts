@@ -1,14 +1,15 @@
 import { faker } from '@faker-js/faker';
+import Decimal from 'decimal.js';
 import { PortfolioAverageBalance } from '../portfolio-average-balance.entity';
 
 export function portfolioAverageBalanceFactory(
   timestamp?: Date,
-  average?: number,
+  average?: Decimal,
   contributions?: number,
 ): PortfolioAverageBalance {
   return <PortfolioAverageBalance>{
     timestamp: timestamp ?? faker.date.recent(),
-    average: average ?? faker.number.int(),
+    average: average ?? new Decimal(faker.number.int()),
     contributions: contributions ?? faker.number.int(),
   };
 }

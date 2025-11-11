@@ -1,16 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { CompanyMetrics as DomainCompanyMetrics } from '../../domain/entities/company-metrics.entity';
 
-export class CompanyMetrics implements DomainCompanyMetrics {
+export class CompanyMetrics {
   @ApiProperty()
-  avgEnterpriseToRevenue: number;
-
+  avgEnterpriseToRevenue: string;
   @ApiProperty()
-  avgEnterpriseToEbitda: number;
-
+  avgEnterpriseToEbitda: string;
   @ApiProperty()
-  avgForwardPE: number;
-
+  avgForwardPE: string;
   @ApiProperty()
-  avgProfitMargins: number;
+  avgProfitMargins: string;
 }

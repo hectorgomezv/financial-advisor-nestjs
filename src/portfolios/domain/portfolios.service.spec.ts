@@ -148,9 +148,7 @@ describe('PortfoliosService', () => {
       positionsService.getPositionDetailsByPortfolioUuid.mockResolvedValueOnce(
         positions,
       );
-      portfolioStatesService.getLastByPortfolioUuid.mockResolvedValueOnce(
-        state,
-      );
+      portfolioStatesService.getLastByPortfolioId.mockResolvedValueOnce(state);
 
       const retrieved = await service.findOne(
         adminUser,

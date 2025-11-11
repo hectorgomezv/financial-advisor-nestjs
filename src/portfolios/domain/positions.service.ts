@@ -11,13 +11,13 @@ import { CompanyState } from '../../companies/domain/entities/company-state.enti
 import { CompaniesPgRepository } from '../../companies/repositories/companies.pg.repository';
 import { CompanyStatesPgRepository } from '../../companies/repositories/company-states.pg.repository';
 import { CurrencyExchangeClient } from '../datasources/currency-exchange.client';
-import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { PositionsRepository } from '../repositories/positions.repository';
 import { PositionDetailDto } from './dto/position-detail.dto';
 import { UpsertPositionDto } from './dto/upsert-position.dto';
 import { Portfolio } from './entities/portfolio.entity';
 import { Position } from './entities/position.entity';
 import { PortfolioStatesService } from './portfolio-states.service';
+import { PortfoliosPgRepository } from '../repositories/portfolios.pg.repository';
 
 @Injectable()
 export class PositionsService {
@@ -25,7 +25,7 @@ export class PositionsService {
 
   constructor(
     private readonly repository: PositionsRepository,
-    private readonly portfoliosRepository: PortfoliosRepository,
+    private readonly portfoliosRepository: PortfoliosPgRepository,
     private readonly portfolioStatesService: PortfolioStatesService,
     private readonly companiesRepository: CompaniesPgRepository,
     private readonly companyStatesRepository: CompanyStatesPgRepository,
@@ -34,10 +34,10 @@ export class PositionsService {
 
   async create(
     user: User,
-    portfolioUuid: string,
+    portfolioId: number,
     upsertPositionDto: UpsertPositionDto,
   ): Promise<Position> {
-    const portfolio = await this.portfoliosRepository.findOne(portfolioUuid);
+    const portfolio = await this.portfoliosRepository.findById(portfolioId);
     if (!portfolio) throw new NotFoundException('Portfolio not found');
     this.checkOwner(user, portfolio);
     const company = await this.companiesRepository.findBySymbol(
@@ -50,7 +50,7 @@ export class PositionsService {
 
     const existentPosition =
       await this.repository.findByCompanyUuidAndPortfolioUuid(
-        company.uuid!, // TODO: id or JOIN instead of uuid
+        company.uuid!,
         portfolioUuid,
       );
 

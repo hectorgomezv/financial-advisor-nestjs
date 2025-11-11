@@ -183,6 +183,7 @@ export class PgMigrator implements OnModuleInit {
         const statesToMigrate = await this.portfolioStateModel
           .find({
             portfolioUuid: portfolio.uuid,
+            timestamp: { $gte: new Date('2021-01-01') },
           })
           .lean();
         for (const state of statesToMigrate) {
@@ -226,7 +227,11 @@ export class PgMigrator implements OnModuleInit {
             INSERT INTO portfolio_contributions (portfolio_id, timestamp, amount_eur)
             VALUES ($1, $2, ROUND($3::NUMERIC, 2));
           `,
-            [result.rows[0].id, contribution.timestamp, contribution.amountEUR],
+            [
+              result.rows[0].id,
+              contribution.timestamp,
+              contribution.amountEUR.toString(),
+            ],
           );
           contributionsCount += 1;
           console.log(

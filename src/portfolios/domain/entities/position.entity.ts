@@ -1,11 +1,13 @@
+import Decimal from 'decimal.js';
+
 export class Position {
-  uuid: string;
-  portfolioUuid: string;
-  targetWeight: number;
-  shares: number;
-  companyUuid: string;
+  id: number;
+  portfolioId: number;
+  targetWeight: Decimal;
+  shares: Decimal;
+  companyId: number;
   symbol: string;
-  value: number;
+  value: Decimal;
   blocked: boolean;
   sharesUpdatedAt: Date;
 }

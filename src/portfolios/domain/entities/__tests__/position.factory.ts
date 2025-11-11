@@ -1,22 +1,23 @@
+import Decimal from 'decimal.js';
 import { Position } from '../position.entity';
 import { faker } from '@faker-js/faker';
 
 export function positionFactory(
-  uuid?: string,
-  portfolioUuid?: string,
-  targetWeight?: number,
-  shares?: number,
-  companyUuid?: string,
+  id?: number,
+  portfolioId?: number,
+  targetWeight?: Decimal,
+  shares?: Decimal,
+  companyId?: number,
   symbol?: string,
-  value?: number,
+  value?: Decimal,
 ): Position {
   return <Position>{
-    uuid: uuid ?? faker.string.uuid(),
-    portfolioUuid: portfolioUuid ?? faker.string.uuid(),
-    companyUuid: companyUuid ?? faker.string.uuid(),
-    targetWeight: targetWeight ?? faker.number.int(),
-    shares: shares ?? faker.number.int(),
+    id: id ?? faker.number.int(),
+    portfolioId: portfolioId ?? faker.number.int(),
+    companyId: companyId ?? faker.number.int(),
+    targetWeight: targetWeight ?? new Decimal(faker.number.int()),
+    shares: shares ?? new Decimal(faker.number.int()),
     symbol: symbol ?? faker.word.sample(),
-    value: value ?? faker.number.int(),
+    value: value ?? new Decimal(faker.number.int()),
   };
 }

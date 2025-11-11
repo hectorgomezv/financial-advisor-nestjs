@@ -1,63 +1,60 @@
 import { Injectable } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
+import Decimal from 'decimal.js';
 import { TimePeriod } from '../../common/domain/entities/time-period.entity';
-import { PortfolioStatesRepository } from '../repositories/portfolio-states.repository';
+import { PortfolioStatesPgRepository } from '../repositories/portfolio-states.pg.repository';
 import { PortfolioAverageBalance } from './entities/portfolio-average-balance.entity';
 import { PortfolioState } from './entities/portfolio-state.entity';
 import { Portfolio } from './entities/portfolio.entity';
 import { Position } from './entities/position.entity';
 import { TimeRange } from './entities/time-range.enum';
-import { round } from 'lodash';
 
 @Injectable()
 export class PortfolioStatesService {
-  constructor(private readonly repository: PortfolioStatesRepository) {}
+  constructor(private readonly repository: PortfolioStatesPgRepository) {}
 
   async createPortfolioState(portfolio: Portfolio, positions: Position[]) {
-    const sumWeights = round(
-      positions.reduce((acc, p) => acc + p.targetWeight, 0),
-      2,
+    const sumWeights = positions.reduce(
+      (acc, p) => acc.plus(p.targetWeight),
+      new Decimal(0),
     );
-    const cash = portfolio.cash ?? 0;
-    const totalValueEUR = positions.reduce((sum, pos) => sum + pos.value, cash);
-    const contributionsAmount = portfolio.contributions
-      ? portfolio.contributions.reduce(
-          (sum, contribution) => sum + contribution.amountEUR,
-          0,
-        )
-      : 0;
-
-    return this.repository.create(<PortfolioState>{
-      uuid: uuidv4(),
-      portfolioUuid: portfolio.uuid,
-      cash,
-      isValid: sumWeights === 100,
-      roicEUR: totalValueEUR - contributionsAmount,
+    const totalValueEUR = positions.reduce(
+      (sum, pos) => sum.plus(pos.value),
+      portfolio.cash,
+    );
+    const contributionsAmount = portfolio.contributions.reduce(
+      (sum, contribution) => sum.plus(contribution.amountEUR),
+      new Decimal(0),
+    );
+    return this.repository.create({
+      portfolioId: portfolio.id,
+      cash: new Decimal(0),
+      isValid: sumWeights.equals(100),
+      roicEUR: totalValueEUR.minus(contributionsAmount),
       sumWeights,
       timestamp: new Date(),
       totalValueEUR,
     });
   }
 
-  getLastByPortfolioUuid(portfolioUuid: string): Promise<PortfolioState> {
-    return this.repository.getLastByPortfolioUuid(portfolioUuid);
+  getLastByPortfolioId(portfolioId: number): Promise<PortfolioState> {
+    return this.repository.getLastByPortfolioId(portfolioId);
   }
 
   getAverageBalancesForRange(
-    portfolioUuid: string,
+    portfolioId: number,
     range: TimeRange,
   ): Promise<Partial<PortfolioAverageBalance>[]> {
-    return this.repository.getAverageBalancesForRange(portfolioUuid, range);
+    return this.repository.getAverageBalancesForRange(portfolioId, range);
   }
 
   getPortfolioStatesInPeriod(
-    portfolioUuid: string,
+    portfolioId: number,
     period: TimePeriod,
   ): Promise<Partial<PortfolioState>[]> {
-    return this.repository.getPortfolioStatesInPeriod(portfolioUuid, period);
+    return this.repository.getPortfolioStatesInPeriod(portfolioId, period);
   }
 
-  deleteByPortfolioUuid(portfolioUuid: string): Promise<void> {
-    return this.repository.deleteByPortfolioUuid(portfolioUuid);
+  deleteByPortfolioId(portfolioId: number): Promise<void> {
+    return this.repository.deleteByPortfolioId(portfolioId);
   }
 }

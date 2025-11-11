@@ -6,28 +6,29 @@ import { Position } from '../position.entity';
 import { portfolioContributionFactory } from './portfolio-contribution.factory';
 import { portfolioStateFactory } from './portfolio-state.factory';
 import { positionFactory } from './position.factory';
+import Decimal from 'decimal.js';
 
 export function portfolioFactory(
-  uuid?: string,
+  id?: number,
   name?: string,
   ownerId?: string,
-  created?: number,
-  positions?: Position[],
-  cash?: number,
-  contributions?: PortfolioContribution[],
+  created?: Date,
+  positions?: Array<Position>,
+  cash?: Decimal,
+  contributions?: Array<PortfolioContribution>,
   state?: PortfolioState,
 ): Portfolio {
-  const portfolioUuid = uuid ?? faker.string.uuid();
+  const portfolioId = id ?? faker.number.int();
   return <Portfolio>{
-    uuid: portfolioUuid,
+    id: portfolioId,
     name: name ?? faker.word.sample(),
     ownerId: ownerId ?? faker.string.uuid(),
-    created: created ?? faker.number.int(),
+    created: created ?? faker.date.recent(),
     positions: positions || [positionFactory(), positionFactory()],
-    cash: cash ?? Number(faker.finance.amount()),
+    cash: cash ?? new Decimal(faker.finance.amount()),
     contributions: contributions || [
-      portfolioContributionFactory(portfolioUuid),
-      portfolioContributionFactory(portfolioUuid),
+      portfolioContributionFactory(portfolioId),
+      portfolioContributionFactory(portfolioId),
     ],
     state: state || portfolioStateFactory(),
   };

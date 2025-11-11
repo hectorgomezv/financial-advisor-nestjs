@@ -11,4 +11,4 @@ export interface PgPosition {
 }
 
 @Injectable()
-export class PositionsRepository {}
+export class PositionsPgRepository {}

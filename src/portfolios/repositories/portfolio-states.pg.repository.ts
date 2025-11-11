@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import Decimal from 'decimal.js';
 import { DbService } from '../../common/db.service';
 import { TimePeriod } from '../../common/domain/entities/time-period.entity';
+import { CreatePortfolioStateDto } from '../domain/dto/create-portfolio-state.dto';
 import { PortfolioAverageBalance } from '../domain/entities/portfolio-average-balance.entity';
 import { PortfolioState } from '../domain/entities/portfolio-state.entity';
 import { TimeRange } from '../domain/entities/time-range.enum';
-import Decimal from 'decimal.js';
-import { CreatePortfolioStateDto } from '../domain/dto/create-portfolio-state.dto';
 
 interface DbPortfolioState {
   id: number;
@@ -19,7 +19,7 @@ interface DbPortfolioState {
 }
 
 @Injectable()
-export class PortfolioStatesRepository {
+export class PortfolioStatesPgRepository {
   constructor(private readonly db: DbService) {}
 
   async getLastByPortfolioId(portfolioId: number): Promise<PortfolioState> {
@@ -97,64 +97,69 @@ export class PortfolioStatesRepository {
   async getAverageBalancesForRange(
     portfolioId: number,
     range: TimeRange,
-  ): Promise<Partial<PortfolioAverageBalance>[]> {}
+  ): Promise<Array<Partial<PortfolioAverageBalance>>> {
+    const query = `
+      SELECT
+        DATE_TRUNC($1, timestamp) as start_date,
+        AVG(total_value_eur) as average_balance
+      FROM portfolio_states
+      WHERE portfolio_id = $2
+      GROUP BY DATE_TRUNC($1, timestamp)
+      ORDER BY start_date DESC;`;
+    const { rows } = await this.db.query<{
+      start_date: Date;
+      average_balance: string;
+    }>(query, [this.getGroupingForRange(range), portfolioId]);
+    return rows.map((row) => ({
+      average: new Decimal(row.average_balance),
+      timestamp: row.start_date,
+    }));
+  }
 
   async getPortfolioStatesInPeriod(
     portfolioId: number,
     period: TimePeriod,
-  ): Promise<Partial<PortfolioState>[]> {}
-
-  private getGroupingForRange(range: TimeRange) {
-    switch (range) {
-      case TimeRange.TwoYears:
-      case TimeRange.ThreeYears:
-      case TimeRange.FiveYears:
-        return {
-          year: { $year: '$parsedDate' },
-          week: { $week: '$parsedDate' },
-        };
-      case TimeRange.Month:
-      case TimeRange.TwoMonths:
-      case TimeRange.ThreeMonths:
-      case TimeRange.SixMonths:
-      case TimeRange.Year:
-        return {
-          year: { $year: '$parsedDate' },
-          day: { $dayOfYear: '$parsedDate' },
-        };
-      case TimeRange.Week:
-        return {
-          year: { $year: '$parsedDate' },
-          day: { $dayOfYear: '$parsedDate' },
-          hour: { $hour: '$parsedDate' },
-        };
-    }
+  ): Promise<Array<PortfolioState>> {
+    const query = `
+      SELECT *
+      FROM portfolio_states
+      WHERE
+        portfolio_id = $1
+        AND timestamp > $2::TIMESTAMP
+        AND timestamp < $3::TIMESTAMP
+      ORDER BY timestamp DESC
+      LIMIT 1;`;
+    const { rows } = await this.db.query<DbPortfolioState>(query, [
+      portfolioId,
+      period.start,
+      period.end,
+    ]);
+    return rows.map((row) => ({
+      id: row.id,
+      portfolioId: row.portfolio_id,
+      cash: new Decimal(row.cash),
+      isValid: row.is_valid,
+      roicEUR: new Decimal(row.roic_eur),
+      sumWeights: new Decimal(row.sum_weights),
+      timestamp: row.timestamp,
+      totalValueEUR: new Decimal(row.total_value_eur),
+    }));
   }
 
-  private mapToPortfolioAverageBalance(
-    item: any,
-    range: TimeRange,
-  ): Partial<PortfolioAverageBalance> {
-    const { _id, average } = item;
-
+  private getGroupingForRange(range: TimeRange): string {
     switch (range) {
       case TimeRange.TwoYears:
       case TimeRange.ThreeYears:
       case TimeRange.FiveYears:
-        return {
-          timestamp: new Date(_id.year, 0, 1 + (_id.week - 1) * 7, 0),
-          average,
-        };
-      case TimeRange.Week:
+        return 'week';
       case TimeRange.Month:
       case TimeRange.TwoMonths:
       case TimeRange.ThreeMonths:
       case TimeRange.SixMonths:
       case TimeRange.Year:
-        return {
-          timestamp: new Date(_id.year, 0, _id.day, _id.hour ?? 0),
-          average,
-        };
+        return 'day';
+      case TimeRange.Week:
+        return 'hour';
     }
   }
 }

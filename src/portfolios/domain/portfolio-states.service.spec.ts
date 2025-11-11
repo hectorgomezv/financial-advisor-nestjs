@@ -1,10 +1,10 @@
 import { faker } from '@faker-js/faker';
-import { PortfolioStatesRepository } from '../repositories/portfolio-states.repository';
-import { TimeRange } from './entities/time-range.enum';
+import { round } from 'lodash';
+import { PortfolioStatesPgRepository } from '../repositories/portfolio-states.pg.repository';
 import { portfolioFactory } from './entities/__tests__/portfolio.factory';
 import { positionFactory } from './entities/__tests__/position.factory';
+import { TimeRange } from './entities/time-range.enum';
 import { PortfolioStatesService } from './portfolio-states.service';
-import { round } from 'lodash';
 
 describe('PortfolioStatesService', () => {
   const portfolioStatesRepository = jest.mocked({
@@ -12,7 +12,7 @@ describe('PortfolioStatesService', () => {
     getLastByPortfolioUuid: jest.fn(),
     getAverageBalancesForRange: jest.fn(),
     deleteByPortfolioUuid: jest.fn(),
-  } as unknown as PortfolioStatesRepository);
+  } as unknown as PortfolioStatesPgRepository);
 
   const service: PortfolioStatesService = new PortfolioStatesService(
     portfolioStatesRepository,
@@ -55,7 +55,7 @@ describe('PortfolioStatesService', () => {
   describe('retrieving', () => {
     it('should call repository to retrieve the last state by portfolio uuid', async () => {
       const portfolio = portfolioFactory();
-      await service.getLastByPortfolioUuid(portfolio.uuid);
+      await service.getLastByPortfolioId(portfolio.uuid);
       expect(
         portfolioStatesRepository.getLastByPortfolioUuid,
       ).toHaveBeenCalledWith(portfolio.uuid);

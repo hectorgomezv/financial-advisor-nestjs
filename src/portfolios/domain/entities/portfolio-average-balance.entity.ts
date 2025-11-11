@@ -1,5 +1,7 @@
+import Decimal from 'decimal.js';
+
 export interface PortfolioAverageBalance {
   timestamp: Date;
-  average: number;
+  average: Decimal;
   contributions: number;
 }

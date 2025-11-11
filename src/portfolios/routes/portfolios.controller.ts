@@ -72,18 +72,18 @@ export class PortfoliosController {
     return this.portfoliosService.findByOwnerId(req.user as User);
   }
 
-  @Get(':uuid')
+  @Get(':id')
   @OkResponse(PortfolioDetailDto)
   @ApiNotFoundResponse()
-  findOne(@Request() req, @Param('uuid') uuid: string) {
-    return this.portfoliosService.findOne(req.user as User, uuid);
+  findOne(@Request() req, @Param('id', ParseIntPipe) id: number) {
+    return this.portfoliosService.findById(req.user as User, id);
   }
 
-  @Delete(':uuid')
+  @Delete(':id')
   @ApiNotFoundResponse()
   @OkResponse(Portfolio)
-  remove(@Request() req, @Param('uuid') uuid: string) {
-    return this.portfoliosService.deleteOne(req.user as User, uuid);
+  remove(@Request() req, @Param('id', ParseIntPipe) id: number) {
+    return this.portfoliosService.deleteOne(req.user as User, id);
   }
 
   @Get(':uuid/metrics/average-balances')
