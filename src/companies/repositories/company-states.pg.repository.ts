@@ -128,10 +128,13 @@ export class CompanyStatesPgRepository {
     };
   }
 
-  async getLastByCompanyIds(ids: Array<number>): Promise<Array<CompanyState>> {
+  async getLastByCompanyIds(
+    companyIds: Array<number>,
+  ): Promise<Array<CompanyState>> {
     const query = `
       SELECT DISTINCT ON (cs.company_id)
-        c.id,
+        cs.id as id,
+        c.id as company_id,
         c.name,
         c.symbol,
         cs.currency,
@@ -144,7 +147,7 @@ export class CompanyStatesPgRepository {
       FROM companies c JOIN company_states cs ON c.id = cs.company_id
       WHERE c.id = ANY($1::int[])
       ORDER BY cs.company_id, cs.timestamp DESC;`;
-    const { rows } = await this.db.query(query, [ids]);
+    const { rows } = await this.db.query(query, [companyIds]);
     return rows.map((row) => ({
       id: row.id,
       companyId: row.company_id,

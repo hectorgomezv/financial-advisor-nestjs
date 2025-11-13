@@ -9,8 +9,8 @@ import { CompanyStatesService } from './company-states.service';
 describe('CompanyStatesService', () => {
   const mockedCompanyStatesRepository = jest.mocked({
     create: jest.fn(),
-    deleteByCompanyUuid: jest.fn(),
-    getLastByCompanyUuids: jest.fn(),
+    deleteByCompanyId: jest.fn(),
+    getLastByCompanyIds: jest.fn(),
   } as unknown as CompanyStatesPgRepository);
 
   const mockedFinancialDataClient = jest.mocked({

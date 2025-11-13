@@ -7,8 +7,8 @@ import {
 } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { isAfter, isBefore, isEqual } from 'date-fns';
+import Decimal from 'decimal.js';
 import { first, head, last, orderBy, sortBy } from 'lodash';
-import { v4 as uuidv4 } from 'uuid';
 import { AuthService } from '../../common/auth/auth-service';
 import { User } from '../../common/auth/entities/user.entity';
 import { DataPoint } from '../../common/domain/entities/data-point.entity';
@@ -64,11 +64,13 @@ export class PortfoliosService implements OnApplicationBootstrap {
     this.checkOwner(user, portfolio);
 
     const positions =
-      await this.positionService.getPositionDetailsByPortfolioUuid(portfolio);
-    const state = await this.portfolioStatesService.getLast(uuid);
+      await this.positionService.getPositionDetailsByPortfolioId(portfolio.id);
+    const state = await this.portfolioStatesService.getLastByPortfolioId(
+      portfolio.id,
+    );
 
-    return <PortfolioDetailDto>{
-      uuid,
+    return {
+      id: portfolio.id,
       name: portfolio.name,
       created: portfolio.created,
       cash: portfolio.cash,
@@ -93,10 +95,10 @@ export class PortfoliosService implements OnApplicationBootstrap {
 
   async getAverageBalances(
     user: User,
-    uuid: string,
+    id: number,
     range: string,
   ): Promise<Array<PortfolioAverageBalance>> {
-    const portfolio = await this.repository.findOne(uuid);
+    const portfolio = await this.repository.findById(id);
     if (!portfolio) {
       throw new NotFoundException('Portfolio not found');
     }
@@ -104,7 +106,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
 
     const balances =
       await this.portfolioStatesService.getAverageBalancesForRange(
-        uuid,
+        id,
         timeRangeFromStr(range),
       );
 
@@ -121,13 +123,13 @@ export class PortfoliosService implements OnApplicationBootstrap {
   private getContributionsSumForTimestamp(
     timestamp: Date,
     portfolio: Portfolio,
-  ): number {
+  ): Decimal {
     return portfolio.contributions
       .filter(
         (c) =>
           isBefore(c.timestamp, timestamp) || isEqual(c.timestamp, timestamp),
       )
-      .reduce((acc, c) => acc + c.amountEUR, 0);
+      .reduce((acc, c) => acc.plus(c.amountEUR), new Decimal(0));
   }
 
   /**
@@ -135,10 +137,10 @@ export class PortfoliosService implements OnApplicationBootstrap {
    */
   async getPerformance(
     user: User,
-    uuid: string,
+    id: number,
     range: string,
   ): Promise<DataPoint[]> {
-    const portfolio = await this.repository.findOne(uuid);
+    const portfolio = await this.repository.findById(id);
     if (!portfolio) {
       throw new NotFoundException('Portfolio not found');
     }
@@ -146,7 +148,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
 
     const balances = sortBy(
       await this.portfolioStatesService.getAverageBalancesForRange(
-        uuid,
+        id,
         timeRangeFromStr(range),
       ),
       ['timestamp'],
@@ -160,36 +162,35 @@ export class PortfoliosService implements OnApplicationBootstrap {
       })),
     );
 
-    return balances.map(
-      ({ timestamp, average }, n) =>
-        <DataPoint>{
-          timestamp,
-          value:
-            n === 0 ? 0 : ((average ?? 0) * 100) / initialValue!.average! - 100,
-          ...indicesPerformance.reduce(
-            (_, item) => ({ ..._, [item.name]: item.values[n] }),
-            {},
-          ),
-        },
-    );
+    return balances.map(({ timestamp, average }, n) => {
+      if (!average) throw Error('average is not defined');
+      return <DataPoint>{
+        timestamp,
+        value:
+          n === 0
+            ? 0
+            : average
+                .mul(new Decimal(100))
+                .dividedBy(initialValue!.average!)
+                .minus(100)
+                .toNumber(),
+      };
+    });
   }
 
   async getReturnRates(
     user: User,
-    uuid: string,
+    id: number,
     period: TimePeriod,
   ): Promise<DataPoint[]> {
-    const portfolio = await this.repository.findOne(uuid);
+    const portfolio = await this.repository.findById(id);
     if (!portfolio) {
       throw new NotFoundException('Portfolio not found');
     }
     this.checkOwner(user, portfolio);
 
     const portfolioStates =
-      await this.portfolioStatesService.getPortfolioStatesInPeriod(
-        uuid,
-        period,
-      );
+      await this.portfolioStatesService.getPortfolioStatesInPeriod(id, period);
 
     const dates = TimePeriod.dividePeriod(period);
     const ROICs = await Promise.all(
@@ -201,7 +202,10 @@ export class PortfoliosService implements OnApplicationBootstrap {
         const cashFlow = this.getSumContributionsIn(portfolio, previous, date);
         return new DataPoint(
           date,
-          (endValue - (initialValue + cashFlow)) / (initialValue + cashFlow),
+          endValue
+            .minus(initialValue.plus(cashFlow))
+            .dividedBy(initialValue.plus(cashFlow))
+            .toNumber(),
         );
       }),
     );
@@ -225,10 +229,6 @@ export class PortfoliosService implements OnApplicationBootstrap {
             (ROICs.slice(0, n + 1).reduce((acc, i) => acc * (1 + i.value), 1) -
               1) *
             100,
-          ...indicesReturns.reduce(
-            (_, item) => ({ ..._, [item.name]: item.values[n] }),
-            {},
-          ),
         },
     );
   }
@@ -236,22 +236,24 @@ export class PortfoliosService implements OnApplicationBootstrap {
   private getBalanceForDate(
     states: Partial<PortfolioState>[],
     date: Date,
-  ): number {
+  ): Decimal {
     const targetState = orderBy(states, 'timestamp', 'desc').find((s) =>
       isBefore(s.timestamp!, date),
     );
 
-    return targetState?.totalValueEUR ?? states[0].totalValueEUR ?? 0;
+    return (
+      targetState?.totalValueEUR ?? states[0].totalValueEUR ?? new Decimal(0)
+    );
   }
 
   private getSumContributionsIn(
     portfolio: Portfolio,
     start: Date,
     end: Date,
-  ): number {
+  ): Decimal {
     return portfolio.contributions
       .filter((c) => isAfter(c.timestamp, start) && isBefore(c.timestamp, end))
-      .reduce((acc, c) => acc + c.amountEUR, 0);
+      .reduce((acc, c) => acc.plus(c.amountEUR), new Decimal(0));
   }
 
   /**
@@ -260,7 +262,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
   private async getIndexPerformanceValues(
     index: Index,
     balances: Partial<PortfolioAverageBalance>[],
-  ): Promise<number[]> {
+  ): Promise<Array<Number>> {
     if (!balances.length) return [];
     const initialValue = head(balances);
     const indexPerformance =
@@ -287,66 +289,66 @@ export class PortfoliosService implements OnApplicationBootstrap {
 
   async updateCash(
     user: User,
-    portfolioUuid: string,
+    portfolioId: number,
     updatePortfolioCashDto: UpdatePortfolioCashDto,
   ): Promise<Portfolio> {
-    const portfolio = await this.repository.findOne(portfolioUuid);
+    const portfolio = await this.repository.findById(portfolioId);
     if (!portfolio) {
       throw new NotFoundException(`Portfolio not found`);
     }
     this.checkOwner(user, portfolio);
 
-    const { cash } = updatePortfolioCashDto;
+    const { cash: _ } = updatePortfolioCashDto;
+    const cash = new Decimal(_);
     const updated = { ...portfolio, cash };
-    await this.repository.updateCash(portfolioUuid, cash);
+    await this.repository.updateCash(portfolioId, cash);
     await this.positionService.updatePortfolioState(updated);
     return updated;
   }
 
   async getContributions(
     user: User,
-    uuid: string,
+    id: number,
     offset: number,
     limit: number,
   ): Promise<PortfolioContribution[]> {
-    const portfolio = await this.repository.findOne(uuid);
+    const portfolio = await this.repository.findById(id);
     if (!portfolio) {
       throw new NotFoundException(`Portfolio not found`);
     }
     this.checkOwner(user, portfolio);
-    return this.repository.getContributions(uuid, offset, limit);
+    return this.repository.getContributions(id, offset, limit);
   }
 
   async getContributionsMetadata(
     user: User,
-    uuid: string,
+    id: number,
   ): Promise<ContributionsMetadata> {
-    const portfolio = await this.repository.findOne(uuid);
+    const portfolio = await this.repository.findById(id);
     if (!portfolio) {
       throw new NotFoundException(`Portfolio not found`);
     }
     this.checkOwner(user, portfolio);
-    return this.repository.getContributionsMetadata(uuid);
+    return this.repository.getContributionsMetadata(id);
   }
 
   async addContribution(
     user: User,
-    uuid: string,
+    id: number,
     addPortfolioContributionDto: AddPortfolioContributionDto,
   ): Promise<Portfolio> {
-    const portfolio = await this.repository.findOne(uuid);
+    const portfolio = await this.repository.findById(id);
     if (!portfolio) {
       throw new NotFoundException(`Portfolio not found`);
     }
     this.checkOwner(user, portfolio);
 
     const { timestamp, amountEUR } = addPortfolioContributionDto;
-    await this.repository.addContribution(uuid, {
-      uuid: uuidv4(),
+    await this.repository.addContribution(id, {
       timestamp,
       amountEUR,
     });
-    const updated = await this.repository.findOne(uuid);
+    const updated = await this.repository.findById(id);
     if (!updated) throw new NotFoundException('Portfolio not found');
     await this.positionService.updatePortfolioState(updated);
     return updated;
@@ -354,18 +356,18 @@ export class PortfoliosService implements OnApplicationBootstrap {
 
   async deleteContribution(
     user: User,
-    portfolioUuid: string,
-    contributionUuid: string,
+    portfolioId: number,
+    contributionId: number,
   ): Promise<Portfolio> {
-    const portfolio = await this.repository.findOne(portfolioUuid);
+    const portfolio = await this.repository.findById(portfolioId);
 
     if (!portfolio) {
       throw new NotFoundException(`Portfolio not found`);
     }
     this.checkOwner(user, portfolio);
 
-    await this.repository.deleteContribution(portfolioUuid, contributionUuid);
-    const updated = await this.repository.findOne(portfolioUuid);
+    await this.repository.deleteContributionById(contributionId);
+    const updated = await this.repository.findById(portfolioId);
     if (!updated) throw new NotFoundException('Portfolio not found');
     await this.positionService.updatePortfolioState(updated);
     return updated;
@@ -406,7 +408,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
       await Promise.all(
         portfolios.map((portfolio) => {
           this.logger.log(
-            `Refreshing portfolio ${portfolio.name} (uuid: ${portfolio.uuid})`,
+            `Refreshing portfolio ${portfolio.name} (uuid: ${portfolio.id})`,
           );
           return this.positionService.updatePortfolioState(portfolio);
         }),

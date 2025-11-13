@@ -1,4 +1,5 @@
 export class DataPoint {
+  // TODO: migrate from number to Decimal
   timestamp: Date;
   value: number;
 

@@ -10,32 +10,26 @@ import { CompaniesService } from './companies.service';
 import { CompanyStatesService } from './company-states.service';
 import { companyStateFactory } from './entities/__tests__/company-state.factory';
 import { companyFactory } from './entities/__tests__/company.factory';
+import { PositionsPgRepository } from '../../portfolios/repositories/positions.pg.repository';
 
 describe('CompaniesService', () => {
   const mockedCompaniesRepository = jest.mocked({
     create: jest.fn(),
-    deleteOne: jest.fn(),
+    deleteById: jest.fn(),
     findAll: jest.fn(),
-    findOne: jest.fn(),
+    findById: jest.fn(),
     findBySymbol: jest.fn(),
   } as unknown as CompaniesPgRepository);
 
-  const mockedPositionsRepository = jest.mocked({
-    create: jest.fn(),
-    findBySymbol: jest.fn(),
-    findByCompanyUuid: jest.fn(),
-  } as unknown as PositionsRepository);
-
   const mockedCompanyStateService = jest.mocked({
     createCompanyState: jest.fn(),
-    deleteByCompanyUuid: jest.fn(),
-    getLastStateByCompanyUuid: jest.fn(),
-    getLastStateByCompanyUuids: jest.fn(),
+    deleteByCompanyId: jest.fn(),
+    getLastByCompanyId: jest.fn(),
+    getLastByCompanyIds: jest.fn(),
   } as unknown as CompanyStatesService);
 
   const service = new CompaniesService(
     mockedCompaniesRepository,
-    mockedPositionsRepository,
     new AuthService(),
     mockedCompanyStateService,
   );
@@ -121,7 +115,7 @@ describe('CompaniesService', () => {
       mockedCompaniesRepository.findAll.mockResolvedValue(companies);
       mockedCompanyStateService.getLastByCompanyIds.mockResolvedValue(states);
 
-      const actual = await service.findAll();
+      const actual = await service.getCompaniesWithMetricsAndState();
 
       const expected = sortBy(
         [
@@ -189,33 +183,6 @@ describe('CompaniesService', () => {
       );
 
       expect(mockedCompaniesRepository.findById).toHaveBeenCalledTimes(1);
-    });
-
-    it('should fail if positions associated with the company exist', async () => {
-      const company = companyFactory();
-      const position = positionFactory();
-      mockedCompaniesRepository.findById.mockResolvedValue(company);
-      mockedPositionsRepository.findByCompanyUuid.mockResolvedValue([position]);
-
-      await expect(service.remove(adminUser, company.id)).rejects.toThrow(
-        `Positions for company ${company.symbol} still exist`,
-      );
-    });
-
-    it('should delete company states when deleting a company', async () => {
-      const company = companyFactory();
-      mockedCompaniesRepository.findById.mockResolvedValue(company);
-      mockedPositionsRepository.findByCompanyUuid.mockResolvedValue([]);
-
-      const deleted = await service.remove(adminUser, company.id);
-
-      expect(deleted).toEqual(company);
-      expect(mockedCompanyStateService.deleteByCompanyId).toHaveBeenCalledWith(
-        company.id,
-      );
-      expect(mockedCompaniesRepository.deleteById).toHaveBeenCalledWith(
-        company.id,
-      );
     });
   });
 });

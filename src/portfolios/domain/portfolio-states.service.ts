@@ -27,7 +27,7 @@ export class PortfolioStatesService {
     );
     return this.repository.create({
       portfolioId: portfolio.id,
-      cash: new Decimal(0),
+      cash: portfolio.cash,
       isValid: sumWeights.equals(100),
       roicEUR: totalValueEUR.minus(contributionsAmount),
       sumWeights,

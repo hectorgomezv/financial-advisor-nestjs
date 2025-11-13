@@ -9,11 +9,13 @@ import { Cron } from '@nestjs/schedule';
 import { sortBy } from 'lodash';
 import { AuthService } from '../../common/auth/auth-service';
 import { User } from '../../common/auth/entities/user.entity';
-import { PositionsRepository } from '../../portfolios/repositories/positions.repository';
 import { CreateCompanyDto } from '../domain/dto/create-company.dto';
 import { CompaniesPgRepository } from '../repositories/companies.pg.repository';
 import { CompanyStatesService } from './company-states.service';
-import { CompanyWithState } from './entities/company.entity';
+import {
+  CompanyWithState,
+  CompanyWithStateAndMetrics,
+} from './entities/company.entity';
 
 @Injectable()
 export class CompaniesService implements OnApplicationBootstrap {
@@ -21,7 +23,6 @@ export class CompaniesService implements OnApplicationBootstrap {
 
   constructor(
     private readonly repository: CompaniesPgRepository,
-    private readonly positionsRepository: PositionsRepository,
     private readonly authService: AuthService,
     private readonly companyStatesService: CompanyStatesService,
   ) {}
@@ -41,33 +42,38 @@ export class CompaniesService implements OnApplicationBootstrap {
     return <CompanyWithState>{ ...company, state };
   }
 
-  async findAll(): Promise<CompanyWithState[]> {
+  async getCompaniesWithMetricsAndState(): Promise<
+    Array<CompanyWithStateAndMetrics>
+  > {
     const companies = await this.repository.findAll();
     const states = await this.companyStatesService.getLastByCompanyIds(
       companies.map((company) => company.id),
     );
-
-    // TODO: return CompanyWithState from companyStatesService.getLastByCompanyIds (from DB)
-
-    return sortBy(
-      companies.map(
-        (company) =>
-          <CompanyWithState>{
-            ...company,
-            state: states.find((state) => state.companyId === company.id),
-          },
-      ),
-      'symbol',
-    );
+    const res: Array<CompanyWithStateAndMetrics> = [];
+    for (const company of companies) {
+      const state = states.find((state) => state.companyId === company.id);
+      const metrics = await this.companyStatesService.getMetricsByCompanyId(
+        company.id,
+      );
+      res.push({
+        ...company,
+        metrics,
+        state: state ?? null,
+      });
+    }
+    return sortBy(res, 'symbol');
   }
 
-  async findById(id: number): Promise<CompanyWithState> {
+  async findById(id: number): Promise<CompanyWithStateAndMetrics> {
     const company = await this.repository.findById(id);
     if (!company) {
       throw new NotFoundException('Company not found');
     }
     const state = await this.companyStatesService.getLastByCompanyId(id);
-    return <CompanyWithState>{ ...company, state };
+    const metrics = await this.companyStatesService.getMetricsByCompanyId(
+      company.id,
+    );
+    return <CompanyWithStateAndMetrics>{ ...company, state, metrics };
   }
 
   async remove(user: User, id: number) {

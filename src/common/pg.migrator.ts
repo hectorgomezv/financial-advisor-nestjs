@@ -36,7 +36,7 @@ import {
   PositionDocument,
   PositionModel,
 } from '../portfolios/repositories/schemas/position.schema';
-import { PgPosition } from '../portfolios/repositories/positions.pg.repository';
+import { DbPosition } from '../portfolios/repositories/positions.pg.repository';
 
 @Injectable()
 export class PgMigrator implements OnModuleInit {
@@ -243,7 +243,7 @@ export class PgMigrator implements OnModuleInit {
   }
 
   private async migratePositions(): Promise<void> {
-    const existing = await this.db.query<PgPosition>(
+    const existing = await this.db.query<DbPosition>(
       'SELECT * FROM positions;',
       [],
     );

@@ -33,8 +33,10 @@ export class CompanyStatesService {
     return state;
   }
 
-  async getLastByCompanyIds(ids: Array<number>): Promise<Array<CompanyState>> {
-    return this.repository.getLastByCompanyIds(ids);
+  async getLastByCompanyIds(
+    companyIds: Array<number>,
+  ): Promise<Array<CompanyState>> {
+    return this.repository.getLastByCompanyIds(companyIds);
   }
 
   async createCompanyState(company: Company): Promise<CompanyState> {

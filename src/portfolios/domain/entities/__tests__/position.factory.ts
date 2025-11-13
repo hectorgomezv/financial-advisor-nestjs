@@ -5,19 +5,21 @@ import { faker } from '@faker-js/faker';
 export function positionFactory(
   id?: number,
   portfolioId?: number,
-  targetWeight?: Decimal,
-  shares?: Decimal,
   companyId?: number,
-  symbol?: string,
+  blocked?: boolean,
+  shares?: Decimal,
+  sharesUpdatedAt?: Date,
+  targetWeight?: Decimal,
   value?: Decimal,
 ): Position {
   return <Position>{
     id: id ?? faker.number.int(),
     portfolioId: portfolioId ?? faker.number.int(),
     companyId: companyId ?? faker.number.int(),
-    targetWeight: targetWeight ?? new Decimal(faker.number.int()),
+    blocked: blocked ?? faker.datatype.boolean(),
     shares: shares ?? new Decimal(faker.number.int()),
-    symbol: symbol ?? faker.word.sample(),
+    sharesUpdatedAt: sharesUpdatedAt ?? faker.date.recent(),
+    targetWeight: targetWeight ?? new Decimal(faker.number.int()),
     value: value ?? new Decimal(faker.number.int()),
   };
 }

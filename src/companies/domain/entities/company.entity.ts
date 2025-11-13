@@ -1,3 +1,4 @@
+import { CompanyMetrics } from './company-metrics.entity';
 import { CompanyState } from './company-state.entity';
 
 export class Company {
@@ -7,5 +8,9 @@ export class Company {
 }
 
 export class CompanyWithState extends Company {
-  state: CompanyState;
+  state: CompanyState | null;
+}
+
+export class CompanyWithStateAndMetrics extends CompanyWithState {
+  metrics: CompanyMetrics | null;
 }

@@ -1,23 +1,22 @@
 import { ApiExtraModels, ApiProperty } from '@nestjs/swagger';
-import { Portfolio as DomainPortfolio } from '../../domain/entities/portfolio.entity';
 import { PortfolioContribution } from './portfolio-contribution.entity';
 import { PortfolioState } from './portfolio-state.entity';
 import { Position } from './position.entity';
 
 @ApiExtraModels(Position, PortfolioContribution)
-export class Portfolio implements DomainPortfolio {
+export class Portfolio {
   @ApiProperty()
-  uuid: string;
+  id: number;
   @ApiProperty()
   name: string;
   @ApiProperty()
   ownerId: string;
   @ApiProperty()
-  created: number;
+  created: Date;
   @ApiProperty({ isArray: true, type: Position })
   positions: Position[];
   @ApiProperty()
-  cash: number;
+  cash: string;
   @ApiProperty({ isArray: true, type: PortfolioContribution })
   contributions: PortfolioContribution[];
   @ApiProperty()

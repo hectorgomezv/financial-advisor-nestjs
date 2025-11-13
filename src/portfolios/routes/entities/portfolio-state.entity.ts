@@ -1,19 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { PortfolioState as DomainPortfolioState } from '../../domain/entities/portfolio-state.entity';
 
-export class PortfolioState implements DomainPortfolioState {
+export class PortfolioState {
   @ApiProperty()
-  uuid: string;
+  id: number;
+  @ApiProperty()
+  portfolioId: number;
   @ApiProperty()
   timestamp: Date;
   @ApiProperty()
-  portfolioUuid: string;
-  @ApiProperty()
   isValid: boolean;
   @ApiProperty()
-  sumWeights: number;
+  sumWeights: string;
   @ApiProperty()
-  totalValueEUR: number;
+  totalValueEUR: string;
   @ApiProperty()
-  roicEUR: number;
+  roicEUR: string;
 }

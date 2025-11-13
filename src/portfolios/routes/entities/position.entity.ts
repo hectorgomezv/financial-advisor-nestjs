@@ -1,23 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Position as DomainPosition } from '../../domain/entities/position.entity';
 
-export class Position implements DomainPosition {
+export class Position {
   @ApiProperty()
-  uuid: string;
+  id: number;
   @ApiProperty()
-  portfolioUuid: string;
+  portfolioId: number;
   @ApiProperty()
-  targetWeight: number;
-  @ApiProperty()
-  shares: number;
-  @ApiProperty()
-  companyUuid: string;
-  @ApiProperty()
-  symbol: string;
-  @ApiProperty()
-  value: number;
+  companyId: number;
   @ApiProperty()
   blocked: boolean;
   @ApiProperty()
+  shares: string;
+  @ApiProperty()
   sharesUpdatedAt: Date;
+  @ApiProperty()
+  targetWeight: string;
 }

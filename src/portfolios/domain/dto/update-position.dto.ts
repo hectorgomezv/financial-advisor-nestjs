@@ -1,8 +1,9 @@
 import Decimal from 'decimal.js';
 
-export class UpsertPositionDto {
-  symbol: string;
+export interface UpdatePositionDto {
   targetWeight: Decimal;
   shares: Decimal;
   blocked: boolean;
+  sharesUpdatedAt: Date;
+  value: Decimal;
 }

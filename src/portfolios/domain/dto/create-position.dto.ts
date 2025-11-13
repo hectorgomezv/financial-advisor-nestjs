@@ -1,12 +1,10 @@
 import Decimal from 'decimal.js';
 
-export class Position {
-  id: number;
+export interface CreatePositionDto {
   portfolioId: number;
   companyId: number;
-  blocked: boolean;
-  shares: Decimal;
-  sharesUpdatedAt: Date;
   targetWeight: Decimal;
-  value: Decimal;
+  shares: Decimal;
+  blocked: boolean;
+  sharesUpdatedAt: Date;
 }

@@ -1,12 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsNumber, IsPositive } from 'class-validator';
-import { UpdatePortfolioCashDto as DomainUpdatePortfolioCashDto } from '../../domain/dto/update-portfolio-cash.dto';
+import Decimal from 'decimal.js';
 
-export class UpdatePortfolioCashDto implements DomainUpdatePortfolioCashDto {
+export class UpdatePortfolioCashDto {
   @ApiProperty()
-  @Type(() => Number)
-  @IsNumber()
-  @IsPositive()
-  cash: number;
+  cash: Decimal;
 }

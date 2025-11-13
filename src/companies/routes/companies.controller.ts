@@ -27,6 +27,8 @@ import { DataInterceptor } from '../../common/routes/interceptors/data.intercept
 import { CompaniesService } from '../domain/companies.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { Company, CompanyWithState } from './entities/company.entity';
+import { CompanyMetrics } from '../domain/entities/company-metrics.entity';
+import { CompanyWithStateAndMetrics } from '../domain/entities/company.entity';
 
 @UseInterceptors(DataInterceptor)
 @UseFilters(MainExceptionFilter)
@@ -47,24 +49,16 @@ export class CompaniesController {
   }
 
   @Get()
-  @OkArrayResponse(CompanyWithState)
-  async findAll() {
-    const companies = await this.companiesService.findAll();
-    return companies.map((company) => ({
-      ...company,
-      state: omit(company.state, 'companyUuid'),
-    }));
+  @OkArrayResponse(CompanyWithStateAndMetrics)
+  async getCompaniesWithMetricsAndState() {
+    return this.companiesService.getCompaniesWithMetricsAndState();
   }
 
   @Get(':id')
-  @OkResponse(CompanyWithState)
+  @OkResponse(CompanyWithStateAndMetrics)
   @ApiNotFoundResponse()
   async findOne(@Param('id', ParseIntPipe) id: number) {
-    const company = await this.companiesService.findById(id);
-    return {
-      ...company,
-      state: omit(company.state, 'companyId'),
-    };
+    return this.companiesService.findById(id);
   }
 
   @Delete(':id')
