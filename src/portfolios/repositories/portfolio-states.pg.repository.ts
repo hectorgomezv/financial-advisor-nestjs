@@ -5,7 +5,10 @@ import { TimePeriod } from '../../common/domain/entities/time-period.entity';
 import { CreatePortfolioStateDto } from '../domain/dto/create-portfolio-state.dto';
 import { PortfolioAverageBalance } from '../domain/entities/portfolio-average-balance.entity';
 import { PortfolioState } from '../domain/entities/portfolio-state.entity';
-import { TimeRange } from '../domain/entities/time-range.enum';
+import {
+  getRangeStartTimestamp,
+  TimeRange,
+} from '../domain/entities/time-range.enum';
 
 interface DbPortfolioState {
   id: number;
@@ -103,13 +106,15 @@ export class PortfolioStatesPgRepository {
         DATE_TRUNC($1, timestamp) as start_date,
         AVG(total_value_eur) as average_balance
       FROM portfolio_states
-      WHERE portfolio_id = $2
+      WHERE portfolio_id = $2 AND timestamp > $3::TIMESTAMP
       GROUP BY DATE_TRUNC($1, timestamp)
       ORDER BY start_date DESC;`;
+    const startDate = getRangeStartTimestamp(range);
+    const grouping = this.getGroupingForRange(range);
     const { rows } = await this.db.query<{
       start_date: Date;
       average_balance: string;
-    }>(query, [this.getGroupingForRange(range), portfolioId]);
+    }>(query, [grouping, portfolioId, startDate]);
     return rows.map((row) => ({
       average: new Decimal(row.average_balance),
       timestamp: row.start_date,

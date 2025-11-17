@@ -7,6 +7,7 @@ import { Portfolio } from '../domain/entities/portfolio.entity';
 import { PortfolioContribution } from '../domain/entities/portfolio-contribution.entity';
 import { ContributionsMetadata } from '../domain/entities/contributions-metadata';
 import { AddPortfolioContributionDto } from '../domain/dto/add-portfolio-contribution.dto';
+import { timestamp } from 'rxjs';
 
 export interface DbPortfolio {
   id: number;
@@ -14,6 +15,7 @@ export interface DbPortfolio {
   created: Date;
   name: string;
   owner_id: string;
+  contributions: Array<DbPortfolioContribution>;
 }
 
 export interface DbPortfolioContribution {
@@ -67,34 +69,69 @@ export class PortfoliosPgRepository {
   }
 
   async findAll(): Promise<Array<Portfolio>> {
-    const { rows } = await this.db.query<DbPortfolio>(
-      'SELECT * FROM portfolios;',
-      [],
-    );
-    return rows.map((row) => ({
-      id: row.id,
-      cash: new Decimal(row.cash),
-      contributions: [],
-      created: row.created,
-      name: row.name,
-      ownerId: row.owner_id,
+    const query = `
+      SELECT
+        p.id,
+        p.name,
+        p.owner_id,
+        p.created,
+        p.cash,
+        COALESCE(
+          json_agg(
+            json_build_object('id', pc.id, 'portfolio_id', pc.portfolio_id, 'timestamp', pc.timestamp, 'amount_eur', pc.amount_eur)
+            ORDER BY pc.timestamp DESC
+          ),
+        '[]') AS contributions
+      FROM portfolios p LEFT JOIN portfolio_contributions pc ON p.id = pc.portfolio_id 
+      GROUP BY p.id;`;
+    const { rows } = await this.db.query<DbPortfolio>(query, []);
+    return rows.map((c) => ({
+      id: c.id,
+      cash: new Decimal(c.cash),
+      contributions: c.contributions.map((pc) => ({
+        id: pc.id,
+        portfolioId: pc.portfolio_id,
+        timestamp: pc.timestamp,
+        amountEUR: new Decimal(pc.amount_eur),
+      })),
+      created: c.created,
+      name: c.name,
+      ownerId: c.owner_id,
       positions: [],
       state: null,
     }));
   }
 
   async findByOwnerId(ownerId: string): Promise<Array<Portfolio>> {
-    const { rows } = await this.db.query<DbPortfolio>(
-      'SELECT * FROM portfolios WHERE owner_id = $1;',
-      [ownerId],
-    );
-    return rows.map((row) => ({
-      id: row.id,
-      cash: new Decimal(row.cash),
-      contributions: [],
-      created: row.created,
-      name: row.name,
-      ownerId: row.owner_id,
+    const query = `
+      SELECT
+        p.id,
+        p.name,
+        p.owner_id,
+        p.created,
+        p.cash,
+        COALESCE(
+          json_agg(
+            json_build_object('id', pc.id, 'portfolio_id', pc.portfolio_id, 'timestamp', pc.timestamp, 'amount_eur', pc.amount_eur)
+            ORDER BY pc.timestamp DESC
+          ),
+        '[]') AS contributions
+      FROM portfolios p LEFT JOIN portfolio_contributions pc ON p.id = pc.portfolio_id 
+      WHERE p.owner_id = $1
+      GROUP BY p.id;`;
+    const { rows } = await this.db.query<DbPortfolio>(query, [ownerId]);
+    return rows.map((c) => ({
+      id: c.id,
+      cash: new Decimal(c.cash),
+      contributions: c.contributions.map((pc) => ({
+        id: pc.id,
+        portfolioId: pc.portfolio_id,
+        timestamp: pc.timestamp,
+        amountEUR: new Decimal(pc.amount_eur),
+      })),
+      created: c.created,
+      name: c.name,
+      ownerId: c.owner_id,
       positions: [],
       state: null,
     }));
@@ -111,6 +148,43 @@ export class PortfoliosPgRepository {
       id: row.id,
       cash: new Decimal(row.cash),
       contributions: [],
+      created: row.created,
+      name: row.name,
+      ownerId: row.owner_id,
+      positions: [],
+      state: null,
+    };
+  }
+
+  async findByIdWithContributions(id: number): Promise<Portfolio | null> {
+    const query = `
+      SELECT
+        p.id,
+        p.name,
+        p.owner_id,
+        p.created,
+        p.cash,
+        COALESCE(
+          json_agg(
+            json_build_object('id', pc.id, 'portfolio_id', pc.portfolio_id, 'timestamp', pc.timestamp, 'amount_eur', pc.amount_eur)
+            ORDER BY pc.timestamp DESC
+          ),
+        '[]') AS contributions
+      FROM portfolios p LEFT JOIN portfolio_contributions pc ON p.id = pc.portfolio_id 
+      WHERE p.id = $1
+      GROUP BY p.id;`;
+    const { rows } = await this.db.query<DbPortfolio>(query, [id]);
+    if (rows.length === 0) return null;
+    const row = rows[0];
+    return {
+      id: row.id,
+      cash: new Decimal(row.cash),
+      contributions: row.contributions.map((pc) => ({
+        id: pc.id,
+        portfolioId: pc.portfolio_id,
+        timestamp: pc.timestamp,
+        amountEUR: new Decimal(pc.amount_eur),
+      })),
       created: row.created,
       name: row.name,
       ownerId: row.owner_id,

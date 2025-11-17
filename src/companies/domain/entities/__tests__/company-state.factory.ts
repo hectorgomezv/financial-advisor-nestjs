@@ -3,7 +3,7 @@ import { CompanyState } from '../company-state.entity';
 import Decimal from 'decimal.js';
 
 export function companyStateFactory(
-  id?: string,
+  id?: number,
   timestamp?: number,
   price?: number,
   forwardPE?: number,

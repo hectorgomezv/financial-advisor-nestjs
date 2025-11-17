@@ -11,6 +11,7 @@ import { CompanyStatesService } from './company-states.service';
 import { companyStateFactory } from './entities/__tests__/company-state.factory';
 import { companyFactory } from './entities/__tests__/company.factory';
 import { PositionsPgRepository } from '../../portfolios/repositories/positions.pg.repository';
+import { companyMetricsFactory } from './entities/__tests__/company-metrics.factory';
 
 describe('CompaniesService', () => {
   const mockedCompaniesRepository = jest.mocked({
@@ -26,6 +27,7 @@ describe('CompaniesService', () => {
     deleteByCompanyId: jest.fn(),
     getLastByCompanyId: jest.fn(),
     getLastByCompanyIds: jest.fn(),
+    getMetricsByCompanyId: jest.fn(),
   } as unknown as CompanyStatesService);
 
   const service = new CompaniesService(
@@ -94,7 +96,7 @@ describe('CompaniesService', () => {
       const companies = [companyFactory(), companyFactory()];
       const states = [
         companyStateFactory(
-          faker.string.uuid(),
+          faker.number.int(),
           Date.now(),
           faker.number.int(),
           faker.number.int(),
@@ -103,7 +105,7 @@ describe('CompaniesService', () => {
           companies[1].id,
         ),
         companyStateFactory(
-          faker.string.uuid(),
+          faker.number.int(),
           Date.now(),
           faker.number.int(),
           faker.number.int(),
@@ -112,8 +114,12 @@ describe('CompaniesService', () => {
           companies[0].id,
         ),
       ];
+      const metrics = companyMetricsFactory();
       mockedCompaniesRepository.findAll.mockResolvedValue(companies);
       mockedCompanyStateService.getLastByCompanyIds.mockResolvedValue(states);
+      mockedCompanyStateService.getMetricsByCompanyId.mockResolvedValue(
+        metrics,
+      );
 
       const actual = await service.getCompaniesWithMetricsAndState();
 
@@ -122,10 +128,12 @@ describe('CompaniesService', () => {
           {
             ...companies[0],
             state: states[1],
+            metrics,
           },
           {
             ...companies[1],
             state: states[0],
+            metrics,
           },
         ],
         'symbol',
@@ -140,12 +148,16 @@ describe('CompaniesService', () => {
     it('should call repository for retrieving a company', async () => {
       const company = companyFactory();
       const state = companyStateFactory();
+      const metrics = companyMetricsFactory();
       mockedCompaniesRepository.findById.mockResolvedValue(company);
       mockedCompanyStateService.getLastByCompanyId.mockResolvedValue(state);
+      mockedCompanyStateService.getMetricsByCompanyId.mockResolvedValue(
+        metrics,
+      );
 
       const actual = await service.findById(company.id);
 
-      expect(actual).toEqual({ ...company, state });
+      expect(actual).toEqual({ ...company, state, metrics });
       expect(mockedCompaniesRepository.findById).toHaveBeenCalledTimes(1);
       expect(
         mockedCompanyStateService.getLastByCompanyId,

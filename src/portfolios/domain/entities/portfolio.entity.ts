@@ -8,8 +8,8 @@ export class Portfolio {
   name: string;
   ownerId: string;
   created: Date;
-  positions: Position[];
+  positions: Array<Position>;
   cash: Decimal;
-  contributions: PortfolioContribution[];
+  contributions: Array<PortfolioContribution>;
   state: PortfolioState | null;
 }

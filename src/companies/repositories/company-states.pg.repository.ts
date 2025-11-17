@@ -55,7 +55,7 @@ export class CompanyStatesPgRepository {
         price,
         profit_margin,
         short_percent,
-        timestamp,
+        timestamp
       ) VALUES (
        $1,
        $2,
@@ -65,7 +65,7 @@ export class CompanyStatesPgRepository {
        ROUND($6::NUMERIC, 2),
        ROUND($7::NUMERIC, 5),
        ROUND($8::NUMERIC, 5),
-       $8::TIMESTAMP,
+       $9::TIMESTAMP
       ) RETURNING *;`;
     const { rows } = await this.db.query<DbCompany>(query, [
       dto.companyId,

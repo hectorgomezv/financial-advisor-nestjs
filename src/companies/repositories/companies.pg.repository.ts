@@ -23,8 +23,7 @@ export class CompaniesPgRepository {
     const query = `
       INSERT INTO companies (name, symbol)
       VALUES ($1, $2)
-      RETURNING *
-    `;
+      RETURNING *;`;
     const res = await this.db.query<PgCompany>(query, [dto.name, dto.symbol]);
     return res.rows[0];
   }

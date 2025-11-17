@@ -78,7 +78,6 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
     price,
   }): QuoteSummary {
     return <QuoteSummary>{
-      uuid: uuidv4(),
       timestamp: Date.now(),
       price: price?.regularMarketPrice?.raw ?? 0,
       currency: summaryDetail?.currency,

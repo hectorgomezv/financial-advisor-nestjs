@@ -172,7 +172,7 @@ export class PositionsService {
       companyName: company.name,
       symbol: company.symbol,
       shares: position.shares,
-      value,
+      value: new Decimal(value),
       targetWeight: position.targetWeight,
       blocked: position.blocked,
       companyState,
@@ -181,8 +181,8 @@ export class PositionsService {
   }
 
   private addWeightsAndDeltas(
-    positionsStates: PositionDetailDto[],
-  ): PositionDetailDto[] {
+    positionsStates: Array<PositionDetailDto>,
+  ): Array<PositionDetailDto> {
     const totalValue = positionsStates.reduce(
       (sum, it) => sum.plus(it.value),
       new Decimal(0),

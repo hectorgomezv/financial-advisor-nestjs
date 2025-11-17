@@ -98,18 +98,15 @@ export class PortfoliosService implements OnApplicationBootstrap {
     id: number,
     range: string,
   ): Promise<Array<PortfolioAverageBalance>> {
-    const portfolio = await this.repository.findById(id);
-    if (!portfolio) {
-      throw new NotFoundException('Portfolio not found');
-    }
+    const portfolio = await this.repository.findByIdWithContributions(id);
+    if (!portfolio) throw new NotFoundException('Portfolio not found');
     this.checkOwner(user, portfolio);
-
+    const timeRange = timeRangeFromStr(range);
     const balances =
       await this.portfolioStatesService.getAverageBalancesForRange(
         id,
-        timeRangeFromStr(range),
+        timeRange,
       );
-
     return sortBy(balances, ['timestamp']).map((balance) => ({
       timestamp: balance.timestamp!,
       average: balance.average!,
