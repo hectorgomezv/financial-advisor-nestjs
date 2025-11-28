@@ -1,5 +1,5 @@
 import Decimal from 'decimal.js';
-import { PortfolioState } from '../entities/portfolio-state.entity';
+import { PortfolioStateResult } from '../entities/portfolio-state-result.entity';
 import { PositionDetailDto } from './position-detail.dto';
 
 export class PortfolioDetailDto {
@@ -8,5 +8,5 @@ export class PortfolioDetailDto {
   created: Date;
   cash: Decimal;
   positions: Array<PositionDetailDto>;
-  state: PortfolioState;
+  state: PortfolioStateResult;
 }

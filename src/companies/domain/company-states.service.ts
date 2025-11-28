@@ -7,6 +7,7 @@ import { QuoteSummary } from '../domain/entities/quote-summary.entity';
 import { CompanyStatesPgRepository } from '../repositories/company-states.pg.repository';
 import { CompanyMetricsResult } from './entities/company-metrics-result.entity';
 import { CompanyMetrics } from './entities/company-metrics.entity';
+import { Maths } from '../../common/domain/entities/maths.entity';
 
 export interface CreateCompanyStateDto {
   companyId: number;
@@ -84,10 +85,10 @@ export class CompanyStatesService {
 
   private mapMetricsToResult(metrics: CompanyMetrics): CompanyMetricsResult {
     return {
-      avgEnterpriseToRevenue: this.round(metrics.avgEnterpriseToRevenue),
-      avgEnterpriseToEbitda: this.round(metrics.avgEnterpriseToEbitda),
-      avgForwardPE: this.round(metrics.avgForwardPE),
-      avgProfitMargins: this.round(metrics.avgProfitMargins),
+      avgEnterpriseToRevenue: Maths.round(metrics.avgEnterpriseToRevenue),
+      avgEnterpriseToEbitda: Maths.round(metrics.avgEnterpriseToEbitda),
+      avgForwardPE: Maths.round(metrics.avgForwardPE),
+      avgProfitMargins: Maths.round(metrics.avgProfitMargins),
     };
   }
 
@@ -100,18 +101,13 @@ export class CompanyStatesService {
       id: state.id,
       companyId: state.companyId,
       currency: state.currency,
-      enterpriseToEbitda: this.round(state.enterpriseToEbitda),
-      enterpriseToRevenue: this.round(state.enterpriseToRevenue),
-      forwardPE: this.round(state.forwardPE),
-      price: this.round(state.price),
-      profitMargins: this.round(state.profitMargins),
-      shortPercentOfFloat: this.round(state.shortPercentOfFloat),
+      enterpriseToEbitda: Maths.round(state.enterpriseToEbitda),
+      enterpriseToRevenue: Maths.round(state.enterpriseToRevenue),
+      forwardPE: Maths.round(state.forwardPE),
+      price: Maths.round(state.price),
+      profitMargins: Maths.round(state.profitMargins),
+      shortPercentOfFloat: Maths.round(state.shortPercentOfFloat),
       timestamp: state.timestamp,
     };
-  }
-
-  private round(value: Decimal): string {
-    if (value.isInteger()) return value.toFixed(0);
-    return value.toFixed(2);
   }
 }

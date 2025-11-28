@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 import Decimal from 'decimal.js';
 import { PortfolioStatesPgRepository } from '../repositories/portfolio-states.pg.repository';
+import { portfolioStateFactory } from './entities/__tests__/portfolio-state.factory';
 import { portfolioFactory } from './entities/__tests__/portfolio.factory';
 import { positionFactory } from './entities/__tests__/position.factory';
 import { TimeRange } from './entities/time-range.enum';
@@ -57,7 +58,12 @@ describe('PortfolioStatesService', () => {
   describe('retrieving', () => {
     it('should call repository to retrieve the last state by portfolio id', async () => {
       const portfolio = portfolioFactory();
+      portfolioStatesRepository.getLastByPortfolioId.mockResolvedValue(
+        portfolioStateFactory(),
+      );
+
       await service.getLastByPortfolioId(portfolio.id);
+
       expect(
         portfolioStatesRepository.getLastByPortfolioId,
       ).toHaveBeenCalledWith(portfolio.id);

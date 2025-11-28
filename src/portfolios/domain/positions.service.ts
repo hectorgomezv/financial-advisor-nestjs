@@ -21,6 +21,8 @@ import { Position } from './entities/position.entity';
 import { PortfolioStatesService } from './portfolio-states.service';
 import { Company } from '../../companies/domain/entities/company.entity';
 import Decimal from 'decimal.js';
+import { PositionDetailResult } from './dto/position-detail-result';
+import { Maths } from '../../common/domain/entities/maths.entity';
 
 @Injectable()
 export class PositionsService {
@@ -111,7 +113,7 @@ export class PositionsService {
 
   async getPositionDetailsByPortfolioId(
     portfolioId: number,
-  ): Promise<PositionDetailDto[]> {
+  ): Promise<Array<PositionDetailResult>> {
     const positions = await this.repository.findByPortfolioId(portfolioId);
     const companies = await this.companiesRepository.findByIdIn(
       positions.map((p) => p.companyId),
@@ -131,9 +133,10 @@ export class PositionsService {
       );
       positionStates.push(state);
     }
-    return this.addWeightsAndDeltas(positionStates)
+    const states = this.addWeightsAndDeltas(positionStates)
       .sort((a, b) => a.value.toNumber() - b.value.toNumber())
       .reverse();
+    return states.map((ps) => this.mapToResult(ps));
   }
 
   async deleteByUuidAndPortfolioUuid(
@@ -224,7 +227,7 @@ export class PositionsService {
   }
 
   private mapToPositions(
-    positionDetailDTOs: PositionDetailDto[],
+    positionDetailDTOs: Array<PositionDetailResult>,
     portfolioId: number,
   ): Position[] {
     return positionDetailDTOs.map((pdd) => {
@@ -233,11 +236,39 @@ export class PositionsService {
         portfolioId,
         blocked: pdd.blocked,
         companyId: pdd.companyState.companyId,
-        shares: pdd.shares,
+        shares: new Decimal(pdd.shares),
         sharesUpdatedAt: pdd.sharesUpdatedAt,
-        targetWeight: pdd.targetWeight,
-        value: pdd.value,
+        targetWeight: new Decimal(pdd.targetWeight),
+        value: new Decimal(pdd.value),
       };
     });
+  }
+
+  private mapToResult(ps: PositionDetailDto): PositionDetailResult {
+    return {
+      id: ps.id,
+      companyName: ps.companyName,
+      symbol: ps.symbol,
+      shares: Maths.round(ps.shares),
+      value: Maths.round(ps.value),
+      targetWeight: Maths.round(ps.targetWeight),
+      currentWeight: Maths.round(ps.currentWeight),
+      deltaWeight: Maths.round(ps.deltaWeight),
+      deltaShares: Maths.round(ps.deltaShares),
+      companyState: {
+        id: ps.companyState.id,
+        companyId: ps.companyState.companyId,
+        currency: ps.companyState.currency,
+        enterpriseToEbitda: Maths.round(ps.companyState.enterpriseToEbitda),
+        enterpriseToRevenue: Maths.round(ps.companyState.enterpriseToRevenue),
+        forwardPE: Maths.round(ps.companyState.forwardPE),
+        price: Maths.round(ps.companyState.price),
+        profitMargins: Maths.round(ps.companyState.profitMargins),
+        shortPercentOfFloat: Maths.round(ps.companyState.shortPercentOfFloat),
+        timestamp: ps.companyState.timestamp,
+      },
+      blocked: ps.blocked,
+      sharesUpdatedAt: ps.sharesUpdatedAt,
+    };
   }
 }

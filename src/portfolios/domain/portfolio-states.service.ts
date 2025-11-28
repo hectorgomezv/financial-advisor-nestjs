@@ -7,6 +7,8 @@ import { PortfolioState } from './entities/portfolio-state.entity';
 import { Portfolio } from './entities/portfolio.entity';
 import { Position } from './entities/position.entity';
 import { TimeRange } from './entities/time-range.enum';
+import { PortfolioStateResult } from './entities/portfolio-state-result.entity';
+import { Maths } from '../../common/domain/entities/maths.entity';
 
 @Injectable()
 export class PortfolioStatesService {
@@ -36,8 +38,11 @@ export class PortfolioStatesService {
     });
   }
 
-  getLastByPortfolioId(portfolioId: number): Promise<PortfolioState> {
-    return this.repository.getLastByPortfolioId(portfolioId);
+  async getLastByPortfolioId(
+    portfolioId: number,
+  ): Promise<PortfolioStateResult> {
+    const state = await this.repository.getLastByPortfolioId(portfolioId);
+    return this.mapResult(state);
   }
 
   getAverageBalancesForRange(
@@ -52,5 +57,18 @@ export class PortfolioStatesService {
     period: TimePeriod,
   ): Promise<Partial<PortfolioState>[]> {
     return this.repository.getPortfolioStatesInPeriod(portfolioId, period);
+  }
+
+  private mapResult(state: PortfolioState): PortfolioStateResult {
+    return {
+      id: state.id,
+      portfolioId: state.portfolioId,
+      cash: Maths.round(state.cash),
+      isValid: state.isValid,
+      roicEUR: Maths.round(state.roicEUR),
+      sumWeights: Maths.round(state.sumWeights),
+      timestamp: state.timestamp,
+      totalValueEUR: Maths.round(state.totalValueEUR),
+    };
   }
 }

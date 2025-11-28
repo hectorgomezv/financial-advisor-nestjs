@@ -12,13 +12,14 @@ import { first, head, last, orderBy, sortBy } from 'lodash';
 import { AuthService } from '../../common/auth/auth-service';
 import { User } from '../../common/auth/entities/user.entity';
 import { DataPoint } from '../../common/domain/entities/data-point.entity';
+import { Maths } from '../../common/domain/entities/maths.entity';
 import { TimePeriod } from '../../common/domain/entities/time-period.entity';
 import { Index } from '../../indices/domain/entities/index.entity';
 import { IndicesService } from '../../indices/domain/indices.service';
 import { PortfoliosPgRepository } from '../repositories/portfolios.pg.repository';
 import { AddPortfolioContributionDto } from './dto/add-portfolio-contribution.dto';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
-import { PortfolioDetailDto } from './dto/portfolio-detail.dto';
+import { PortfolioDetailResult } from './dto/portfolio-detail-result.dto';
 import { UpdatePortfolioCashDto } from './dto/update-portfolio-cash.dto';
 import { ContributionsMetadata } from './entities/contributions-metadata';
 import { PortfolioAverageBalance } from './entities/portfolio-average-balance.entity';
@@ -56,24 +57,22 @@ export class PortfoliosService implements OnApplicationBootstrap {
       : this.repository.findByOwnerId(user.id);
   }
 
-  async findById(user: User, id: number): Promise<PortfolioDetailDto> {
+  async findById(user: User, id: number): Promise<PortfolioDetailResult> {
     const portfolio = await this.repository.findById(id);
     if (!portfolio) {
       throw new NotFoundException('Portfolio not found');
     }
     this.checkOwner(user, portfolio);
-
     const positions =
       await this.positionService.getPositionDetailsByPortfolioId(portfolio.id);
     const state = await this.portfolioStatesService.getLastByPortfolioId(
       portfolio.id,
     );
-
     return {
       id: portfolio.id,
       name: portfolio.name,
       created: portfolio.created,
-      cash: portfolio.cash,
+      cash: Maths.round(portfolio.cash),
       positions,
       state,
     };

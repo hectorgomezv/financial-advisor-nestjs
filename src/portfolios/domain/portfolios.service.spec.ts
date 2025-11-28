@@ -1,27 +1,29 @@
 import { faker } from '@faker-js/faker';
+import Decimal from 'decimal.js';
 import { random, range } from 'lodash';
 import { AuthService } from '../../common/auth/auth-service';
 import { User, UserRole } from '../../common/auth/entities/user.entity';
-import { TimePeriod } from '../../common/domain/entities/time-period.entity';
 import { dataPointFactory } from '../../common/domain/entities/__tests__/data-point.factory';
+import { Maths } from '../../common/domain/entities/maths.entity';
+import { TimePeriod } from '../../common/domain/entities/time-period.entity';
 import { indexFactory } from '../../indices/domain/entities/__tests__/index.factory';
 import { IndicesService } from '../../indices/domain/indices.service';
+import { PortfoliosPgRepository } from '../repositories/portfolios.pg.repository';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
-import { PortfolioDetailDto } from './dto/portfolio-detail.dto';
+import { PortfolioDetailResult } from './dto/portfolio-detail-result.dto';
 import { addPortfolioContributionDtoFactory } from './dto/test/add-portfolio-contribution.dto.factory';
-import { positionDetailDtoFactory } from './dto/test/position-detail-dto.factory';
+import { positionDetailResultFactory } from './dto/test/position-detail-result.factory';
 import { updatePortfolioCashDtoFactory } from './dto/test/update-portfolio-cash.dto.factory';
-import { ContributionsMetadata } from './entities/contributions-metadata';
-import { Portfolio } from './entities/portfolio.entity';
 import { portfolioAverageBalanceFactory } from './entities/__tests__/portfolio-average-metric.factory';
 import { portfolioContributionFactory } from './entities/__tests__/portfolio-contribution.factory';
+import { portfolioStateResultFactory } from './entities/__tests__/portfolio-state-result.factory';
 import { portfolioStateFactory } from './entities/__tests__/portfolio-state.factory';
 import { portfolioFactory } from './entities/__tests__/portfolio.factory';
+import { ContributionsMetadata } from './entities/contributions-metadata';
+import { Portfolio } from './entities/portfolio.entity';
 import { PortfolioStatesService } from './portfolio-states.service';
 import { PortfoliosService } from './portfolios.service';
 import { PositionsService } from './positions.service';
-import Decimal from 'decimal.js';
-import { PortfoliosPgRepository } from '../repositories/portfolios.pg.repository';
 
 describe('PortfoliosService', () => {
   const portfoliosRepository = jest.mocked({
@@ -138,10 +140,10 @@ describe('PortfoliosService', () => {
 
     it('should call repository for retrieving one portfolio with its positions', async () => {
       const positions = [
-        positionDetailDtoFactory(),
-        positionDetailDtoFactory(),
+        positionDetailResultFactory(),
+        positionDetailResultFactory(),
       ];
-      const state = portfolioStateFactory();
+      const state = portfolioStateResultFactory();
       portfoliosRepository.findById.mockResolvedValueOnce(adminUserPortfolio);
       positionsService.getPositionDetailsByPortfolioId.mockResolvedValueOnce(
         positions,
@@ -153,10 +155,10 @@ describe('PortfoliosService', () => {
         adminUserPortfolio.id,
       );
 
-      expect(retrieved).toEqual(<PortfolioDetailDto>{
+      expect(retrieved).toEqual(<PortfolioDetailResult>{
         id: adminUserPortfolio.id,
         name: adminUserPortfolio.name,
-        cash: adminUserPortfolio.cash,
+        cash: Maths.round(adminUserPortfolio.cash),
         created: adminUserPortfolio.created,
         positions,
         state,
