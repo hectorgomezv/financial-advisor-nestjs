@@ -2,12 +2,11 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import Decimal from 'decimal.js';
 import { User } from '../../common/auth/entities/user.entity';
 import { DbService } from '../../common/db.service';
-import { CreatePortfolioDto } from '../domain/dto/create-portfolio.dto';
-import { Portfolio } from '../domain/entities/portfolio.entity';
-import { PortfolioContribution } from '../domain/entities/portfolio-contribution.entity';
-import { ContributionsMetadata } from '../domain/entities/contributions-metadata';
 import { AddPortfolioContributionDto } from '../domain/dto/add-portfolio-contribution.dto';
-import { timestamp } from 'rxjs';
+import { CreatePortfolioDto } from '../domain/dto/create-portfolio.dto';
+import { ContributionsMetadata } from '../domain/entities/contributions-metadata';
+import { PortfolioContribution } from '../domain/entities/portfolio-contribution.entity';
+import { Portfolio } from '../domain/entities/portfolio.entity';
 
 export interface DbPortfolio {
   id: number;
@@ -48,7 +47,7 @@ export class PortfoliosPgRepository {
   async create(dto: CreatePortfolioDto, user: User): Promise<Portfolio> {
     const query = `
       INSERT INTO portfolios (cash, created, name, owner_id)
-      VALUES (ROUND($1::NUMERIC, 2), $2::TIMESTAMP, $3, $4);`;
+      VALUES (ROUND($1::NUMERIC, 2), $2::TIMESTAMP, $3, $4) RETURNING *;`;
     const { rows } = await this.db.query<DbPortfolio>(query, [
       0,
       new Date(),
@@ -80,23 +79,23 @@ export class PortfoliosPgRepository {
           json_agg(
             json_build_object('id', pc.id, 'portfolio_id', pc.portfolio_id, 'timestamp', pc.timestamp, 'amount_eur', pc.amount_eur)
             ORDER BY pc.timestamp DESC
-          ),
+          ) FILTER (WHERE pc.id IS NOT NULL),
         '[]') AS contributions
       FROM portfolios p LEFT JOIN portfolio_contributions pc ON p.id = pc.portfolio_id 
       GROUP BY p.id;`;
     const { rows } = await this.db.query<DbPortfolio>(query, []);
-    return rows.map((c) => ({
-      id: c.id,
-      cash: new Decimal(c.cash),
-      contributions: c.contributions.map((pc) => ({
+    return rows.map((row) => ({
+      id: row.id,
+      cash: new Decimal(row.cash),
+      contributions: row.contributions.map((pc) => ({
         id: pc.id,
         portfolioId: pc.portfolio_id,
         timestamp: pc.timestamp,
         amountEUR: new Decimal(pc.amount_eur),
       })),
-      created: c.created,
-      name: c.name,
-      ownerId: c.owner_id,
+      created: row.created,
+      name: row.name,
+      ownerId: row.owner_id,
       positions: [],
       state: null,
     }));
@@ -114,24 +113,24 @@ export class PortfoliosPgRepository {
           json_agg(
             json_build_object('id', pc.id, 'portfolio_id', pc.portfolio_id, 'timestamp', pc.timestamp, 'amount_eur', pc.amount_eur)
             ORDER BY pc.timestamp DESC
-          ),
+          ) FILTER (WHERE pc.id IS NOT NULL),
         '[]') AS contributions
       FROM portfolios p LEFT JOIN portfolio_contributions pc ON p.id = pc.portfolio_id 
       WHERE p.owner_id = $1
       GROUP BY p.id;`;
     const { rows } = await this.db.query<DbPortfolio>(query, [ownerId]);
-    return rows.map((c) => ({
-      id: c.id,
-      cash: new Decimal(c.cash),
-      contributions: c.contributions.map((pc) => ({
+    return rows.map((row) => ({
+      id: row.id,
+      cash: new Decimal(row.cash),
+      contributions: row.contributions.map((pc) => ({
         id: pc.id,
         portfolioId: pc.portfolio_id,
         timestamp: pc.timestamp,
         amountEUR: new Decimal(pc.amount_eur),
       })),
-      created: c.created,
-      name: c.name,
-      ownerId: c.owner_id,
+      created: row.created,
+      name: row.name,
+      ownerId: row.owner_id,
       positions: [],
       state: null,
     }));
@@ -168,7 +167,7 @@ export class PortfoliosPgRepository {
           json_agg(
             json_build_object('id', pc.id, 'portfolio_id', pc.portfolio_id, 'timestamp', pc.timestamp, 'amount_eur', pc.amount_eur)
             ORDER BY pc.timestamp DESC
-          ),
+          ) FILTER (WHERE pc.id IS NOT NULL),
         '[]') AS contributions
       FROM portfolios p LEFT JOIN portfolio_contributions pc ON p.id = pc.portfolio_id 
       WHERE p.id = $1
@@ -216,55 +215,41 @@ export class PortfoliosPgRepository {
     offset: number,
     limit: number,
   ): Promise<Array<PortfolioContribution>> {
-    return this.db.runTransaction(async (client) => {
-      const { rowCount } = await client.query<DbPortfolio>(
-        'SELECT * FROM portfolios WHERE id = $1;',
-        [portfolioId],
-      );
-      if (rowCount === 0) throw new NotFoundException();
-      const query = `
+    const query = `
       SELECT id, portfolio_id, timestamp, amount_eur
       FROM portfolio_contributions
       WHERE portfolio_id = $1
       ORDER BY timestamp DESC
       LIMIT $2
       OFFSET $3;`;
-      const { rows } = await client.query<DbPortfolioContribution>(query, [
-        portfolioId,
-        limit,
-        offset,
-      ]);
-      return rows.map((row) => ({
-        id: row.id,
-        portfolioId: row.portfolio_id,
-        timestamp: row.timestamp,
-        amountEUR: new Decimal(row.amount_eur),
-      }));
-    });
+    const { rows } = await this.db.query<DbPortfolioContribution>(query, [
+      portfolioId,
+      limit,
+      offset,
+    ]);
+    return rows.map((row) => ({
+      id: row.id,
+      portfolioId: row.portfolio_id,
+      timestamp: row.timestamp,
+      amountEUR: new Decimal(row.amount_eur),
+    }));
   }
 
   async getContributionsMetadata(
     portfolioId: number,
   ): Promise<ContributionsMetadata> {
-    return this.db.runTransaction(async (client) => {
-      const { rowCount } = await client.query<DbPortfolio>(
-        'SELECT * FROM portfolios WHERE id = $1;',
-        [portfolioId],
-      );
-      if (rowCount === 0) throw new NotFoundException();
-      const query = `
-      SELECT count(id), sum(amount_eur)
+    const query = `
+      SELECT count(id), COALESCE(sum(amount_eur), 0) as sum
       FROM portfolio_contributions
       WHERE portfolio_id = $1;`;
-      const { rows } = await this.db.query<DbContributionsMetadata>(query, [
-        portfolioId,
-      ]);
-      const row = rows[0];
-      return {
-        count: Number(row.count),
-        sum: new Decimal(row.sum),
-      };
-    });
+    const { rows } = await this.db.query<DbContributionsMetadata>(query, [
+      portfolioId,
+    ]);
+    const row = rows[0];
+    return {
+      count: Number(row.count),
+      sum: new Decimal(row.sum),
+    };
   }
 
   async addContribution(

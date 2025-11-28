@@ -16,7 +16,6 @@ import {
   ApiNotFoundResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { omit } from 'lodash';
 import { User } from '../../common/auth/entities/user.entity';
 import { JwtAuthGuard } from '../../common/auth/jwt-auth.guard';
 import { CreatedResponse } from '../../common/routes/entities/created-response.entity';
@@ -25,10 +24,9 @@ import { OkResponse } from '../../common/routes/entities/ok-response.entity';
 import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
 import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
 import { CompaniesService } from '../domain/companies.service';
+import { CompanyWithStateAndMetrics } from '../domain/entities/company.entity';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { Company, CompanyWithState } from './entities/company.entity';
-import { CompanyMetrics } from '../domain/entities/company-metrics.entity';
-import { CompanyWithStateAndMetrics } from '../domain/entities/company.entity';
 
 @UseInterceptors(DataInterceptor)
 @UseFilters(MainExceptionFilter)

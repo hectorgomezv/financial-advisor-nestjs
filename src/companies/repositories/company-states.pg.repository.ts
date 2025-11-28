@@ -4,7 +4,7 @@ import Decimal from 'decimal.js';
 import { Model } from 'mongoose';
 import { RedisClient } from '../../common/cache/redis.client';
 import { DbService } from '../../common/db.service';
-import { CompanyStateDto } from '../domain/company-states.service';
+import { CreateCompanyStateDto } from '../domain/company-states.service';
 import { CompanyMetrics } from '../domain/entities/company-metrics.entity';
 import { CompanyState } from '../domain/entities/company-state.entity';
 import {
@@ -44,7 +44,7 @@ export class CompanyStatesPgRepository {
     private readonly redisClient: RedisClient,
   ) {}
 
-  async create(dto: CompanyStateDto): Promise<CompanyState> {
+  async create(dto: CreateCompanyStateDto): Promise<CompanyState> {
     const query = `
       INSERT INTO company_states (
         company_id,
@@ -101,6 +101,7 @@ export class CompanyStatesPgRepository {
         c.id,
         c.name,
         c.symbol,
+        cs.company_id,
         cs.currency,
         cs.enterprise_to_ebitda,
         cs.enterprise_to_revenue,

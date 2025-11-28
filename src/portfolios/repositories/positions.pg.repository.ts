@@ -36,8 +36,8 @@ export class PositionsPgRepository {
           ROUND($3::NUMERIC, 2),
           ROUND($4::NUMERIC, 2),
           $5,
-          $6::TIMESTAMP
-          ROUND($7::NUMERIC, 5),
+          $6::TIMESTAMP,
+          ROUND($7::NUMERIC, 5)
         ) RETURNING *;`;
     const { rows } = await this.db.query<DbPosition>(query, [
       dto.portfolioId,
@@ -119,6 +119,14 @@ export class PositionsPgRepository {
     }));
   }
 
+  async existByCompanyId(companyId: number): Promise<boolean> {
+    const { rowCount } = await this.db.query(
+      'SELECT id FROM positions WHERE company_id = $1 LIMIT 1',
+      [companyId],
+    );
+    return rowCount !== 0;
+  }
+
   async findByPortfolioId(portfolioId: number): Promise<Array<Position>> {
     const { rows } = await this.db.query<DbPosition>(
       'SELECT * FROM positions WHERE portfolio_id = $1',
@@ -136,14 +144,14 @@ export class PositionsPgRepository {
     }));
   }
 
-  async deleteByPortfolioId(portfolioId: number): Promise<void> {
-    await this.db.query('DELETE FROM positions WHERE portfolio_id = $1;', [
-      portfolioId,
-    ]);
-  }
-
-  async deleteById(id: number): Promise<void> {
-    await this.db.query('DELETE FROM positions WHERE id = $1;', [id]);
+  async deleteByIdAndPortfolioId(
+    id: number,
+    portfolioId: number,
+  ): Promise<void> {
+    await this.db.query(
+      'DELETE FROM positions WHERE id = $1 AND portfolio_id = $2;',
+      [id, portfolioId],
+    );
   }
 
   async update(id: number, update: UpdatePositionDto): Promise<void> {
@@ -152,7 +160,7 @@ export class PositionsPgRepository {
           target_weight = ROUND($1::NUMERIC, 2),
           shares = ROUND($2::NUMERIC, 2),
           blocked = $3,
-          shares_updated_at = $4::TIMESTAMP
+          shares_updated_at = $4::TIMESTAMP,
           value = ROUND($5::NUMERIC, 5)
         WHERE id = $6`;
     await this.db.query<DbPosition>(query, [

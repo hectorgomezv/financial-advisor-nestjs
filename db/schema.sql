@@ -1,4 +1,4 @@
-\restrict WxPuZJ8vNhARNvd7D2OenaPFVMkYbIHx8AOm1CYc9LIWKfGrEYKhR61qpwJ2G9c
+\restrict TXZY4byTAA9bst6c9GoLa72W5t4RtGgEUiJPDgbXBsTYlDPouDrkgAMegdaxhE5
 
 -- Dumped from database version 18.0 (Debian 18.0-1.pgdg13+3)
 -- Dumped by pg_dump version 18.0
@@ -528,7 +528,7 @@ ALTER TABLE ONLY public.positions
 -- PostgreSQL database dump complete
 --
 
-\unrestrict WxPuZJ8vNhARNvd7D2OenaPFVMkYbIHx8AOm1CYc9LIWKfGrEYKhR61qpwJ2G9c
+\unrestrict TXZY4byTAA9bst6c9GoLa72W5t4RtGgEUiJPDgbXBsTYlDPouDrkgAMegdaxhE5
 
 
 --

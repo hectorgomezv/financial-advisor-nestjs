@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   Logger,
@@ -16,6 +17,7 @@ import {
   CompanyWithState,
   CompanyWithStateAndMetrics,
 } from './entities/company.entity';
+import { PositionsPgRepository } from '../../portfolios/repositories/positions.pg.repository';
 
 @Injectable()
 export class CompaniesService implements OnApplicationBootstrap {
@@ -25,6 +27,7 @@ export class CompaniesService implements OnApplicationBootstrap {
     private readonly repository: CompaniesPgRepository,
     private readonly authService: AuthService,
     private readonly companyStatesService: CompanyStatesService,
+    private readonly positionsRepository: PositionsPgRepository,
   ) {}
 
   async create(
@@ -79,16 +82,18 @@ export class CompaniesService implements OnApplicationBootstrap {
   async remove(user: User, id: number) {
     this.authService.checkAdmin(user);
     const company = await this.repository.findById(id);
-
     if (!company) {
       throw new NotFoundException('Company not found');
     }
-
-    // TODO: check if positions for company exist
-
-    await this.companyStatesService.deleteByCompanyId(id);
+    const positionsExist = await this.positionsRepository.existByCompanyId(
+      company.id,
+    );
+    if (positionsExist) {
+      throw new BadRequestException(
+        `Positions exist for the company ${company.name}`,
+      );
+    }
     await this.repository.deleteById(id);
-
     return company;
   }
 

@@ -93,6 +93,7 @@ export class PositionsService {
         `Position don't exists for ${company.symbol}`,
       );
     }
+    // TODO: store positions value in DB?
     await this.repository.update(existentPosition.id, <UpdatePositionDto>{
       targetWeight: upsertPositionDto.targetWeight,
       shares: upsertPositionDto.shares,
@@ -101,6 +102,7 @@ export class PositionsService {
         upsertPositionDto.shares !== existentPosition.shares
           ? new Date()
           : existentPosition.sharesUpdatedAt,
+      value: new Decimal(0),
     });
     const updated = await this.repository.findById(existentPosition.id);
     await this.updatePortfolioState(portfolio);
@@ -134,15 +136,6 @@ export class PositionsService {
       .reverse();
   }
 
-  async deleteByPortfolioId(user: User, portfolioId: number) {
-    const portfolio = await this.portfoliosRepository.findById(portfolioId);
-    if (!portfolio) throw new NotFoundException('Portfolio not found');
-    this.checkOwner(user, portfolio);
-    const result = await this.repository.deleteByPortfolioId(portfolioId);
-    await this.updatePortfolioState(portfolio);
-    return result;
-  }
-
   async deleteByUuidAndPortfolioUuid(
     user: User,
     portfolioId: number,
@@ -152,7 +145,7 @@ export class PositionsService {
     const portfolio = await this.portfoliosRepository.findById(portfolioId);
     if (!portfolio) throw new NotFoundException('Portfolio not found');
     this.checkOwner(user, portfolio);
-    await this.repository.deleteById(id);
+    await this.repository.deleteByIdAndPortfolioId(id, portfolio.id);
     await this.updatePortfolioState(portfolio);
     return position;
   }
@@ -238,11 +231,12 @@ export class PositionsService {
       return <Position>{
         id: pdd.id,
         portfolioId,
-        companyId: pdd.companyState.companyId,
         blocked: pdd.blocked,
+        companyId: pdd.companyState.companyId,
         shares: pdd.shares,
-        targetWeight: pdd.targetWeight,
         sharesUpdatedAt: pdd.sharesUpdatedAt,
+        targetWeight: pdd.targetWeight,
+        value: pdd.value,
       };
     });
   }

@@ -53,8 +53,4 @@ export class PortfolioStatesService {
   ): Promise<Partial<PortfolioState>[]> {
     return this.repository.getPortfolioStatesInPeriod(portfolioId, period);
   }
-
-  deleteByPortfolioId(portfolioId: number): Promise<void> {
-    return this.repository.deleteByPortfolioId(portfolioId);
-  }
 }

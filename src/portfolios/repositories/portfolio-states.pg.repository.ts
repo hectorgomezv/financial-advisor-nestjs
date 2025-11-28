@@ -90,13 +90,6 @@ export class PortfolioStatesPgRepository {
     };
   }
 
-  async deleteByPortfolioId(portfolioId: number): Promise<void> {
-    await this.db.query(
-      'DELETE FROM portfolio_states. WHERE portfolio_id = $1;',
-      [portfolioId],
-    );
-  }
-
   async getAverageBalancesForRange(
     portfolioId: number,
     range: TimeRange,
@@ -132,12 +125,11 @@ export class PortfolioStatesPgRepository {
         portfolio_id = $1
         AND timestamp > $2::TIMESTAMP
         AND timestamp < $3::TIMESTAMP
-      ORDER BY timestamp DESC
-      LIMIT 1;`;
+      ORDER BY timestamp ASC;`;
     const { rows } = await this.db.query<DbPortfolioState>(query, [
       portfolioId,
-      period.start,
-      period.end,
+      new Date(period.start),
+      new Date(period.end),
     ]);
     return rows.map((row) => ({
       id: row.id,

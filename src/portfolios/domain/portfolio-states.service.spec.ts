@@ -1,11 +1,10 @@
 import { faker } from '@faker-js/faker';
-import { round } from 'lodash';
+import Decimal from 'decimal.js';
 import { PortfolioStatesPgRepository } from '../repositories/portfolio-states.pg.repository';
 import { portfolioFactory } from './entities/__tests__/portfolio.factory';
 import { positionFactory } from './entities/__tests__/position.factory';
 import { TimeRange } from './entities/time-range.enum';
 import { PortfolioStatesService } from './portfolio-states.service';
-import Decimal from 'decimal.js';
 
 describe('PortfolioStatesService', () => {
   const portfolioStatesRepository = jest.mocked({
@@ -70,14 +69,6 @@ describe('PortfolioStatesService', () => {
       expect(
         portfolioStatesRepository.getAverageBalancesForRange,
       ).toHaveBeenCalledWith(id, TimeRange.Week);
-    });
-  });
-
-  describe('deleting', () => {
-    it('should call repository for deleting all the states by portfolio id', async () => {
-      const id = faker.number.int();
-      await service.deleteByPortfolioId(id);
-      expect(portfolioStatesRepository.deleteByPortfolioId).toBeCalledWith(id);
     });
   });
 });

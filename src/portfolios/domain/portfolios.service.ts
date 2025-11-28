@@ -85,11 +85,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
       throw new NotFoundException('Portfolio not found');
     }
     this.checkOwner(user, portfolio);
-
-    await this.positionService.deleteByPortfolioId(user, id);
-    await this.portfolioStatesService.deleteByPortfolioId(id);
     await this.repository.deleteById(id);
-
     return portfolio;
   }
 
@@ -171,6 +167,10 @@ export class PortfoliosService implements OnApplicationBootstrap {
                 .dividedBy(initialValue!.average!)
                 .minus(100)
                 .toNumber(),
+        ...indicesPerformance.reduce(
+          (_, item) => ({ ..._, [item.name]: item.values[n] }),
+          {},
+        ),
       };
     });
   }
@@ -180,7 +180,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
     id: number,
     period: TimePeriod,
   ): Promise<DataPoint[]> {
-    const portfolio = await this.repository.findById(id);
+    const portfolio = await this.repository.findByIdWithContributions(id);
     if (!portfolio) {
       throw new NotFoundException('Portfolio not found');
     }
@@ -197,13 +197,9 @@ export class PortfoliosService implements OnApplicationBootstrap {
         const initialValue = this.getBalanceForDate(portfolioStates, date);
         const endValue = this.getBalanceForDate(portfolioStates, next);
         const cashFlow = this.getSumContributionsIn(portfolio, previous, date);
-        return new DataPoint(
-          date,
-          endValue
-            .minus(initialValue.plus(cashFlow))
-            .dividedBy(initialValue.plus(cashFlow))
-            .toNumber(),
-        );
+        let value = endValue.minus(initialValue.plus(cashFlow));
+        value = value.dividedBy(initialValue.plus(cashFlow));
+        return new DataPoint(date, value.toNumber());
       }),
     );
 
@@ -226,6 +222,10 @@ export class PortfoliosService implements OnApplicationBootstrap {
             (ROICs.slice(0, n + 1).reduce((acc, i) => acc * (1 + i.value), 1) -
               1) *
             100,
+          ...indicesReturns.reduce(
+            (_, item) => ({ ..._, [item.name]: item.values[n] }),
+            {},
+          ),
         },
     );
   }
@@ -259,7 +259,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
   private async getIndexPerformanceValues(
     index: Index,
     balances: Partial<PortfolioAverageBalance>[],
-  ): Promise<Array<Number>> {
+  ): Promise<Array<number>> {
     if (!balances.length) return [];
     const initialValue = head(balances);
     const indexPerformance =
@@ -345,7 +345,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
       timestamp,
       amountEUR,
     });
-    const updated = await this.repository.findById(id);
+    const updated = await this.repository.findByIdWithContributions(id);
     if (!updated) throw new NotFoundException('Portfolio not found');
     await this.positionService.updatePortfolioState(updated);
     return updated;

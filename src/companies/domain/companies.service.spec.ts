@@ -2,16 +2,14 @@ import { faker } from '@faker-js/faker';
 import { sortBy } from 'lodash';
 import { AuthService } from '../../common/auth/auth-service';
 import { User, UserRole } from '../../common/auth/entities/user.entity';
-import { positionFactory } from '../../portfolios/domain/entities/__tests__/position.factory';
-import { PositionsRepository } from '../../portfolios/repositories/positions.repository';
+import { PositionsPgRepository } from '../../portfolios/repositories/positions.pg.repository';
 import { CompaniesPgRepository } from '../repositories/companies.pg.repository';
 import { CreateCompanyDto } from '../routes/dto/create-company.dto';
 import { CompaniesService } from './companies.service';
 import { CompanyStatesService } from './company-states.service';
-import { companyStateFactory } from './entities/__tests__/company-state.factory';
+import { companyMetricsResultFactory } from './entities/__tests__/company-metrics-result.factory';
+import { companyStateResultFactory } from './entities/__tests__/company-state-result.factory';
 import { companyFactory } from './entities/__tests__/company.factory';
-import { PositionsPgRepository } from '../../portfolios/repositories/positions.pg.repository';
-import { companyMetricsFactory } from './entities/__tests__/company-metrics.factory';
 
 describe('CompaniesService', () => {
   const mockedCompaniesRepository = jest.mocked({
@@ -21,6 +19,10 @@ describe('CompaniesService', () => {
     findById: jest.fn(),
     findBySymbol: jest.fn(),
   } as unknown as CompaniesPgRepository);
+
+  const mockedPositionsRepository = jest.mocked({
+    existByCompanyId: jest.fn(),
+  } as unknown as PositionsPgRepository);
 
   const mockedCompanyStateService = jest.mocked({
     createCompanyState: jest.fn(),
@@ -34,6 +36,7 @@ describe('CompaniesService', () => {
     mockedCompaniesRepository,
     new AuthService(),
     mockedCompanyStateService,
+    mockedPositionsRepository,
   );
 
   const adminUser = <User>{
@@ -70,7 +73,7 @@ describe('CompaniesService', () => {
 
     it('should create a CompanyState when creating a company', async () => {
       const company = companyFactory();
-      const state = companyStateFactory();
+      const state = companyStateResultFactory();
       const dto = <CreateCompanyDto>{
         symbol: faker.finance.currencyCode(),
         name: faker.company.name(),
@@ -95,7 +98,7 @@ describe('CompaniesService', () => {
     it('should retrieve all the companies and merge their states', async () => {
       const companies = [companyFactory(), companyFactory()];
       const states = [
-        companyStateFactory(
+        companyStateResultFactory(
           faker.number.int(),
           Date.now(),
           faker.number.int(),
@@ -104,7 +107,7 @@ describe('CompaniesService', () => {
           faker.finance.currencyCode(),
           companies[1].id,
         ),
-        companyStateFactory(
+        companyStateResultFactory(
           faker.number.int(),
           Date.now(),
           faker.number.int(),
@@ -114,7 +117,7 @@ describe('CompaniesService', () => {
           companies[0].id,
         ),
       ];
-      const metrics = companyMetricsFactory();
+      const metrics = companyMetricsResultFactory();
       mockedCompaniesRepository.findAll.mockResolvedValue(companies);
       mockedCompanyStateService.getLastByCompanyIds.mockResolvedValue(states);
       mockedCompanyStateService.getMetricsByCompanyId.mockResolvedValue(
@@ -147,8 +150,8 @@ describe('CompaniesService', () => {
 
     it('should call repository for retrieving a company', async () => {
       const company = companyFactory();
-      const state = companyStateFactory();
-      const metrics = companyMetricsFactory();
+      const state = companyStateResultFactory();
+      const metrics = companyMetricsResultFactory();
       mockedCompaniesRepository.findById.mockResolvedValue(company);
       mockedCompanyStateService.getLastByCompanyId.mockResolvedValue(state);
       mockedCompanyStateService.getMetricsByCompanyId.mockResolvedValue(
@@ -186,7 +189,7 @@ describe('CompaniesService', () => {
       );
     });
 
-    it('should fail if a company cannot be found by uuid', async () => {
+    it('should fail if a company cannot be found by id', async () => {
       const companyId = faker.number.int();
       mockedCompaniesRepository.findById.mockResolvedValue(null);
 
@@ -195,6 +198,21 @@ describe('CompaniesService', () => {
       );
 
       expect(mockedCompaniesRepository.findById).toHaveBeenCalledTimes(1);
+    });
+
+    it('should fail if positions fot the company exist', async () => {
+      const company = companyFactory();
+      mockedCompaniesRepository.findById.mockResolvedValue(company);
+      mockedPositionsRepository.existByCompanyId.mockResolvedValue(true);
+
+      await expect(service.remove(adminUser, company.id)).rejects.toThrow(
+        `Positions exist for the company ${company.name}`,
+      );
+
+      expect(mockedCompaniesRepository.findById).toHaveBeenCalledTimes(1);
+      expect(mockedPositionsRepository.existByCompanyId).toHaveBeenCalledTimes(
+        1,
+      );
     });
   });
 });

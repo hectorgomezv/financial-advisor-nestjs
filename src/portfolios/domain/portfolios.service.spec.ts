@@ -29,6 +29,7 @@ describe('PortfoliosService', () => {
     findByOwnerId: jest.fn(),
     findAll: jest.fn(),
     findById: jest.fn(),
+    findByIdWithContributions: jest.fn(),
     deleteById: jest.fn(),
     updateCash: jest.fn(),
     getContributions: jest.fn(),
@@ -163,7 +164,9 @@ describe('PortfoliosService', () => {
     });
 
     it("should fail if the portfolio don't exist when getting metrics from repository", async () => {
-      portfoliosRepository.findById.mockResolvedValueOnce(null);
+      portfoliosRepository.findByIdWithContributions.mockResolvedValueOnce(
+        null,
+      );
 
       await expect(
         service.getAverageBalances(
@@ -182,7 +185,7 @@ describe('PortfoliosService', () => {
         portfolioAverageBalanceFactory(new Date(2022, 0, 6), new Decimal(200)),
         portfolioAverageBalanceFactory(new Date(2022, 0, 8), new Decimal(400)),
       ];
-      portfoliosRepository.findById.mockResolvedValueOnce({
+      portfoliosRepository.findByIdWithContributions.mockResolvedValueOnce({
         ...adminUserPortfolio,
         contributions: [
           portfolioContributionFactory(
@@ -352,7 +355,9 @@ describe('PortfoliosService', () => {
         indexFactory(),
       ]);
       indicesService.getIndexPerformanceForTimestamps.mockResolvedValue([]);
-      portfoliosRepository.findById.mockResolvedValueOnce(portfolio);
+      portfoliosRepository.findByIdWithContributions.mockResolvedValueOnce(
+        portfolio,
+      );
       portfolioStatesService.getPortfolioStatesInPeriod.mockResolvedValueOnce(
         portfolioStates,
       );
@@ -430,7 +435,9 @@ describe('PortfoliosService', () => {
       }));
       const indices = [indexFactory(), indexFactory()];
 
-      portfoliosRepository.findById.mockResolvedValueOnce(portfolio);
+      portfoliosRepository.findByIdWithContributions.mockResolvedValueOnce(
+        portfolio,
+      );
       portfolioStatesService.getPortfolioStatesInPeriod.mockResolvedValueOnce(
         portfolioStates,
       );
@@ -534,7 +541,9 @@ describe('PortfoliosService', () => {
 
       indicesService.findAll.mockResolvedValueOnce([indexFactory()]);
       indicesService.getIndexPerformanceForTimestamps.mockResolvedValueOnce([]);
-      portfoliosRepository.findById.mockResolvedValueOnce(portfolio);
+      portfoliosRepository.findByIdWithContributions.mockResolvedValueOnce(
+        portfolio,
+      );
       portfolioStatesService.getPortfolioStatesInPeriod.mockResolvedValueOnce(
         portfolioStates,
       );
@@ -625,7 +634,9 @@ describe('PortfoliosService', () => {
 
       indicesService.findAll.mockResolvedValueOnce([indexFactory()]);
       indicesService.getIndexPerformanceForTimestamps.mockResolvedValueOnce([]);
-      portfoliosRepository.findById.mockResolvedValueOnce(portfolio);
+      portfoliosRepository.findByIdWithContributions.mockResolvedValueOnce(
+        portfolio,
+      );
       portfolioStatesService.getPortfolioStatesInPeriod.mockResolvedValueOnce(
         portfolioStates,
       );
@@ -742,7 +753,9 @@ describe('PortfoliosService', () => {
         ],
       };
       portfoliosRepository.findById.mockResolvedValueOnce(adminUserPortfolio);
-      portfoliosRepository.findById.mockResolvedValueOnce(expected);
+      portfoliosRepository.findByIdWithContributions.mockResolvedValueOnce(
+        expected,
+      );
 
       const actual = await service.addContribution(adminUser, id, dto);
 
@@ -786,15 +799,9 @@ describe('PortfoliosService', () => {
       ).rejects.toThrow('Portfolio not found');
     });
 
-    it('should delete the portfolio and its positions and states', async () => {
+    it('should delete the portfolio', async () => {
       portfoliosRepository.findById.mockResolvedValueOnce(adminUserPortfolio);
-
       await service.deleteOne(adminUser, adminUserPortfolio.id);
-
-      expect(positionsService.deleteByPortfolioId).toHaveBeenCalledTimes(1);
-      expect(portfolioStatesService.deleteByPortfolioId).toHaveBeenCalledTimes(
-        1,
-      );
     });
   });
 });

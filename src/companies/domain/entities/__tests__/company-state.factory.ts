@@ -4,15 +4,15 @@ import Decimal from 'decimal.js';
 
 export function companyStateFactory(
   id?: number,
-  timestamp?: number,
-  price?: number,
-  forwardPE?: number,
-  profitMargins?: number,
+  timestamp?: Date,
+  price?: Decimal,
+  forwardPE?: Decimal,
+  profitMargins?: Decimal,
   currency?: string,
   companyId?: number,
-  enterpriseToRevenue?: number,
-  enterpriseToEbitda?: number,
-  shortPercentOfFloat?: number,
+  enterpriseToRevenue?: Decimal,
+  enterpriseToEbitda?: Decimal,
+  shortPercentOfFloat?: Decimal,
 ): CompanyState {
   return <CompanyState>{
     id: id ?? faker.number.int(),
