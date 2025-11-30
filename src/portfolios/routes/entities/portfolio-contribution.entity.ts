@@ -1,11 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { PortfolioContribution as DomainPortfolioContribution } from '../../domain/entities/portfolio-contribution.entity';
 
-export class PortfolioContribution implements DomainPortfolioContribution {
+export class PortfolioContribution {
   @ApiProperty()
-  uuid: string;
+  id: number;
   @ApiProperty()
   timestamp: Date;
   @ApiProperty()
-  amountEUR: number;
+  amountEUR: string;
 }

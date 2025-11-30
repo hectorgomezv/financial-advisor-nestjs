@@ -44,6 +44,7 @@ import { UpsertPositionDto } from './dto/upsert-position.dto';
 import { PortfolioAverageMetric as PortfolioAverageBalance } from './entities/portfolio-average-balance.entity';
 import { Portfolio } from './entities/portfolio.entity';
 import { Position } from './entities/position.entity';
+import Decimal from 'decimal.js';
 
 @UseInterceptors(DataInterceptor)
 @UseFilters(MainExceptionFilter)
@@ -72,60 +73,65 @@ export class PortfoliosController {
     return this.portfoliosService.findByOwnerId(req.user as User);
   }
 
-  @Get(':uuid')
+  @Get(':id')
   @OkResponse(PortfolioDetailDto)
   @ApiNotFoundResponse()
-  findOne(@Request() req, @Param('uuid') uuid: string) {
-    return this.portfoliosService.findOne(req.user as User, uuid);
+  findOne(@Request() req, @Param('id', ParseIntPipe) id: number) {
+    return this.portfoliosService.findById(req.user as User, id);
   }
 
-  @Delete(':uuid')
+  @Delete(':id')
   @ApiNotFoundResponse()
   @OkResponse(Portfolio)
-  remove(@Request() req, @Param('uuid') uuid: string) {
-    return this.portfoliosService.deleteOne(req.user as User, uuid);
+  remove(@Request() req, @Param('id', ParseIntPipe) id: number) {
+    return this.portfoliosService.deleteOne(req.user as User, id);
   }
 
-  @Get(':uuid/metrics/average-balances')
+  @Get(':id/metrics/average-balances')
   @OkArrayResponse(PortfolioAverageBalance)
   @ApiNotFoundResponse()
   @ApiQuery({ name: 'range', type: String, required: false })
-  getPortfolioMetrics(
+  async getPortfolioMetrics(
     @Request() req,
-    @Param('uuid') uuid: string,
+    @Param('id', ParseIntPipe) id: number,
     @Query('range', new DefaultValuePipe('week')) range: string,
   ): Promise<Array<PortfolioAverageBalance>> {
-    return this.portfoliosService.getAverageBalances(
+    const res = await this.portfoliosService.getAverageBalances(
       req.user as User,
-      uuid,
+      id,
       range,
     );
+    return res.map((pav) => ({
+      timestamp: pav.timestamp,
+      average: pav.average.toString(),
+      contributions: pav.contributions.toString(),
+    }));
   }
 
-  @Get(':uuid/metrics/performance')
+  @Get(':id/metrics/performance')
   @OkArrayResponse(DataPoint)
   @ApiNotFoundResponse()
   @ApiQuery({ name: 'range', type: String, required: false })
   getPerformance(
     @Request() req,
-    @Param('uuid') uuid: string,
+    @Param('id', ParseIntPipe) id: number,
     @Query('range', new DefaultValuePipe('week')) range: string,
   ): Promise<DataPoint[]> {
-    return this.portfoliosService.getPerformance(req.user as User, uuid, range);
+    return this.portfoliosService.getPerformance(req.user as User, id, range);
   }
 
-  @Get(':uuid/metrics/performance/returns')
+  @Get(':id/metrics/performance/returns')
   @OkArrayResponse(DataPoint)
   @ApiNotFoundResponse()
   @ApiQuery({ name: 'range', type: String, required: false })
   getReturnRates(
     @Request() req,
-    @Param('uuid') uuid: string,
+    @Param('id', ParseIntPipe) id: number,
     @Query('range', new DefaultValuePipe('week')) range: string,
   ): Promise<DataPoint[]> {
     return this.portfoliosService.getReturnRates(
       req.user as User,
-      uuid,
+      id,
       TimePeriod.from(
         getRangeStartTimestamp(timeRangeFromStr(range)),
         new Date(),
@@ -133,54 +139,54 @@ export class PortfoliosController {
     );
   }
 
-  @Post(':uuid/positions')
+  @Post(':id/positions')
   @CreatedResponse(Position)
   @ApiBadRequestResponse()
   addPosition(
     @Request() req,
-    @Param('uuid') uuid: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() upsertPositionDto: UpsertPositionDto,
   ) {
-    return this.positionsService.create(
-      req.user as User,
-      uuid,
-      upsertPositionDto,
-    );
+    return this.positionsService.create(req.user as User, id, {
+      symbol: upsertPositionDto.symbol,
+      targetWeight: new Decimal(upsertPositionDto.targetWeight),
+      shares: new Decimal(upsertPositionDto.shares),
+      blocked: upsertPositionDto.blocked,
+    });
   }
 
-  @Put(':uuid/positions')
+  @Put(':id/positions')
   @OkResponse(Position)
   @ApiBadRequestResponse()
   @ApiNotFoundResponse()
   updatePosition(
     @Request() req,
-    @Param('uuid') uuid: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() upsertPositionDto: UpsertPositionDto,
   ) {
-    return this.positionsService.update(
-      req.user as User,
-      uuid,
-      upsertPositionDto,
-    );
+    return this.positionsService.update(req.user as User, id, {
+      symbol: upsertPositionDto.symbol,
+      targetWeight: new Decimal(upsertPositionDto.targetWeight),
+      shares: new Decimal(upsertPositionDto.shares),
+      blocked: upsertPositionDto.blocked,
+    });
   }
 
-  @Put(':uuid/cash')
+  @Put(':id/cash')
   @OkResponse(Position)
   @ApiBadRequestResponse()
   @ApiNotFoundResponse()
   updatePortfolioCash(
     @Request() req,
-    @Param('uuid') uuid: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updatePortfolioCash: UpdatePortfolioCashDto,
   ) {
-    return this.portfoliosService.updateCash(
-      req.user as User,
-      uuid,
-      updatePortfolioCash,
-    );
+    return this.portfoliosService.updateCash(req.user as User, id, {
+      cash: new Decimal(updatePortfolioCash.cash),
+    });
   }
 
-  @Get(':uuid/contributions')
+  @Get(':id/contributions')
   @ApiBadRequestResponse()
   @ApiNotFoundResponse()
   @OkResponse(ContributionsPage)
@@ -188,7 +194,7 @@ export class PortfoliosController {
   @ApiQuery({ name: 'limit', type: Number, required: false })
   async getContributions(
     @Request() req,
-    @Param('uuid') uuid: string,
+    @Param('id', ParseIntPipe) id: number,
     @Query(
       'offset',
       new DefaultValuePipe(PortfoliosService.DEFAULT_OFFSET),
@@ -205,67 +211,71 @@ export class PortfoliosController {
     const contributionsMetadata =
       await this.portfoliosService.getContributionsMetadata(
         req.user as User,
-        uuid,
+        id,
       );
     const contributions = await this.portfoliosService.getContributions(
       req.user as User,
-      uuid,
+      id,
       offset,
       limit,
     );
 
-    return <ContributionsPage>{
-      uuid,
+    return {
+      portfolioId: id,
       count: contributionsMetadata.count,
-      sum: contributionsMetadata.sum,
+      sum: contributionsMetadata.sum.toString(),
       offset,
       limit,
-      items: contributions,
+      items: contributions.map((c) => ({
+        id: c.id,
+        timestamp: c.timestamp,
+        amountEUR: c.amountEUR.toString(),
+      })),
     };
   }
 
-  @Post(':uuid/contributions')
+  @Post(':id/contributions')
   @CreatedResponse(Portfolio)
   @ApiBadRequestResponse()
   addContribution(
     @Request() req,
-    @Param('uuid') uuid: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() addPortfolioContributionDto: AddPortfolioContributionDto,
   ) {
     return this.portfoliosService.addContribution(
       req.user as User,
-      uuid,
+      id,
       addPortfolioContributionDto,
     );
   }
 
-  @Delete(':uuid/contributions/:contributionUuid')
+  @Delete(':id/contributions/:contributionId')
   @CreatedResponse(Portfolio)
   @ApiBadRequestResponse()
   deleteContribution(
     @Request() req,
-    @Param('uuid') uuid: string,
-    @Param('contributionUuid') contributionUuid: string,
+    @Param('id', ParseIntPipe) id: number,
+    @Param('contributionId') contributionId: number,
   ) {
     return this.portfoliosService.deleteContribution(
       req.user as User,
-      uuid,
-      contributionUuid,
+      id,
+      contributionId,
     );
   }
 
-  @Delete(':uuid/positions/:positionUuid')
+  @Delete(':id/positions/:positionId')
   @OkResponse(Position)
   @ApiNotFoundResponse()
   deletePosition(
     @Request() req,
-    @Param('uuid') uuid: string,
-    @Param('positionUuid') positionUuid: string,
+    @Param('id', ParseIntPipe) id: number,
+    @Param('positionId') positionId: number,
   ) {
     return this.positionsService.deleteByUuidAndPortfolioUuid(
       req.user as User,
-      uuid,
-      positionUuid,
+      id,
+      positionId,
     );
   }
 }

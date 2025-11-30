@@ -1,18 +1,19 @@
 import { faker } from '@faker-js/faker';
-import { PortfolioStatesRepository } from '../repositories/portfolio-states.repository';
-import { TimeRange } from './entities/time-range.enum';
+import Decimal from 'decimal.js';
+import { PortfolioStatesPgRepository } from '../repositories/portfolio-states.pg.repository';
+import { portfolioStateFactory } from './entities/__tests__/portfolio-state.factory';
 import { portfolioFactory } from './entities/__tests__/portfolio.factory';
 import { positionFactory } from './entities/__tests__/position.factory';
+import { TimeRange } from './entities/time-range.enum';
 import { PortfolioStatesService } from './portfolio-states.service';
-import { round } from 'lodash';
 
 describe('PortfolioStatesService', () => {
   const portfolioStatesRepository = jest.mocked({
     create: jest.fn(),
-    getLastByPortfolioUuid: jest.fn(),
+    getLastByPortfolioId: jest.fn(),
     getAverageBalancesForRange: jest.fn(),
-    deleteByPortfolioUuid: jest.fn(),
-  } as unknown as PortfolioStatesRepository);
+    deleteByPortfolioId: jest.fn(),
+  } as unknown as PortfolioStatesPgRepository);
 
   const service: PortfolioStatesService = new PortfolioStatesService(
     portfolioStatesRepository,
@@ -27,56 +28,53 @@ describe('PortfolioStatesService', () => {
         positionFactory(),
       ];
       const totalValueEUR = positions.reduce(
-        (sum, pos) => sum + pos.value,
+        (sum, pos) => sum.plus(pos.value),
         portfolio.cash,
       );
-      const sumWeights = round(
-        positions.reduce((acc, pos) => acc + pos.targetWeight, 0),
-        2,
-      );
+      const sumWeights = positions
+        .reduce((acc, pos) => acc.plus(pos.targetWeight), new Decimal(0))
+        .toDecimalPlaces(2);
 
       await service.createPortfolioState(portfolio, positions);
 
       expect(portfolioStatesRepository.create).toHaveBeenCalledTimes(1);
       expect(portfolioStatesRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
-          portfolioUuid: portfolio.uuid,
-          isValid: sumWeights === 100,
+          portfolioId: portfolio.id,
+          isValid: sumWeights.equals(100),
           totalValueEUR,
           cash: portfolio.cash,
-          roicEUR:
-            totalValueEUR -
-            portfolio.contributions.reduce((sum, i) => sum + i.amountEUR, 0),
+          roicEUR: totalValueEUR.minus(
+            portfolio.contributions.reduce(
+              (sum, i) => sum.plus(i.amountEUR),
+              new Decimal(0),
+            ),
+          ),
         }),
       );
     });
   });
 
   describe('retrieving', () => {
-    it('should call repository to retrieve the last state by portfolio uuid', async () => {
+    it('should call repository to retrieve the last state by portfolio id', async () => {
       const portfolio = portfolioFactory();
-      await service.getLastByPortfolioUuid(portfolio.uuid);
+      portfolioStatesRepository.getLastByPortfolioId.mockResolvedValue(
+        portfolioStateFactory(),
+      );
+
+      await service.getLastByPortfolioId(portfolio.id);
+
       expect(
-        portfolioStatesRepository.getLastByPortfolioUuid,
-      ).toHaveBeenCalledWith(portfolio.uuid);
+        portfolioStatesRepository.getLastByPortfolioId,
+      ).toHaveBeenCalledWith(portfolio.id);
     });
 
     it('should call repository to retrieve portfolio average balances for range', async () => {
-      const uuid = faker.string.uuid();
-      await service.getAverageBalancesForRange(uuid, TimeRange.Week);
+      const id = faker.number.int();
+      await service.getAverageBalancesForRange(id, TimeRange.Week);
       expect(
         portfolioStatesRepository.getAverageBalancesForRange,
-      ).toHaveBeenCalledWith(uuid, TimeRange.Week);
-    });
-  });
-
-  describe('deleting', () => {
-    it('should call repository for deleting all the states by portfolio uuid', async () => {
-      const uuid = faker.string.uuid();
-      await service.deleteByPortfolioUuid(uuid);
-      expect(portfolioStatesRepository.deleteByPortfolioUuid).toBeCalledWith(
-        uuid,
-      );
+      ).toHaveBeenCalledWith(id, TimeRange.Week);
     });
   });
 });

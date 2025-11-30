@@ -1,11 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Company as DomainCompany } from '../../domain/entities/company.entity';
 import { CompanyMetrics } from './company-metrics.entity';
 import { CompanyState } from './company-state.entity';
 
-export class Company implements DomainCompany {
+export class Company {
   @ApiProperty()
-  uuid: string;
+  id: number;
   @ApiProperty()
   name: string;
   @ApiProperty()

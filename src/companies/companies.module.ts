@@ -11,8 +11,7 @@ import { YahooFinancialDataClient } from './datasources/yahoo-financial-data.cli
 import { CompaniesService } from './domain/companies.service';
 import { CompanyStatesService } from './domain/company-states.service';
 import { CompaniesPgRepository } from './repositories/companies.pg.repository';
-import { CompaniesRepository } from './repositories/companies.repository';
-import { CompanyStatesRepository } from './repositories/company-states.repository';
+import { CompanyStatesPgRepository } from './repositories/company-states.pg.repository';
 import {
   CompanyStateModel,
   CompanyStateSchema,
@@ -38,17 +37,12 @@ import { CompaniesController } from './routes/companies.controller';
   providers: [
     AuthService,
     CompaniesPgRepository,
-    CompaniesRepository,
     CompaniesService,
-    CompanyStatesRepository,
+    CompanyStatesPgRepository,
     CompanyStatesService,
     RedisClient,
     { provide: IFinancialDataClient, useClass: YahooFinancialDataClient },
   ],
-  exports: [
-    CompaniesPgRepository,
-    CompaniesRepository,
-    CompanyStatesRepository,
-  ],
+  exports: [CompaniesPgRepository, CompanyStatesPgRepository],
 })
 export class CompaniesModule {}

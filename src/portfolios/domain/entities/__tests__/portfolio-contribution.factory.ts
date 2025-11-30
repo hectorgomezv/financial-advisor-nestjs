@@ -1,14 +1,15 @@
 import { faker } from '@faker-js/faker';
 import { PortfolioContribution } from '../portfolio-contribution.entity';
+import Decimal from 'decimal.js';
 
 export function portfolioContributionFactory(
-  uuid?: string,
+  id?: number,
   timestamp?: Date,
-  amountEUR?: number,
+  amountEUR?: Decimal,
 ): PortfolioContribution {
   return <PortfolioContribution>{
-    uuid: uuid ?? faker.string.uuid(),
+    id: id ?? faker.number.int(),
     timestamp: timestamp ?? new Date(),
-    amountEUR: amountEUR ?? Number(faker.finance.amount()),
+    amountEUR: amountEUR ?? new Decimal(faker.finance.amount()),
   };
 }

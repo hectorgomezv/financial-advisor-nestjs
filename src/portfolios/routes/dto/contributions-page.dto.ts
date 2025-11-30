@@ -4,11 +4,11 @@ import { PortfolioContribution } from '../entities/portfolio-contribution.entity
 @ApiExtraModels(PortfolioContribution)
 export class ContributionsPage {
   @ApiProperty()
-  uuid: string;
+  portfolioId: number;
   @ApiProperty()
   count: number;
   @ApiProperty()
-  sum: number;
+  sum: string;
   @ApiProperty()
   offset: number;
   @ApiProperty()

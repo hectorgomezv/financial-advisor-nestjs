@@ -1,34 +1,24 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { CompanyState as DomainCompanyState } from '../../domain/entities/company-state.entity';
 
-export class CompanyState implements DomainCompanyState {
+export class CompanyState {
   @ApiProperty()
-  uuid: string;
-
+  id: number;
   @ApiProperty()
-  companyUuid: string;
-
+  companyId: number;
   @ApiProperty()
-  timestamp: number;
-
+  timestamp: Date;
   @ApiProperty()
-  price: number;
-
+  price: string;
   @ApiProperty()
   currency: string;
-
   @ApiProperty()
   enterpriseToRevenue: number;
-
   @ApiProperty()
   enterpriseToEbitda: number;
-
   @ApiProperty()
   forwardPE: number;
-
   @ApiProperty()
   profitMargins: number;
-
   @ApiProperty()
   shortPercentOfFloat: number;
 }

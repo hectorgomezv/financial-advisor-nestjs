@@ -2,7 +2,6 @@ import { faker } from '@faker-js/faker';
 import { QuoteSummary } from '../quote-summary.entity';
 
 export function quoteSummaryFactory(
-  uuid?: string,
   timestamp?: number,
   price?: number,
   forwardPE?: number,
@@ -12,7 +11,6 @@ export function quoteSummaryFactory(
   shortPercentOfFloat?: number,
 ): QuoteSummary {
   return <QuoteSummary>{
-    uuid: uuid ?? faker.string.uuid(),
     timestamp: timestamp ?? Date.now(),
     price: price ?? faker.number.int(),
     forwardPE: forwardPE ?? faker.number.int(),

@@ -2,42 +2,41 @@ import { faker } from '@faker-js/faker';
 import { sortBy } from 'lodash';
 import { AuthService } from '../../common/auth/auth-service';
 import { User, UserRole } from '../../common/auth/entities/user.entity';
-import { positionFactory } from '../../portfolios/domain/entities/__tests__/position.factory';
-import { PositionsRepository } from '../../portfolios/repositories/positions.repository';
-import { CompaniesRepository } from '../repositories/companies.repository';
+import { PositionsPgRepository } from '../../portfolios/repositories/positions.pg.repository';
+import { CompaniesPgRepository } from '../repositories/companies.pg.repository';
 import { CreateCompanyDto } from '../routes/dto/create-company.dto';
 import { CompaniesService } from './companies.service';
 import { CompanyStatesService } from './company-states.service';
-import { companyStateFactory } from './entities/__tests__/company-state.factory';
+import { companyMetricsResultFactory } from './entities/__tests__/company-metrics-result.factory';
+import { companyStateResultFactory } from './entities/__tests__/company-state-result.factory';
 import { companyFactory } from './entities/__tests__/company.factory';
 
 describe('CompaniesService', () => {
   const mockedCompaniesRepository = jest.mocked({
     create: jest.fn(),
-    deleteOne: jest.fn(),
+    deleteById: jest.fn(),
     findAll: jest.fn(),
-    findOne: jest.fn(),
+    findById: jest.fn(),
     findBySymbol: jest.fn(),
-  } as unknown as CompaniesRepository);
+  } as unknown as CompaniesPgRepository);
 
   const mockedPositionsRepository = jest.mocked({
-    create: jest.fn(),
-    findBySymbol: jest.fn(),
-    findByCompanyUuid: jest.fn(),
-  } as unknown as PositionsRepository);
+    existByCompanyId: jest.fn(),
+  } as unknown as PositionsPgRepository);
 
   const mockedCompanyStateService = jest.mocked({
     createCompanyState: jest.fn(),
-    deleteByCompanyUuid: jest.fn(),
-    getLastStateByCompanyUuid: jest.fn(),
-    getLastStateByCompanyUuids: jest.fn(),
+    deleteByCompanyId: jest.fn(),
+    getLastByCompanyId: jest.fn(),
+    getLastByCompanyIds: jest.fn(),
+    getMetricsByCompanyId: jest.fn(),
   } as unknown as CompanyStatesService);
 
   const service = new CompaniesService(
     mockedCompaniesRepository,
-    mockedPositionsRepository,
     new AuthService(),
     mockedCompanyStateService,
+    mockedPositionsRepository,
   );
 
   const adminUser = <User>{
@@ -74,7 +73,7 @@ describe('CompaniesService', () => {
 
     it('should create a CompanyState when creating a company', async () => {
       const company = companyFactory();
-      const state = companyStateFactory();
+      const state = companyStateResultFactory();
       const dto = <CreateCompanyDto>{
         symbol: faker.finance.currencyCode(),
         name: faker.company.name(),
@@ -86,7 +85,9 @@ describe('CompaniesService', () => {
       const actual = await service.create(adminUser, dto);
 
       expect(actual).toEqual({ ...company, state });
-      expect(mockedCompanyStateService.createCompanyState).toBeCalledTimes(1);
+      expect(
+        mockedCompanyStateService.createCompanyState,
+      ).toHaveBeenCalledTimes(1);
       expect(mockedCompanyStateService.createCompanyState).toBeCalledWith(
         company,
       );
@@ -97,41 +98,45 @@ describe('CompaniesService', () => {
     it('should retrieve all the companies and merge their states', async () => {
       const companies = [companyFactory(), companyFactory()];
       const states = [
-        companyStateFactory(
-          faker.string.uuid(),
+        companyStateResultFactory(
+          faker.number.int(),
           Date.now(),
           faker.number.int(),
           faker.number.int(),
           faker.number.int(),
           faker.finance.currencyCode(),
-          companies[1].uuid,
+          companies[1].id,
         ),
-        companyStateFactory(
-          faker.string.uuid(),
+        companyStateResultFactory(
+          faker.number.int(),
           Date.now(),
           faker.number.int(),
           faker.number.int(),
           faker.number.int(),
           faker.finance.currencyCode(),
-          companies[0].uuid,
+          companies[0].id,
         ),
       ];
+      const metrics = companyMetricsResultFactory();
       mockedCompaniesRepository.findAll.mockResolvedValue(companies);
-      mockedCompanyStateService.getLastStateByCompanyUuids.mockResolvedValue(
-        states,
+      mockedCompanyStateService.getLastByCompanyIds.mockResolvedValue(states);
+      mockedCompanyStateService.getMetricsByCompanyId.mockResolvedValue(
+        metrics,
       );
 
-      const actual = await service.findAll();
+      const actual = await service.getCompaniesWithMetricsAndState();
 
       const expected = sortBy(
         [
           {
             ...companies[0],
             state: states[1],
+            metrics,
           },
           {
             ...companies[1],
             state: states[0],
+            metrics,
           },
         ],
         'symbol',
@@ -139,84 +144,74 @@ describe('CompaniesService', () => {
       expect(actual).toEqual(expected);
       expect(mockedCompaniesRepository.findAll).toHaveBeenCalledTimes(1);
       expect(
-        mockedCompanyStateService.getLastStateByCompanyUuids,
+        mockedCompanyStateService.getLastByCompanyIds,
       ).toHaveBeenCalledTimes(1);
     });
 
     it('should call repository for retrieving a company', async () => {
       const company = companyFactory();
-      const state = companyStateFactory();
-      mockedCompaniesRepository.findOne.mockResolvedValue(company);
-      mockedCompanyStateService.getLastStateByCompanyUuid.mockResolvedValue(
-        state,
+      const state = companyStateResultFactory();
+      const metrics = companyMetricsResultFactory();
+      mockedCompaniesRepository.findById.mockResolvedValue(company);
+      mockedCompanyStateService.getLastByCompanyId.mockResolvedValue(state);
+      mockedCompanyStateService.getMetricsByCompanyId.mockResolvedValue(
+        metrics,
       );
 
-      const actual = await service.findOne(company.uuid!);
+      const actual = await service.findById(company.id);
 
-      expect(actual).toEqual({ ...company, state });
-      expect(mockedCompaniesRepository.findOne).toHaveBeenCalledTimes(1);
+      expect(actual).toEqual({ ...company, state, metrics });
+      expect(mockedCompaniesRepository.findById).toHaveBeenCalledTimes(1);
       expect(
-        mockedCompanyStateService.getLastStateByCompanyUuid,
+        mockedCompanyStateService.getLastByCompanyId,
       ).toHaveBeenCalledTimes(1);
     });
 
-    it('should fail if a company cannot be found by uuid', async () => {
-      const companyUuid = faker.string.uuid();
-      mockedCompaniesRepository.findOne.mockResolvedValue(null);
+    it('should fail if a company cannot be found by id', async () => {
+      const companyId = faker.number.int();
+      mockedCompaniesRepository.findById.mockResolvedValue(null);
 
-      await expect(service.findOne(companyUuid)).rejects.toThrow(
+      await expect(service.findById(companyId)).rejects.toThrow(
         'Company not found',
       );
 
-      expect(mockedCompaniesRepository.findOne).toHaveBeenCalledTimes(1);
+      expect(mockedCompaniesRepository.findById).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('deletion', () => {
     it('should fail if the requestor is not an admin', async () => {
       const user = { ...adminUser, role: UserRole.USER };
-      const companyUuid = faker.string.uuid();
+      const companyId = faker.number.int();
 
-      await expect(service.remove(user, companyUuid)).rejects.toThrow(
+      await expect(service.remove(user, companyId)).rejects.toThrow(
         'Access denied',
       );
     });
 
-    it('should fail if a company cannot be found by uuid', async () => {
-      const companyUuid = faker.string.uuid();
-      mockedCompaniesRepository.findOne.mockResolvedValue(null);
+    it('should fail if a company cannot be found by id', async () => {
+      const companyId = faker.number.int();
+      mockedCompaniesRepository.findById.mockResolvedValue(null);
 
-      await expect(service.remove(adminUser, companyUuid)).rejects.toThrow(
+      await expect(service.remove(adminUser, companyId)).rejects.toThrow(
         'Company not found',
       );
 
-      expect(mockedCompaniesRepository.findOne).toHaveBeenCalledTimes(1);
+      expect(mockedCompaniesRepository.findById).toHaveBeenCalledTimes(1);
     });
 
-    it('should fail if positions associated with the company exist', async () => {
+    it('should fail if positions fot the company exist', async () => {
       const company = companyFactory();
-      const position = positionFactory();
-      mockedCompaniesRepository.findOne.mockResolvedValue(company);
-      mockedPositionsRepository.findByCompanyUuid.mockResolvedValue([position]);
+      mockedCompaniesRepository.findById.mockResolvedValue(company);
+      mockedPositionsRepository.existByCompanyId.mockResolvedValue(true);
 
-      await expect(service.remove(adminUser, company.uuid!)).rejects.toThrow(
-        `Positions for company ${company.symbol} still exist`,
+      await expect(service.remove(adminUser, company.id)).rejects.toThrow(
+        `Positions exist for the company ${company.name}`,
       );
-    });
 
-    it('should delete company states when deleting a company', async () => {
-      const company = companyFactory();
-      mockedCompaniesRepository.findOne.mockResolvedValue(company);
-      mockedPositionsRepository.findByCompanyUuid.mockResolvedValue([]);
-
-      const deleted = await service.remove(adminUser, company.uuid!);
-
-      expect(deleted).toEqual(company);
-      expect(
-        mockedCompanyStateService.deleteByCompanyUuid,
-      ).toHaveBeenCalledWith(company.uuid);
-      expect(mockedCompaniesRepository.deleteOne).toHaveBeenCalledWith(
-        company.uuid,
+      expect(mockedCompaniesRepository.findById).toHaveBeenCalledTimes(1);
+      expect(mockedPositionsRepository.existByCompanyId).toHaveBeenCalledTimes(
+        1,
       );
     });
   });

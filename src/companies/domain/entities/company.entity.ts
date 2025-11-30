@@ -1,13 +1,16 @@
-import { CompanyMetrics } from './company-metrics.entity';
-import { CompanyState } from './company-state.entity';
+import { CompanyStateResult } from '../company-states.service';
+import { CompanyMetricsResult } from './company-metrics-result.entity';
 
 export class Company {
-  uuid?: string;
+  id: number;
   name: string;
   symbol: string;
-  metrics?: CompanyMetrics;
 }
 
 export class CompanyWithState extends Company {
-  state: CompanyState;
+  state: CompanyStateResult | null;
+}
+
+export class CompanyWithStateAndMetrics extends CompanyWithState {
+  metrics: CompanyMetricsResult | null;
 }

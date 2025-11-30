@@ -8,7 +8,6 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { AxiosError } from 'axios';
 import { sample } from 'lodash';
-import { v4 as uuidv4 } from 'uuid';
 import { DataPoint } from '../../common/domain/entities/data-point.entity';
 import { Chart, Quote } from '../domain/entities/chart.entity';
 import { QuoteSummary } from '../domain/entities/quote-summary.entity';
@@ -78,7 +77,6 @@ export class YahooFinancialDataClient implements IFinancialDataClient {
     price,
   }): QuoteSummary {
     return <QuoteSummary>{
-      uuid: uuidv4(),
       timestamp: Date.now(),
       price: price?.regularMarketPrice?.raw ?? 0,
       currency: summaryDetail?.currency,

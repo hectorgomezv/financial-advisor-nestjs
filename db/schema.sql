@@ -1,4 +1,4 @@
-\restrict EItj89W02oloSgax00bF3IxkGMue5p6bX4P1N588FLEn7HpDDcIpxDShbaLycNB
+\restrict TXZY4byTAA9bst6c9GoLa72W5t4RtGgEUiJPDgbXBsTYlDPouDrkgAMegdaxhE5
 
 -- Dumped from database version 18.0 (Debian 18.0-1.pgdg13+3)
 -- Dumped by pg_dump version 18.0
@@ -135,10 +135,31 @@ ALTER SEQUENCE public.indices_id_seq OWNED BY public.indices.id;
 --
 
 CREATE TABLE public.portfolio_contributions (
+    id integer NOT NULL,
     portfolio_id integer NOT NULL,
     "timestamp" timestamp with time zone NOT NULL,
     amount_eur numeric(10,2) NOT NULL
 );
+
+
+--
+-- Name: portfolio_contributions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.portfolio_contributions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: portfolio_contributions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.portfolio_contributions_id_seq OWNED BY public.portfolio_contributions.id;
 
 
 --
@@ -218,10 +239,11 @@ CREATE TABLE public.positions (
     id integer NOT NULL,
     portfolio_id integer NOT NULL,
     company_id integer NOT NULL,
-    target_weight numeric(5,2) NOT NULL,
-    shares numeric(10,2) NOT NULL,
     blocked boolean NOT NULL,
-    shares_updated_at timestamp with time zone DEFAULT now() NOT NULL
+    shares numeric(10,2) NOT NULL,
+    shares_updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    target_weight numeric(5,2) NOT NULL,
+    value numeric(18,5) DEFAULT (0)::numeric NOT NULL
 );
 
 
@@ -273,6 +295,13 @@ ALTER TABLE ONLY public.company_states ALTER COLUMN id SET DEFAULT nextval('publ
 --
 
 ALTER TABLE ONLY public.indices ALTER COLUMN id SET DEFAULT nextval('public.indices_id_seq'::regclass);
+
+
+--
+-- Name: portfolio_contributions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.portfolio_contributions ALTER COLUMN id SET DEFAULT nextval('public.portfolio_contributions_id_seq'::regclass);
 
 
 --
@@ -334,6 +363,14 @@ ALTER TABLE ONLY public.indices
 
 ALTER TABLE ONLY public.indices
     ADD CONSTRAINT indices_symbol_key UNIQUE (symbol);
+
+
+--
+-- Name: portfolio_contributions portfolio_contributions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.portfolio_contributions
+    ADD CONSTRAINT portfolio_contributions_pkey PRIMARY KEY (id);
 
 
 --
@@ -491,7 +528,7 @@ ALTER TABLE ONLY public.positions
 -- PostgreSQL database dump complete
 --
 
-\unrestrict EItj89W02oloSgax00bF3IxkGMue5p6bX4P1N588FLEn7HpDDcIpxDShbaLycNB
+\unrestrict TXZY4byTAA9bst6c9GoLa72W5t4RtGgEUiJPDgbXBsTYlDPouDrkgAMegdaxhE5
 
 
 --

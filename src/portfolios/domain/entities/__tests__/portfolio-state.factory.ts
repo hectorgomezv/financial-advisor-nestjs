@@ -1,22 +1,25 @@
 import { faker } from '@faker-js/faker';
 import { PortfolioState } from '../portfolio-state.entity';
+import Decimal from 'decimal.js';
 
 export function portfolioStateFactory(
-  uuid?: string,
+  id?: number,
   timestamp?: Date,
-  portfolioUuid?: string,
+  portfolioId?: number,
   isValid?: boolean,
-  sumWeights?: number,
-  totalValueEUR?: number,
-  roicEUR?: number,
+  sumWeights?: Decimal,
+  totalValueEUR?: Decimal,
+  roicEUR?: Decimal,
+  cash?: Decimal,
 ): PortfolioState {
   return <PortfolioState>{
-    uuid: uuid ?? faker.string.uuid(),
-    portfolioUuid: portfolioUuid ?? faker.string.uuid(),
+    id: id ?? faker.number.int(),
+    portfolioId: portfolioId ?? faker.number.int(),
     timestamp: timestamp ?? faker.date.recent(),
     isValid: isValid ?? faker.datatype.boolean(),
-    sumWeights: sumWeights ?? faker.number.int(),
-    totalValueEUR: totalValueEUR ?? faker.number.int(),
-    roicEUR: roicEUR ?? faker.number.int(),
+    sumWeights: sumWeights ?? new Decimal(faker.number.int()),
+    totalValueEUR: totalValueEUR ?? new Decimal(faker.number.int()),
+    roicEUR: roicEUR ?? new Decimal(faker.number.int()),
+    cash: cash ?? new Decimal(faker.number.int()),
   };
 }

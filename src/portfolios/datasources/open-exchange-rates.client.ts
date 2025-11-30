@@ -19,6 +19,7 @@ export class OpenExchangeRatesClient {
     );
   }
 
+  // TODO: store rates in Redis/DB with TTL
   async getRates(): Promise<Record<string, number> | null> {
     try {
       const { data } = await this.httpService.axiosRef.get(

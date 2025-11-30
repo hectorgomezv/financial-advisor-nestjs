@@ -1,7 +1,6 @@
 import Decimal from 'decimal.js';
 
-export class PortfolioState {
-  id: number;
+export interface CreatePortfolioStateDto {
   portfolioId: number;
   cash: Decimal;
   isValid: boolean;

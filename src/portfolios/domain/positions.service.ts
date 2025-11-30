@@ -5,189 +5,170 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
 import { User } from '../../common/auth/entities/user.entity';
 import { CompanyState } from '../../companies/domain/entities/company-state.entity';
-import { CompaniesRepository } from '../../companies/repositories/companies.repository';
-import { CompanyStatesRepository } from '../../companies/repositories/company-states.repository';
+import { CompaniesPgRepository } from '../../companies/repositories/companies.pg.repository';
+import { CompanyStatesPgRepository } from '../../companies/repositories/company-states.pg.repository';
 import { CurrencyExchangeClient } from '../datasources/currency-exchange.client';
-import { PortfoliosRepository } from '../repositories/portfolios.repository';
-import { PositionsRepository } from '../repositories/positions.repository';
+import { PortfoliosPgRepository } from '../repositories/portfolios.pg.repository';
+import { PositionsPgRepository } from '../repositories/positions.pg.repository';
+import { CreatePositionDto } from './dto/create-position.dto';
 import { PositionDetailDto } from './dto/position-detail.dto';
+import { UpdatePositionDto } from './dto/update-position.dto';
 import { UpsertPositionDto } from './dto/upsert-position.dto';
 import { Portfolio } from './entities/portfolio.entity';
 import { Position } from './entities/position.entity';
 import { PortfolioStatesService } from './portfolio-states.service';
+import { Company } from '../../companies/domain/entities/company.entity';
+import Decimal from 'decimal.js';
+import { PositionDetailResult } from './dto/position-detail-result';
+import { Maths } from '../../common/domain/entities/maths.entity';
 
 @Injectable()
 export class PositionsService {
   private readonly logger = new Logger(PositionsService.name);
 
   constructor(
-    private readonly repository: PositionsRepository,
-    private readonly portfoliosRepository: PortfoliosRepository,
+    private readonly repository: PositionsPgRepository,
+    private readonly portfoliosRepository: PortfoliosPgRepository,
     private readonly portfolioStatesService: PortfolioStatesService,
-    private readonly companiesRepository: CompaniesRepository,
-    private readonly companyStatesRepository: CompanyStatesRepository,
+    private readonly companiesRepository: CompaniesPgRepository,
+    private readonly companyStatesRepository: CompanyStatesPgRepository,
     private readonly exchangeClient: CurrencyExchangeClient,
   ) {}
 
   async create(
     user: User,
-    portfolioUuid: string,
+    portfolioId: number,
     upsertPositionDto: UpsertPositionDto,
   ): Promise<Position> {
-    const portfolio = await this.portfoliosRepository.findOne(portfolioUuid);
+    const portfolio = await this.portfoliosRepository.findById(portfolioId);
     if (!portfolio) throw new NotFoundException('Portfolio not found');
     this.checkOwner(user, portfolio);
     const company = await this.companiesRepository.findBySymbol(
       upsertPositionDto.symbol,
     );
-
     if (!portfolio || !company) {
       throw new NotFoundException('Invalid reference for position');
     }
-
     const existentPosition =
-      await this.repository.findByCompanyUuidAndPortfolioUuid(
-        company.uuid!, // TODO: id or JOIN instead of uuid
-        portfolioUuid,
+      await this.repository.findByCompanyIdAndPortfolioId(
+        company.id,
+        portfolioId,
       );
-
     if (existentPosition) {
       throw new ConflictException(
         `Position already exists for ${company.symbol}`,
       );
     }
-
-    const uuid = uuidv4();
-
-    await this.repository.create(<Position>{
+    const created = await this.repository.create(<CreatePositionDto>{
       ...upsertPositionDto,
-      portfolioUuid,
-      uuid,
-      companyUuid: company.uuid,
+      portfolioId,
+      companyId: company.id,
       blocked: false,
       sharesUpdatedAt: new Date(),
     });
-
-    const created = await this.repository.findByUuid(uuid);
     await this.updatePortfolioState(portfolio);
-
     return created;
   }
 
   async update(
     user: User,
-    portfolioUuid: string,
+    portfolioId: number,
     upsertPositionDto: UpsertPositionDto,
   ) {
-    const portfolio = await this.portfoliosRepository.findOne(portfolioUuid);
+    const portfolio = await this.portfoliosRepository.findById(portfolioId);
     const company = await this.companiesRepository.findBySymbol(
       upsertPositionDto.symbol,
     );
-
     if (!portfolio || !company) {
       throw new NotFoundException('Invalid reference for position');
     }
-
     this.checkOwner(user, portfolio);
-
     const existentPosition =
-      await this.repository.findByCompanyUuidAndPortfolioUuid(
-        company.uuid!, // TODO: id or JOIN instead of uuid
-        portfolioUuid,
+      await this.repository.findByCompanyIdAndPortfolioId(
+        company.id,
+        portfolioId,
       );
-
     if (!existentPosition) {
       throw new ConflictException(
         `Position don't exists for ${company.symbol}`,
       );
     }
-
-    await this.repository.update(existentPosition.uuid, <Partial<Position>>{
+    // TODO: store positions value in DB?
+    await this.repository.update(existentPosition.id, <UpdatePositionDto>{
       targetWeight: upsertPositionDto.targetWeight,
       shares: upsertPositionDto.shares,
-      companyUuid: company.uuid,
-      symbol: upsertPositionDto.symbol,
       blocked: upsertPositionDto.blocked ?? false,
       sharesUpdatedAt:
         upsertPositionDto.shares !== existentPosition.shares
           ? new Date()
           : existentPosition.sharesUpdatedAt,
+      value: new Decimal(0),
     });
-
-    const updated = await this.repository.findByUuid(existentPosition.uuid);
+    const updated = await this.repository.findById(existentPosition.id);
     await this.updatePortfolioState(portfolio);
-
     return updated;
   }
 
-  async getPositionDetailsByPortfolioUuid(
-    portfolio: Portfolio,
-  ): Promise<PositionDetailDto[]> {
-    const positions = await this.repository.findByPortfolioUuid(portfolio.uuid);
-    const companies = await this.companiesRepository.findByUuidIn(
-      positions.map((p) => p.companyUuid),
+  async getPositionDetailsByPortfolioId(
+    portfolioId: number,
+  ): Promise<Array<PositionDetailResult>> {
+    const positions = await this.repository.findByPortfolioId(portfolioId);
+    const companies = await this.companiesRepository.findByIdIn(
+      positions.map((p) => p.companyId),
     );
-
     const fx = await this.exchangeClient.getFx();
-    const positionStates = await Promise.all(
-      positions.map(async (position) => {
-        const company = companies.find((c) => c.uuid === position.companyUuid);
-        const companyState =
-          await this.companyStatesRepository.getLastByCompanyUuid(
-            company!.uuid!, // TODO: id or JOIN instead of uuid
-          );
-        return this.calculatePositionState(position, company, companyState, fx);
-      }),
-    );
-
-    return this.addWeightsAndDeltas(positionStates)
-      .sort((a, b) => a.value - b.value)
+    const positionStates: Array<PositionDetailDto> = [];
+    for (const position of positions) {
+      const company = companies.find((c) => c.id === position.companyId);
+      const companyState =
+        await this.companyStatesRepository.getLastByCompanyId(company!.id);
+      if (companyState === null) continue;
+      const state = await this.calculatePositionState(
+        position,
+        company!,
+        companyState,
+        fx,
+      );
+      positionStates.push(state);
+    }
+    const states = this.addWeightsAndDeltas(positionStates)
+      .sort((a, b) => a.value.toNumber() - b.value.toNumber())
       .reverse();
-  }
-
-  async deleteByPortfolioUuid(user: User, portfolioUuid: string) {
-    const portfolio = await this.portfoliosRepository.findOne(portfolioUuid);
-    if (!portfolio) throw new NotFoundException('Portfolio not found');
-    this.checkOwner(user, portfolio);
-    const result = await this.repository.deleteByPortfolioUuid(portfolioUuid);
-    await this.updatePortfolioState(portfolio);
-    return result;
+    return states.map((ps) => this.mapToResult(ps));
   }
 
   async deleteByUuidAndPortfolioUuid(
     user: User,
-    portfolioUuid: string,
-    uuid: string,
+    portfolioId: number,
+    id: number,
   ) {
-    const position = await this.repository.findByUuid(uuid);
-    const portfolio = await this.portfoliosRepository.findOne(portfolioUuid);
+    const position = await this.repository.findById(id);
+    const portfolio = await this.portfoliosRepository.findById(portfolioId);
     if (!portfolio) throw new NotFoundException('Portfolio not found');
     this.checkOwner(user, portfolio);
-    await this.repository.deleteByUuidAndPortfolioUuid(portfolioUuid, uuid);
+    await this.repository.deleteByIdAndPortfolioId(id, portfolio.id);
     await this.updatePortfolioState(portfolio);
     return position;
   }
 
   private async calculatePositionState(
-    position,
-    company,
+    position: Position,
+    company: Company,
     companyState: CompanyState,
     fx: any,
   ): Promise<PositionDetailDto> {
-    let value = Number((companyState?.price ?? 0) * position.shares);
+    let value = companyState.price.mul(position.shares);
     if (companyState.currency !== 'EUR') {
-      value = await fx(value).from(companyState.currency).to('EUR');
+      value = await fx(value.toNumber()).from(companyState.currency).to('EUR');
     }
-
     return <PositionDetailDto>{
-      uuid: position.uuid,
+      id: position.id,
       companyName: company.name,
       symbol: company.symbol,
       shares: position.shares,
-      value,
+      value: new Decimal(value),
       targetWeight: position.targetWeight,
       blocked: position.blocked,
       companyState,
@@ -196,15 +177,23 @@ export class PositionsService {
   }
 
   private addWeightsAndDeltas(
-    positionsStates: PositionDetailDto[],
-  ): PositionDetailDto[] {
-    const totalValue = positionsStates.reduce((sum, it) => sum + it.value, 0);
+    positionsStates: Array<PositionDetailDto>,
+  ): Array<PositionDetailDto> {
+    const totalValue = positionsStates.reduce(
+      (sum, it) => sum.plus(it.value),
+      new Decimal(0),
+    );
 
     return positionsStates.map((positionState) => {
       const { value, shares, targetWeight } = positionState;
-      const currentWeight = (value / totalValue) * 100;
-      const deltaWeight = (currentWeight - targetWeight) / targetWeight;
-      const deltaShares = (shares * targetWeight) / currentWeight - shares;
+      const currentWeight = value.dividedBy(totalValue).mul(new Decimal(100));
+      const deltaWeight = currentWeight
+        .minus(targetWeight)
+        .dividedBy(targetWeight);
+      const deltaShares = shares
+        .mul(targetWeight)
+        .dividedBy(currentWeight)
+        .minus(shares);
 
       return <PositionDetailDto>{
         ...positionState,
@@ -216,9 +205,10 @@ export class PositionsService {
   }
 
   async updatePortfolioState(portfolio: Portfolio) {
-    const positionDetailDTOs =
-      await this.getPositionDetailsByPortfolioUuid(portfolio);
-    const positions = this.mapToPositions(positionDetailDTOs, portfolio.uuid); // TODO: refactor when implementing PositionState
+    const positionDetailDTOs = await this.getPositionDetailsByPortfolioId(
+      portfolio.id,
+    );
+    const positions = this.mapToPositions(positionDetailDTOs, portfolio.id);
     const portfolioState =
       await this.portfolioStatesService.createPortfolioState(
         portfolio,
@@ -237,19 +227,48 @@ export class PositionsService {
   }
 
   private mapToPositions(
-    positionDetailDTOs: PositionDetailDto[],
-    portfolioUuid: string,
+    positionDetailDTOs: Array<PositionDetailResult>,
+    portfolioId: number,
   ): Position[] {
     return positionDetailDTOs.map((pdd) => {
       return <Position>{
-        uuid: pdd.uuid,
-        portfolioUuid,
-        targetWeight: pdd.targetWeight,
-        shares: pdd.shares,
-        companyUuid: pdd.companyState.companyUuid,
-        symbol: pdd.symbol,
-        value: pdd.value,
+        id: pdd.id,
+        portfolioId,
+        blocked: pdd.blocked,
+        companyId: pdd.companyState.companyId,
+        shares: new Decimal(pdd.shares),
+        sharesUpdatedAt: pdd.sharesUpdatedAt,
+        targetWeight: new Decimal(pdd.targetWeight),
+        value: new Decimal(pdd.value),
       };
     });
+  }
+
+  private mapToResult(ps: PositionDetailDto): PositionDetailResult {
+    return {
+      id: ps.id,
+      companyName: ps.companyName,
+      symbol: ps.symbol,
+      shares: Maths.round(ps.shares),
+      value: Maths.round(ps.value),
+      targetWeight: Maths.round(ps.targetWeight),
+      currentWeight: Maths.round(ps.currentWeight),
+      deltaWeight: Maths.round(ps.deltaWeight),
+      deltaShares: Maths.round(ps.deltaShares),
+      companyState: {
+        id: ps.companyState.id,
+        companyId: ps.companyState.companyId,
+        currency: ps.companyState.currency,
+        enterpriseToEbitda: Maths.round(ps.companyState.enterpriseToEbitda),
+        enterpriseToRevenue: Maths.round(ps.companyState.enterpriseToRevenue),
+        forwardPE: Maths.round(ps.companyState.forwardPE),
+        price: Maths.round(ps.companyState.price),
+        profitMargins: Maths.round(ps.companyState.profitMargins),
+        shortPercentOfFloat: Maths.round(ps.companyState.shortPercentOfFloat),
+        timestamp: ps.companyState.timestamp,
+      },
+      blocked: ps.blocked,
+      sharesUpdatedAt: ps.sharesUpdatedAt,
+    };
   }
 }

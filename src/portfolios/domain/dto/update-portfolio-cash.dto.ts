@@ -1,3 +1,5 @@
+import Decimal from 'decimal.js';
+
 export class UpdatePortfolioCashDto {
-  cash: number;
+  cash: Decimal;
 }

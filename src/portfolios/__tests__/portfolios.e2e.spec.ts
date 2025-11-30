@@ -1,15 +1,14 @@
-import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
+import * as request from 'supertest';
 import { AppModule } from '../../app.module';
-import { createPortfolioDtoFactory } from '../domain/dto/test/create-portfolio-dto.factory';
-import { createCompanyDtoFactory } from '../../companies/domain/dto/test/create-company.dto.factory';
-import { upsertPositionDtoFactory } from '../domain/dto/test/upsert-position-dto.factory';
-import { PortfoliosRepository } from '../repositories/portfolios.repository';
-import { MongoDBClient } from '../../common/__tests__/database/mongodb.client';
 import { AuthClient } from '../../common/__tests__/auth/auth.client';
+import { MongoDBClient } from '../../common/__tests__/database/mongodb.client';
 import { User } from '../../common/auth/entities/user.entity';
 import { PgMigrator } from '../../common/pg.migrator';
+import { createCompanyDtoFactory } from '../../companies/domain/dto/test/create-company.dto.factory';
+import { createPortfolioDtoFactory } from '../domain/dto/test/create-portfolio-dto.factory';
+import { upsertPositionDtoFactory } from '../domain/dto/test/upsert-position-dto.factory';
 
 describe('Portfolios e2e tests', () => {
   let app: INestApplication;
@@ -45,7 +44,6 @@ describe('Portfolios e2e tests', () => {
       .useValue({})
       .compile();
 
-    await moduleRef.get(PortfoliosRepository).model.db.dropDatabase();
     app = moduleRef.createNestApplication();
     await app.init();
   });
