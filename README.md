@@ -16,7 +16,7 @@ A comprehensive NestJS-based financial advisor application that provides portfol
 ## 🛠️ Tech Stack
 
 - **Framework**: NestJS (Node.js)
-- **Database**: MongoDB with Mongoose ODM
+- **Database**: PostgreSQL (+ dbmate migrations)
 - **Cache**: Redis
 - **Authentication**: Passport JWT
 - **API Documentation**: Swagger/OpenAPI
@@ -29,7 +29,7 @@ A comprehensive NestJS-based financial advisor application that provides portfol
 
 - Node.js (v16 or higher)
 - Yarn package manager
-- MongoDB
+- PostgreSQL 18+
 - Redis
 - Docker (optional, for containerized setup)
 
@@ -59,9 +59,16 @@ A comprehensive NestJS-based financial advisor application that provides portfol
    ```
 
 4. **Database Setup**
+   - Install dbmate
+   - Open port 5432 to let dbmate connect to the database
+   - Create an `.env` file containing only one variable:
    ```bash
-   # Run database migrations
-   yarn migrate-mongo up
+   DATABASE_URL="postgres://fa:$password@localhost:5432/fa?sslmode=disable"
+   ```
+
+   - Run the pending migrations
+   ```bash
+   dbmate up
    ```
 
 ## 🚀 Running the Application
@@ -161,8 +168,10 @@ HTTP_SERVER_PORT=3000
 CORS_BASE_URL=http://localhost:3000
 
 # Database
-MONGO_CONNECTION_STRING=mongodb://localhost:27017
-MONGO_DATABASE_NAME=financialAdvisorDB
+POSTGRES_DB=fa
+POSTGRES_USER=fa
+POSTGRES_HOST=fa-postgres
+POSTGRES_PASSWORD=$redacted
 
 # Redis Cache
 REDIS_CONNECTION_STRING=redis://localhost:6379
@@ -175,19 +184,6 @@ JWT_SECRET=your_jwt_secret
 PROVIDER_API_TOKEN=your_api_token
 PROVIDER_BASE_URL=https://api.provider.com
 EXCHANGE_RATES_PROVIDER_APP_ID=your_exchange_rates_app_id
-```
-
-## 🔄 Database Migrations
-
-```bash
-# Run pending migrations
-yarn migrate-mongo up
-
-# Rollback last migration
-yarn migrate-mongo down
-
-# Check migration status
-yarn migrate-mongo status
 ```
 
 ## 📈 Monitoring & Logging
