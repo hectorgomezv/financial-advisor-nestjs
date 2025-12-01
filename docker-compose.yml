@@ -82,6 +82,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
     volumes:
       - postgres_data:/var/lib/postgresql
+      - ./docker/db/pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
 
   fa-redis:
     image: redis:7
