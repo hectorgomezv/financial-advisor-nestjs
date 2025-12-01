@@ -209,7 +209,6 @@ EXCHANGE_RATES_PROVIDER_APP_ID=your_exchange_rates_app_id
 
 ## 📈 Monitoring & Logging
 
-- **Logs**: Application logs are written to `fa.log`
 - **Health Checks**: Available at `/health` endpoint
 - **Metrics**: Performance metrics at `/metrics` endpoint
 
