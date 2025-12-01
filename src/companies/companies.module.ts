@@ -1,7 +1,6 @@
 import { HttpModule } from '@nestjs/axios';
 import { forwardRef, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
 import { AuthService } from '../common/auth/auth-service';
 import { RedisClient } from '../common/cache/redis.client';
 import { DbModule } from '../common/db.module';
@@ -12,22 +11,10 @@ import { CompaniesService } from './domain/companies.service';
 import { CompanyStatesService } from './domain/company-states.service';
 import { CompaniesPgRepository } from './repositories/companies.pg.repository';
 import { CompanyStatesPgRepository } from './repositories/company-states.pg.repository';
-import {
-  CompanyStateModel,
-  CompanyStateSchema,
-} from './repositories/schemas/company-state.schema';
-import {
-  CompanyModel,
-  CompanySchema,
-} from './repositories/schemas/company.schema';
 import { CompaniesController } from './routes/companies.controller';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: CompanyModel.name, schema: CompanySchema },
-      { name: CompanyStateModel.name, schema: CompanyStateSchema },
-    ]),
     ConfigModule,
     DbModule,
     HttpModule,

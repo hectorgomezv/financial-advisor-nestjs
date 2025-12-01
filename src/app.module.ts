@@ -1,19 +1,17 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
 import { LoggerModule } from 'nestjs-pino';
 import { AboutModule } from './about/about.module';
 import { JwtStrategy } from './common/auth/jwt.strategy';
 import { CommonModule } from './common/common.module';
-import { MigrationsRunner } from './common/migrations/migrations-runner';
+import { DbModule } from './common/db.module';
 import { CompaniesModule } from './companies/companies.module';
 import { HealthModule } from './health/health.module';
 import { IndicesModule } from './indices/indices.module';
 import { MetricsModule } from './metrics/metrics.module';
 import { PortfoliosModule } from './portfolios/portfolios.module';
-import { DbModule } from './common/db.module';
 
 const { NODE_ENV } = process.env;
 
@@ -26,17 +24,6 @@ const { NODE_ENV } = process.env;
     LoggerModule.forRoot({
       pinoHttp: { level: NODE_ENV === 'production' ? 'info' : 'debug' },
     }),
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (config: ConfigService) => {
-        return {
-          uri: `${config.get<string>(
-            'MONGO_CONNECTION_STRING',
-          )}/${config.get<string>('MONGO_DATABASE_NAME')}`,
-        };
-      },
-    }),
     ScheduleModule.forRoot(),
     AboutModule,
     CommonModule,
@@ -46,6 +33,6 @@ const { NODE_ENV } = process.env;
     MetricsModule,
     PortfoliosModule,
   ],
-  providers: [JwtService, JwtStrategy, MigrationsRunner],
+  providers: [JwtService, JwtStrategy],
 })
 export class AppModule {}

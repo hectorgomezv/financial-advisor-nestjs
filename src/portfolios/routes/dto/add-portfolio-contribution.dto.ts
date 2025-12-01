@@ -3,9 +3,7 @@ import { Type } from 'class-transformer';
 import { IsNumber } from 'class-validator';
 import { AddPortfolioContributionDto as DomainAddPortfolioContributionDto } from '../../domain/dto/add-portfolio-contribution.dto';
 
-export class AddPortfolioContributionDto
-  implements DomainAddPortfolioContributionDto
-{
+export class AddPortfolioContributionDto implements DomainAddPortfolioContributionDto {
   @ApiProperty()
   timestamp: Date;
   @ApiProperty()

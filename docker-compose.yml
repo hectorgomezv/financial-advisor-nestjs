@@ -15,8 +15,6 @@ services:
       - EXCHANGE_RATES_PROVIDER_APP_ID=${EXCHANGE_RATES_PROVIDER_APP_ID}
       - HTTP_SERVER_PORT=${HTTP_SERVER_PORT}
       - JWT_SECRET=${JWT_SECRET}
-      - MONGO_CONNECTION_STRING=${MONGO_CONNECTION_STRING}
-      - MONGO_DATABASE_NAME=${MONGO_DATABASE_NAME}
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_HOST=${POSTGRES_HOST}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -27,11 +25,9 @@ services:
       - REDIS_CONNECTION_STRING=${REDIS_CONNECTION_STRING}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
     links:
-      - fa-mongo
       - fa-redis
       - fa-postgres
     depends_on:
-      - fa-mongo
       - fa-redis
       - fa-postgres
 
