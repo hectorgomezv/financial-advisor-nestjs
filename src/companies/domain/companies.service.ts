@@ -11,23 +11,23 @@ import { sortBy } from 'lodash';
 import { AuthService } from '../../common/auth/auth-service';
 import { User } from '../../common/auth/entities/user.entity';
 import { CreateCompanyDto } from '../domain/dto/create-company.dto';
-import { CompaniesPgRepository } from '../repositories/companies.pg.repository';
+import { CompaniesRepository } from '../repositories/companies.repository';
 import { CompanyStatesService } from './company-states.service';
 import {
   CompanyWithState,
   CompanyWithStateAndMetrics,
 } from './entities/company.entity';
-import { PositionsPgRepository } from '../../portfolios/repositories/positions.pg.repository';
+import { PositionsRepository } from '../../portfolios/repositories/positions.repository';
 
 @Injectable()
 export class CompaniesService implements OnApplicationBootstrap {
   private readonly logger = new Logger(CompaniesService.name);
 
   constructor(
-    private readonly repository: CompaniesPgRepository,
+    private readonly repository: CompaniesRepository,
     private readonly authService: AuthService,
     private readonly companyStatesService: CompanyStatesService,
-    private readonly positionsRepository: PositionsPgRepository,
+    private readonly positionsRepository: PositionsRepository,
   ) {}
 
   async create(
@@ -122,16 +122,9 @@ export class CompaniesService implements OnApplicationBootstrap {
     try {
       const companies = await this.repository.findAll();
       await Promise.all(
-        companies.map(async (company) => {
-          await this.companyStatesService.createCompanyState(company);
-          // const metrics = await this.companyStatesService.getMetricsByCompanyId(
-          //   company.id,
-          // );
-          // await this.repository.updateMetricsByUuid(company.uuid!, metrics); // TODO: id or JOIN instead of uuid
-          // this.logger.log(
-          //   `${company.symbol} refreshed: price ${companyState.price} [ForwardPE: ${companyState.forwardPE} (avg: ${metrics.avgForwardPE}), profitMargins: ${companyState.profitMargins} (avg: ${metrics.avgProfitMargins}), EV/Rev: ${companyState.enterpriseToRevenue} (avg: ${metrics.avgEnterpriseToRevenue}), EV/Ebitda: ${companyState.enterpriseToEbitda} (avg: ${metrics.avgEnterpriseToEbitda}), Short %: ${companyState.shortPercentOfFloat}]`,
-          // );
-        }),
+        companies.map(async (c) =>
+          this.companyStatesService.createCompanyState(c),
+        ),
       );
     } catch (err) {
       this.logger.error(

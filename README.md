@@ -58,17 +58,38 @@ A comprehensive NestJS-based financial advisor application that provides portfol
    nano .env
    ```
 
-4. **Database Setup**
+4. **Migrations locally**
    - Install dbmate
    - Open port 5432 to let dbmate connect to the database
    - Create an `.env` file containing only one variable:
+
    ```bash
    DATABASE_URL="postgres://fa:$password@localhost:5432/fa?sslmode=disable"
    ```
 
    - Run the pending migrations
+
    ```bash
    dbmate up
+   ```
+
+5. **Migrations on server**
+   - Install dbmate on Docker host
+   - Create an `.env` file containing only one variable:
+
+   ```bash
+   DATABASE_URL=postgres://fa:$password@fa-postgres:5432/fa?sslmode=disable
+   ```
+
+   - Run the pending migrations
+
+   ```bash
+   docker run --rm \
+   --env-file .env \
+   --network financial-advisor-nestjs_default \
+   -v $(pwd)/db/migrations:/db/migrations \
+   ghcr.io/amacneil/dbmate:2.28 \
+   up
    ```
 
 ## 🚀 Running the Application
@@ -188,7 +209,6 @@ EXCHANGE_RATES_PROVIDER_APP_ID=your_exchange_rates_app_id
 
 ## 📈 Monitoring & Logging
 
-- **Logs**: Application logs are written to `fa.log`
 - **Health Checks**: Available at `/health` endpoint
 - **Metrics**: Performance metrics at `/metrics` endpoint
 

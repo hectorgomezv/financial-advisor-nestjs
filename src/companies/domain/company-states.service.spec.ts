@@ -4,7 +4,7 @@ import { IFinancialDataClient } from '../datasources/financial-data.client.inter
 import { companyStateFactory } from '../domain/entities/__tests__/company-state.factory';
 import { companyFactory } from '../domain/entities/__tests__/company.factory';
 import { quoteSummaryFactory } from '../domain/entities/__tests__/quote-summary.factory';
-import { CompanyStatesPgRepository } from '../repositories/company-states.pg.repository';
+import { CompanyStatesRepository } from '../repositories/company-states.repository';
 import { CompanyStatesService } from './company-states.service';
 
 describe('CompanyStatesService', () => {
@@ -12,7 +12,7 @@ describe('CompanyStatesService', () => {
     create: jest.fn(),
     deleteByCompanyId: jest.fn(),
     getLastByCompanyIds: jest.fn(),
-  } as unknown as CompanyStatesPgRepository);
+  } as unknown as CompanyStatesRepository);
 
   const mockedFinancialDataClient = jest.mocked({
     getQuoteSummary: jest.fn(),
@@ -65,7 +65,7 @@ describe('CompanyStatesService', () => {
   });
 
   describe('retrieving', () => {
-    it('should call repository to obtain the last states for an array of company uuids', async () => {
+    it('should call repository to obtain the last states for an array of company ids', async () => {
       const companyIds = [faker.number.int(), faker.number.int()];
       mockedCompanyStatesRepository.getLastByCompanyIds.mockResolvedValue([]);
 

@@ -22,7 +22,7 @@ interface DbPortfolioState {
 }
 
 @Injectable()
-export class PortfolioStatesPgRepository {
+export class PortfolioStatesRepository {
   constructor(private readonly db: DbService) {}
 
   async getLastByPortfolioId(portfolioId: number): Promise<PortfolioState> {

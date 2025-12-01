@@ -27,9 +27,8 @@ interface DbCompanyMetrics {
 }
 
 @Injectable()
-export class CompanyStatesPgRepository {
-  private readonly logger = new Logger(CompanyStatesPgRepository.name);
-  // TODO: caching
+export class CompanyStatesRepository {
+  private readonly logger = new Logger(CompanyStatesRepository.name);
 
   constructor(
     private readonly db: DbService,
@@ -84,8 +83,6 @@ export class CompanyStatesPgRepository {
       shortPercentOfFloat: new Decimal(row.short_percent),
     };
   }
-
-  // async deleteByCompanyUuid(companyUuid: string): Promise<void> {}
 
   async getLastByCompanyId(companyId: number): Promise<CompanyState | null> {
     const query = `

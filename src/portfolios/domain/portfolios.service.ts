@@ -16,7 +16,7 @@ import { Maths } from '../../common/domain/entities/maths.entity';
 import { TimePeriod } from '../../common/domain/entities/time-period.entity';
 import { Index } from '../../indices/domain/entities/index.entity';
 import { IndicesService } from '../../indices/domain/indices.service';
-import { PortfoliosPgRepository } from '../repositories/portfolios.pg.repository';
+import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { AddPortfolioContributionDto } from './dto/add-portfolio-contribution.dto';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { PortfolioDetailResult } from './dto/portfolio-detail-result.dto';
@@ -37,7 +37,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
   private readonly logger = new Logger(PortfoliosService.name);
 
   constructor(
-    private readonly repository: PortfoliosPgRepository,
+    private readonly repository: PortfoliosRepository,
     private readonly authService: AuthService,
     private readonly portfolioStatesService: PortfolioStatesService,
     private readonly positionService: PositionsService,
@@ -404,7 +404,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
       await Promise.all(
         portfolios.map((portfolio) => {
           this.logger.log(
-            `Refreshing portfolio ${portfolio.name} (uuid: ${portfolio.id})`,
+            `Refreshing portfolio ${portfolio.name} (id: ${portfolio.id})`,
           );
           return this.positionService.updatePortfolioState(portfolio);
         }),

@@ -41,7 +41,7 @@ interface DbContributionsMetadata {
 }
 
 @Injectable()
-export class PortfoliosPgRepository {
+export class PortfoliosRepository {
   constructor(private readonly db: DbService) {}
 
   async create(dto: CreatePortfolioDto, user: User): Promise<Portfolio> {

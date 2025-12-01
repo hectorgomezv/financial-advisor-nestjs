@@ -4,7 +4,7 @@ import { IFinancialDataClient } from '../datasources/financial-data.client.inter
 import { CompanyState } from '../domain/entities/company-state.entity';
 import { Company } from '../domain/entities/company.entity';
 import { QuoteSummary } from '../domain/entities/quote-summary.entity';
-import { CompanyStatesPgRepository } from '../repositories/company-states.pg.repository';
+import { CompanyStatesRepository } from '../repositories/company-states.repository';
 import { CompanyMetricsResult } from './entities/company-metrics-result.entity';
 import { CompanyMetrics } from './entities/company-metrics.entity';
 import { Maths } from '../../common/domain/entities/maths.entity';
@@ -37,7 +37,7 @@ export interface CompanyStateResult {
 @Injectable()
 export class CompanyStatesService {
   constructor(
-    private readonly repository: CompanyStatesPgRepository,
+    private readonly repository: CompanyStatesRepository,
     @Inject(IFinancialDataClient)
     private readonly financialDataClient: IFinancialDataClient,
   ) {}

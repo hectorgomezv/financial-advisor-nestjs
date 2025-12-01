@@ -20,13 +20,13 @@ export function setup() {
 
   return {
     accessToken,
-    portfolioUuid: getFirstPortfolio(accessToken),
+    portfolioId: getFirstPortfolio(accessToken),
   };
 }
 
 export default function (data) {
   const res = http.get(
-    `${baseUrl}/portfolios/${data.portfolioUuid}`,
+    `${baseUrl}/portfolios/${data.portfolioId}`,
     buildParams(data),
   );
 
