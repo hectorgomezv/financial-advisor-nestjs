@@ -748,7 +748,6 @@ describe('PortfoliosService', () => {
         ...adminUserPortfolio,
         contributions: [
           expect.objectContaining({
-            uuid: expect.any(String),
             timestamp: dto.timestamp,
             amountEUR: dto.amountEUR,
           }),
@@ -770,7 +769,7 @@ describe('PortfoliosService', () => {
     });
 
     it('should call repo to delete a contribution', async () => {
-      const portfolioUuid = faker.number.int();
+      const portfolioId = faker.number.int();
       const contributionId = faker.number.int();
       const expected = { ...adminUserPortfolio, contributions: [] };
       portfoliosRepository.findById.mockResolvedValueOnce(adminUserPortfolio);
@@ -778,7 +777,7 @@ describe('PortfoliosService', () => {
 
       const actual = await service.deleteContribution(
         adminUser,
-        portfolioUuid,
+        portfolioId,
         contributionId,
       );
 

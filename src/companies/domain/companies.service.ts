@@ -122,16 +122,9 @@ export class CompaniesService implements OnApplicationBootstrap {
     try {
       const companies = await this.repository.findAll();
       await Promise.all(
-        companies.map(async (company) => {
-          await this.companyStatesService.createCompanyState(company);
-          // const metrics = await this.companyStatesService.getMetricsByCompanyId(
-          //   company.id,
-          // );
-          // await this.repository.updateMetricsByUuid(company.uuid!, metrics); // TODO: id or JOIN instead of uuid
-          // this.logger.log(
-          //   `${company.symbol} refreshed: price ${companyState.price} [ForwardPE: ${companyState.forwardPE} (avg: ${metrics.avgForwardPE}), profitMargins: ${companyState.profitMargins} (avg: ${metrics.avgProfitMargins}), EV/Rev: ${companyState.enterpriseToRevenue} (avg: ${metrics.avgEnterpriseToRevenue}), EV/Ebitda: ${companyState.enterpriseToEbitda} (avg: ${metrics.avgEnterpriseToEbitda}), Short %: ${companyState.shortPercentOfFloat}]`,
-          // );
-        }),
+        companies.map(async (c) =>
+          this.companyStatesService.createCompanyState(c),
+        ),
       );
     } catch (err) {
       this.logger.error(

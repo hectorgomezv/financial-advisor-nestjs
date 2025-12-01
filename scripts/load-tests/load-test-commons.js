@@ -1,7 +1,6 @@
 import http from 'k6/http';
 
-export const authUrl =
-  'http://financial-advisor.es/api/v1/auth/accounts/login';
+export const authUrl = 'http://financial-advisor.es/api/v1/auth/accounts/login';
 
 export const baseUrl = 'http://localhost:3000/api/v2';
 
@@ -37,7 +36,7 @@ export function getFirstPortfolio(accessToken) {
     },
   });
 
-  return JSON.parse(body).data[0].uuid;
+  return JSON.parse(body).data[0].id;
 }
 
 export const buildParams = (setupData) => ({

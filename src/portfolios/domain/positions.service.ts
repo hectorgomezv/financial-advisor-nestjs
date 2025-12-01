@@ -139,11 +139,7 @@ export class PositionsService {
     return states.map((ps) => this.mapToResult(ps));
   }
 
-  async deleteByUuidAndPortfolioUuid(
-    user: User,
-    portfolioId: number,
-    id: number,
-  ) {
+  async deleteByIdAndPortfolioId(user: User, portfolioId: number, id: number) {
     const position = await this.repository.findById(id);
     const portfolio = await this.portfoliosRepository.findById(portfolioId);
     if (!portfolio) throw new NotFoundException('Portfolio not found');

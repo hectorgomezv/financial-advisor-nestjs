@@ -65,7 +65,7 @@ describe('CompanyStatesService', () => {
   });
 
   describe('retrieving', () => {
-    it('should call repository to obtain the last states for an array of company uuids', async () => {
+    it('should call repository to obtain the last states for an array of company ids', async () => {
       const companyIds = [faker.number.int(), faker.number.int()];
       mockedCompanyStatesRepository.getLastByCompanyIds.mockResolvedValue([]);
 
