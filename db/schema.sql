@@ -1,4 +1,4 @@
-\restrict TXZY4byTAA9bst6c9GoLa72W5t4RtGgEUiJPDgbXBsTYlDPouDrkgAMegdaxhE5
+\restrict gFDpbwZIqmmg1hXPSWZcUM5jE2MAoHvGlcA33dnQYCNPW2zzZaqaCUn5WmGVBdE
 
 -- Dumped from database version 18.0 (Debian 18.0-1.pgdg13+3)
 -- Dumped by pg_dump version 18.0
@@ -86,6 +86,37 @@ CREATE SEQUENCE public.company_states_id_seq
 --
 
 ALTER SEQUENCE public.company_states_id_seq OWNED BY public.company_states.id;
+
+
+--
+-- Name: currencies; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.currencies (
+    id integer NOT NULL,
+    symbol character varying(3) NOT NULL,
+    usd_value numeric(18,5) NOT NULL
+);
+
+
+--
+-- Name: currencies_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.currencies_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: currencies_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.currencies_id_seq OWNED BY public.currencies.id;
 
 
 --
@@ -291,6 +322,13 @@ ALTER TABLE ONLY public.company_states ALTER COLUMN id SET DEFAULT nextval('publ
 
 
 --
+-- Name: currencies id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.currencies ALTER COLUMN id SET DEFAULT nextval('public.currencies_id_seq'::regclass);
+
+
+--
 -- Name: indices id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -347,6 +385,14 @@ ALTER TABLE ONLY public.companies
 
 ALTER TABLE ONLY public.company_states
     ADD CONSTRAINT company_states_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: currencies currencies_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.currencies
+    ADD CONSTRAINT currencies_pkey PRIMARY KEY (id);
 
 
 --
@@ -470,6 +516,13 @@ CREATE INDEX idx_portfolio_states_timestamp_desc ON public.portfolio_states USIN
 
 
 --
+-- Name: idx_uniq_currencies_symbol; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX idx_uniq_currencies_symbol ON public.currencies USING btree (symbol);
+
+
+--
 -- Name: idx_uniq_positions_portfolio_id_company_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -528,7 +581,7 @@ ALTER TABLE ONLY public.positions
 -- PostgreSQL database dump complete
 --
 
-\unrestrict TXZY4byTAA9bst6c9GoLa72W5t4RtGgEUiJPDgbXBsTYlDPouDrkgAMegdaxhE5
+\unrestrict gFDpbwZIqmmg1hXPSWZcUM5jE2MAoHvGlcA33dnQYCNPW2zzZaqaCUn5WmGVBdE
 
 
 --
@@ -541,4 +594,5 @@ INSERT INTO public.schema_migrations (version) VALUES
     ('20251108155033'),
     ('20251108234900'),
     ('20251109071528'),
-    ('20251109071603');
+    ('20251109071603'),
+    ('20251201141116');
