@@ -8,7 +8,7 @@ import { Maths } from '../../common/domain/entities/maths.entity';
 import { TimePeriod } from '../../common/domain/entities/time-period.entity';
 import { indexFactory } from '../../indices/domain/entities/__tests__/index.factory';
 import { IndicesService } from '../../indices/domain/indices.service';
-import { PortfoliosPgRepository } from '../repositories/portfolios.pg.repository';
+import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { PortfolioDetailResult } from './dto/portfolio-detail-result.dto';
 import { addPortfolioContributionDtoFactory } from './dto/test/add-portfolio-contribution.dto.factory';
@@ -38,7 +38,7 @@ describe('PortfoliosService', () => {
     getContributionsMetadata: jest.fn(),
     addContribution: jest.fn(),
     deleteContributionById: jest.fn(),
-  } as unknown as PortfoliosPgRepository);
+  } as unknown as PortfoliosRepository);
 
   const portfolioStatesService = jest.mocked({
     getLastByPortfolioId: jest.fn(),

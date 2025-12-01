@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import Decimal from 'decimal.js';
-import { PortfolioStatesPgRepository } from '../repositories/portfolio-states.pg.repository';
+import { PortfolioStatesRepository } from '../repositories/portfolio-states.repository';
 import { portfolioStateFactory } from './entities/__tests__/portfolio-state.factory';
 import { portfolioFactory } from './entities/__tests__/portfolio.factory';
 import { positionFactory } from './entities/__tests__/position.factory';
@@ -13,7 +13,7 @@ describe('PortfolioStatesService', () => {
     getLastByPortfolioId: jest.fn(),
     getAverageBalancesForRange: jest.fn(),
     deleteByPortfolioId: jest.fn(),
-  } as unknown as PortfolioStatesPgRepository);
+  } as unknown as PortfolioStatesRepository);
 
   const service: PortfolioStatesService = new PortfolioStatesService(
     portfolioStatesRepository,

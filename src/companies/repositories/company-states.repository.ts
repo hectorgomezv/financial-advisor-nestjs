@@ -27,9 +27,8 @@ interface DbCompanyMetrics {
 }
 
 @Injectable()
-export class CompanyStatesPgRepository {
-  private readonly logger = new Logger(CompanyStatesPgRepository.name);
-  // TODO: caching
+export class CompanyStatesRepository {
+  private readonly logger = new Logger(CompanyStatesRepository.name);
 
   constructor(
     private readonly db: DbService,

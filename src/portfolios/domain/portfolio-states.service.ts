@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import Decimal from 'decimal.js';
 import { TimePeriod } from '../../common/domain/entities/time-period.entity';
-import { PortfolioStatesPgRepository } from '../repositories/portfolio-states.pg.repository';
+import { PortfolioStatesRepository } from '../repositories/portfolio-states.repository';
 import { PortfolioAverageBalance } from './entities/portfolio-average-balance.entity';
 import { PortfolioState } from './entities/portfolio-state.entity';
 import { Portfolio } from './entities/portfolio.entity';
@@ -12,7 +12,7 @@ import { Maths } from '../../common/domain/entities/maths.entity';
 
 @Injectable()
 export class PortfolioStatesService {
-  constructor(private readonly repository: PortfolioStatesPgRepository) {}
+  constructor(private readonly repository: PortfolioStatesRepository) {}
 
   async createPortfolioState(portfolio: Portfolio, positions: Position[]) {
     const sumWeights = positions.reduce(
