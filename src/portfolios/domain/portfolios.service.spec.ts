@@ -765,7 +765,9 @@ describe('PortfoliosService', () => {
         timestamp: dto.timestamp,
         amountEUR: dto.amountEUR,
       });
-      expect(positionsService.updatePortfolioState).toBeCalledWith(expected);
+      expect(positionsService.updatePortfolioState).toHaveBeenCalledWith(
+        expected,
+      );
     });
 
     it('should call repo to delete a contribution', async () => {
