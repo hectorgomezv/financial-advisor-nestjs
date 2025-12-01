@@ -17,6 +17,7 @@ import { PortfolioStatesRepository } from './repositories/portfolio-states.repos
 import { PortfoliosRepository } from './repositories/portfolios.repository';
 import { PositionsRepository } from './repositories/positions.repository';
 import { PortfoliosController } from './routes/portfolios.controller';
+import { CurrenciesRepository } from './repositories/currencies.repository';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { PortfoliosController } from './routes/portfolios.controller';
     { provide: IFinancialDataClient, useClass: YahooFinancialDataClient },
     AuthService,
     CurrencyExchangeClient,
+    CurrenciesRepository,
     IndicesRepository,
     IndicesService,
     OpenExchangeRatesClient,
