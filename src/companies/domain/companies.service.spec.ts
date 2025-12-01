@@ -88,7 +88,7 @@ describe('CompaniesService', () => {
       expect(
         mockedCompanyStateService.createCompanyState,
       ).toHaveBeenCalledTimes(1);
-      expect(mockedCompanyStateService.createCompanyState).toBeCalledWith(
+      expect(mockedCompanyStateService.createCompanyState).toHaveBeenCalledWith(
         company,
       );
     });

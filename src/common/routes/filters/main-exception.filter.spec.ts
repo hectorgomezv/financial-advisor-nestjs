@@ -36,7 +36,7 @@ describe('[unit] main-exception filter', () => {
     filter.catch(exception, mockedHost);
 
     expect(mockedHttpAdapterHost.httpAdapter.reply).toHaveBeenCalledTimes(1);
-    expect(mockedHttpAdapterHost.httpAdapter.reply).toBeCalledWith(
+    expect(mockedHttpAdapterHost.httpAdapter.reply).toHaveBeenCalledWith(
       fakeResponse,
       {
         success: false,
@@ -56,7 +56,7 @@ describe('[unit] main-exception filter', () => {
     filter.catch(exception, mockedHost);
 
     expect(mockedHttpAdapterHost.httpAdapter.reply).toHaveBeenCalledTimes(1);
-    expect(mockedHttpAdapterHost.httpAdapter.reply).toBeCalledWith(
+    expect(mockedHttpAdapterHost.httpAdapter.reply).toHaveBeenCalledWith(
       fakeResponse,
       {
         success: false,
