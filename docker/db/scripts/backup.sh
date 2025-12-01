@@ -8,7 +8,7 @@ set -e
 
 DB_HOST=${DB_HOST:-localhost}
 DB_PORT=${DB_PORT:-5432}
-CONTAINER_NAME=${CONTAINER_NAME:-financial-advisor-fa-postgres-1}
+CONTAINER_NAME=${CONTAINER_NAME:-financial-advisor-nestjs-fa-postgres-1}
 LOCAL_BACKUP_DIR="/root/backup"
 
 BACKUP_NAME="$DB-$(date +%y%m%d_%H%M%S).sql.gz"
