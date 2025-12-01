@@ -5,11 +5,11 @@ import { Position } from './position.entity';
 
 export class Portfolio {
   id: number;
-  name: string;
-  ownerId: string;
-  created: Date;
-  positions: Array<Position>;
   cash: Decimal;
   contributions: Array<PortfolioContribution>;
+  created: Date;
+  name: string;
+  ownerId: string;
+  positions: Array<Position>;
   state: PortfolioState | null;
 }

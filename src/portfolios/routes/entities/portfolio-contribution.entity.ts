@@ -4,7 +4,9 @@ export class PortfolioContribution {
   @ApiProperty()
   id: number;
   @ApiProperty()
-  timestamp: Date;
+  portfolioId: number;
   @ApiProperty()
   amountEUR: string;
+  @ApiProperty()
+  timestamp: Date;
 }

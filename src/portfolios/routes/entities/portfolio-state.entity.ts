@@ -6,13 +6,15 @@ export class PortfolioState {
   @ApiProperty()
   portfolioId: number;
   @ApiProperty()
-  timestamp: Date;
+  cash: string;
   @ApiProperty()
   isValid: boolean;
   @ApiProperty()
+  roicEUR: string;
+  @ApiProperty()
   sumWeights: string;
   @ApiProperty()
-  totalValueEUR: string;
+  timestamp: Date;
   @ApiProperty()
-  roicEUR: string;
+  totalValueEUR: string;
 }

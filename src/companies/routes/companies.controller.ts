@@ -24,9 +24,13 @@ import { OkResponse } from '../../common/routes/entities/ok-response.entity';
 import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
 import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
 import { CompaniesService } from '../domain/companies.service';
-import { CompanyWithStateAndMetrics } from '../domain/entities/company.entity';
 import { CreateCompanyDto } from './dto/create-company.dto';
-import { Company, CompanyWithState } from './entities/company.entity';
+import {
+  Company,
+  CompanyWithState,
+  CompanyWithStateAndMetrics,
+} from './entities/company.entity';
+import { CompanyRouteMapper } from './mappers/company.route.mapper';
 
 @UseInterceptors(DataInterceptor)
 @UseFilters(MainExceptionFilter)
@@ -42,27 +46,46 @@ export class CompaniesController {
   @Post()
   @CreatedResponse(CompanyWithState)
   @ApiBadRequestResponse()
-  create(@Request() req, @Body() createCompanyDto: CreateCompanyDto) {
-    return this.companiesService.create(req.user as User, createCompanyDto);
+  async create(
+    @Request() req,
+    @Body() createCompanyDto: CreateCompanyDto,
+  ): Promise<CompanyWithState> {
+    const result = await this.companiesService.create(
+      req.user as User,
+      createCompanyDto,
+    );
+    return CompanyRouteMapper.mapCompanyWithState(result);
   }
 
   @Get()
   @OkArrayResponse(CompanyWithStateAndMetrics)
-  async getCompaniesWithMetricsAndState() {
-    return this.companiesService.getCompaniesWithMetricsAndState();
+  async getCompaniesWithMetricsAndState(): Promise<
+    Array<CompanyWithStateAndMetrics>
+  > {
+    const result =
+      await this.companiesService.getCompaniesWithStateAndMetrics();
+    return result.map((company) =>
+      CompanyRouteMapper.mapCompanyWithStateAndMetrics(company),
+    );
   }
 
   @Get(':id')
   @OkResponse(CompanyWithStateAndMetrics)
   @ApiNotFoundResponse()
-  async findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.companiesService.findById(id);
+  async findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<CompanyWithStateAndMetrics> {
+    const result = await this.companiesService.findById(id);
+    return CompanyRouteMapper.mapCompanyWithStateAndMetrics(result);
   }
 
   @Delete(':id')
   @OkResponse(Company)
   @ApiNotFoundResponse()
-  remove(@Request() req, @Param('id', ParseIntPipe) id: number) {
+  remove(
+    @Request() req,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Company> {
     return this.companiesService.remove(req.user as User, id);
   }
 }

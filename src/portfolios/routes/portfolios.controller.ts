@@ -45,6 +45,8 @@ import { PortfolioAverageMetric as PortfolioAverageBalance } from './entities/po
 import { Portfolio } from './entities/portfolio.entity';
 import { Position } from './entities/position.entity';
 import Decimal from 'decimal.js';
+import { PortfolioRouteMapper } from './mappers/portfolio.route.mapper';
+import { PortfolioWithContributions } from './entities/portfolio-with-contributions.entity';
 
 @UseInterceptors(DataInterceptor)
 @UseFilters(MainExceptionFilter)
@@ -63,18 +65,28 @@ export class PortfoliosController {
   @Post()
   @CreatedResponse(Portfolio)
   @ApiBadRequestResponse()
-  create(@Request() req, @Body() createPortfolioDto: CreatePortfolioDto) {
-    return this.portfoliosService.create(req.user as User, createPortfolioDto);
+  async create(
+    @Request() req,
+    @Body() createPortfolioDto: CreatePortfolioDto,
+  ): Promise<Portfolio> {
+    const result = await this.portfoliosService.create(
+      req.user as User,
+      createPortfolioDto,
+    );
+    return PortfolioRouteMapper.mapPortfolio(result);
   }
 
   @Get()
-  @OkArrayResponse(Portfolio)
-  findAll(@Request() req) {
-    return this.portfoliosService.findByOwnerId(req.user as User);
+  @OkArrayResponse(PortfolioWithContributions)
+  async findAll(@Request() req): Promise<Array<PortfolioWithContributions>> {
+    const result = await this.portfoliosService.findByOwnerId(req.user as User);
+    return result.map((p) =>
+      PortfolioRouteMapper.mapPortfolioWithContributions(p),
+    );
   }
 
   @Get(':id')
-  @OkResponse(PortfolioDetailDto)
+  @OkResponse(PortfolioDetailDto) // TODO: PortfolioWithPositionsAndState entity
   @ApiNotFoundResponse()
   findOne(@Request() req, @Param('id', ParseIntPipe) id: number) {
     return this.portfoliosService.findById(req.user as User, id);
@@ -173,7 +185,7 @@ export class PortfoliosController {
   }
 
   @Put(':id/cash')
-  @OkResponse(Position)
+  @OkResponse(Portfolio)
   @ApiBadRequestResponse()
   @ApiNotFoundResponse()
   updatePortfolioCash(
@@ -226,11 +238,7 @@ export class PortfoliosController {
       sum: contributionsMetadata.sum.toString(),
       offset,
       limit,
-      items: contributions.map((c) => ({
-        id: c.id,
-        timestamp: c.timestamp,
-        amountEUR: c.amountEUR.toString(),
-      })),
+      items: contributions.map((c) => PortfolioRouteMapper.mapContribution(c)),
     };
   }
 

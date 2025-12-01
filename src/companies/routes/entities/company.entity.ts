@@ -9,11 +9,14 @@ export class Company {
   name: string;
   @ApiProperty()
   symbol: string;
-  @ApiProperty()
-  metrics: CompanyMetrics;
 }
 
 export class CompanyWithState extends Company {
   @ApiProperty()
-  state: CompanyState;
+  state: CompanyState | null;
+}
+
+export class CompanyWithStateAndMetrics extends CompanyWithState {
+  @ApiProperty()
+  metrics: CompanyMetrics | null;
 }

@@ -54,12 +54,12 @@ describe('CompanyStatesService', () => {
         timestamp: new Date(timestamp),
         companyId: 2,
         currency: 'EUR',
-        enterpriseToEbitda: '0.12',
-        enterpriseToRevenue: '5.67',
-        forwardPE: '56.78',
-        price: '12.34',
-        profitMargins: '9.01',
-        shortPercentOfFloat: '3.45',
+        enterpriseToEbitda: new Decimal('0.12'),
+        enterpriseToRevenue: new Decimal('5.67'),
+        forwardPE: new Decimal('56.78'),
+        price: new Decimal('12.34'),
+        profitMargins: new Decimal('9.01'),
+        shortPercentOfFloat: new Decimal('3.45'),
       });
     });
   });
