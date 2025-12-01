@@ -1,16 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 import Decimal from 'decimal.js';
-import { Model } from 'mongoose';
 import { RedisClient } from '../../common/cache/redis.client';
 import { DbService } from '../../common/db.service';
 import { CreateCompanyStateDto } from '../domain/company-states.service';
 import { CompanyMetrics } from '../domain/entities/company-metrics.entity';
 import { CompanyState } from '../domain/entities/company-state.entity';
-import {
-  CompanyStateDocument,
-  CompanyStateModel,
-} from './schemas/company-state.schema';
 
 export interface DbCompany {
   id: number;
@@ -38,8 +32,6 @@ export class CompanyStatesPgRepository {
   // TODO: caching
 
   constructor(
-    @InjectModel(CompanyStateModel.name)
-    private model: Model<CompanyStateDocument>,
     private readonly db: DbService,
     private readonly redisClient: RedisClient,
   ) {}

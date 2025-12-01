@@ -1,7 +1,6 @@
 import { HttpModule } from '@nestjs/axios';
 import { forwardRef, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
 import { AuthService } from '../common/auth/auth-service';
 import { DbModule } from '../common/db.module';
 import { CompaniesModule } from '../companies/companies.module';
@@ -17,27 +16,10 @@ import { PositionsService } from './domain/positions.service';
 import { PortfolioStatesPgRepository } from './repositories/portfolio-states.pg.repository';
 import { PortfoliosPgRepository } from './repositories/portfolios.pg.repository';
 import { PositionsPgRepository } from './repositories/positions.pg.repository';
-import {
-  PortfolioStateModel,
-  PortfolioStateSchema,
-} from './repositories/schemas/portfolio-state.schema';
-import {
-  PortfolioModel,
-  PortfolioSchema,
-} from './repositories/schemas/portfolio.schema';
-import {
-  PositionModel,
-  PositionSchema,
-} from './repositories/schemas/position.schema';
 import { PortfoliosController } from './routes/portfolios.controller';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: PortfolioModel.name, schema: PortfolioSchema },
-      { name: PortfolioStateModel.name, schema: PortfolioStateSchema },
-      { name: PositionModel.name, schema: PositionSchema },
-    ]),
     ConfigModule,
     DbModule,
     HttpModule,
