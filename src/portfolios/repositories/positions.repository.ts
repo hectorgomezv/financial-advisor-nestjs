@@ -17,7 +17,7 @@ export interface DbPosition {
 }
 
 @Injectable()
-export class PositionsPgRepository {
+export class PositionsRepository {
   constructor(private readonly db: DbService) {}
 
   async create(dto: CreatePositionDto): Promise<Position> {

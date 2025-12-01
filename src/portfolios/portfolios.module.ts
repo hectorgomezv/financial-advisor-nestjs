@@ -13,9 +13,9 @@ import { OpenExchangeRatesClient } from './datasources/open-exchange-rates.clien
 import { PortfolioStatesService } from './domain/portfolio-states.service';
 import { PortfoliosService } from './domain/portfolios.service';
 import { PositionsService } from './domain/positions.service';
-import { PortfolioStatesPgRepository } from './repositories/portfolio-states.pg.repository';
-import { PortfoliosPgRepository } from './repositories/portfolios.pg.repository';
-import { PositionsPgRepository } from './repositories/positions.pg.repository';
+import { PortfolioStatesRepository } from './repositories/portfolio-states.repository';
+import { PortfoliosRepository } from './repositories/portfolios.repository';
+import { PositionsRepository } from './repositories/positions.repository';
 import { PortfoliosController } from './routes/portfolios.controller';
 
 @Module({
@@ -33,13 +33,13 @@ import { PortfoliosController } from './routes/portfolios.controller';
     IndicesRepository,
     IndicesService,
     OpenExchangeRatesClient,
-    PortfoliosPgRepository,
+    PortfoliosRepository,
     PortfoliosService,
-    PortfolioStatesPgRepository,
+    PortfolioStatesRepository,
     PortfolioStatesService,
-    PositionsPgRepository,
+    PositionsRepository,
     PositionsService,
   ],
-  exports: [PositionsPgRepository],
+  exports: [PositionsRepository],
 })
 export class PortfoliosModule {}

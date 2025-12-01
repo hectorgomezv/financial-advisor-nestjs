@@ -1,17 +1,17 @@
-import { CompaniesPgRepository } from '../../companies/repositories/companies.pg.repository';
-import { CompanyStatesPgRepository } from '../../companies/repositories/company-states.pg.repository';
+import { CompaniesRepository } from '../../companies/repositories/companies.repository';
+import { CompanyStatesRepository } from '../../companies/repositories/company-states.repository';
 import { CurrencyExchangeClient } from '../datasources/currency-exchange.client';
-import { PortfoliosPgRepository } from '../repositories/portfolios.pg.repository';
-import { PositionsPgRepository } from '../repositories/positions.pg.repository';
+import { PortfoliosRepository } from '../repositories/portfolios.repository';
+import { PositionsRepository } from '../repositories/positions.repository';
 import { PortfolioStatesService } from './portfolio-states.service';
 import { PositionsService } from './positions.service';
 
 describe('PositionsService', () => {
-  const positionsRepository = {} as unknown as PositionsPgRepository;
-  const portfoliosRepository = {} as unknown as PortfoliosPgRepository;
+  const positionsRepository = {} as unknown as PositionsRepository;
+  const portfoliosRepository = {} as unknown as PortfoliosRepository;
   const portfolioStatesService = {} as unknown as PortfolioStatesService;
-  const companiesRepository = {} as unknown as CompaniesPgRepository;
-  const companyStatesRepository = {} as unknown as CompanyStatesPgRepository;
+  const companiesRepository = {} as unknown as CompaniesRepository;
+  const companyStatesRepository = {} as unknown as CompanyStatesRepository;
   const exchangeClient = {} as unknown as CurrencyExchangeClient;
 
   const mockedPositionsRepository = jest.mocked(positionsRepository);

@@ -2,8 +2,8 @@ import { faker } from '@faker-js/faker';
 import { sortBy } from 'lodash';
 import { AuthService } from '../../common/auth/auth-service';
 import { User, UserRole } from '../../common/auth/entities/user.entity';
-import { PositionsPgRepository } from '../../portfolios/repositories/positions.pg.repository';
-import { CompaniesPgRepository } from '../repositories/companies.pg.repository';
+import { PositionsRepository } from '../../portfolios/repositories/positions.repository';
+import { CompaniesRepository } from '../repositories/companies.repository';
 import { CreateCompanyDto } from '../routes/dto/create-company.dto';
 import { CompaniesService } from './companies.service';
 import { CompanyStatesService } from './company-states.service';
@@ -18,11 +18,11 @@ describe('CompaniesService', () => {
     findAll: jest.fn(),
     findById: jest.fn(),
     findBySymbol: jest.fn(),
-  } as unknown as CompaniesPgRepository);
+  } as unknown as CompaniesRepository);
 
   const mockedPositionsRepository = jest.mocked({
     existByCompanyId: jest.fn(),
-  } as unknown as PositionsPgRepository);
+  } as unknown as PositionsRepository);
 
   const mockedCompanyStateService = jest.mocked({
     createCompanyState: jest.fn(),

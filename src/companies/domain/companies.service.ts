@@ -11,23 +11,23 @@ import { sortBy } from 'lodash';
 import { AuthService } from '../../common/auth/auth-service';
 import { User } from '../../common/auth/entities/user.entity';
 import { CreateCompanyDto } from '../domain/dto/create-company.dto';
-import { CompaniesPgRepository } from '../repositories/companies.pg.repository';
+import { CompaniesRepository } from '../repositories/companies.repository';
 import { CompanyStatesService } from './company-states.service';
 import {
   CompanyWithState,
   CompanyWithStateAndMetrics,
 } from './entities/company.entity';
-import { PositionsPgRepository } from '../../portfolios/repositories/positions.pg.repository';
+import { PositionsRepository } from '../../portfolios/repositories/positions.repository';
 
 @Injectable()
 export class CompaniesService implements OnApplicationBootstrap {
   private readonly logger = new Logger(CompaniesService.name);
 
   constructor(
-    private readonly repository: CompaniesPgRepository,
+    private readonly repository: CompaniesRepository,
     private readonly authService: AuthService,
     private readonly companyStatesService: CompanyStatesService,
-    private readonly positionsRepository: PositionsPgRepository,
+    private readonly positionsRepository: PositionsRepository,
   ) {}
 
   async create(

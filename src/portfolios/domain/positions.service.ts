@@ -7,11 +7,11 @@ import {
 } from '@nestjs/common';
 import { User } from '../../common/auth/entities/user.entity';
 import { CompanyState } from '../../companies/domain/entities/company-state.entity';
-import { CompaniesPgRepository } from '../../companies/repositories/companies.pg.repository';
-import { CompanyStatesPgRepository } from '../../companies/repositories/company-states.pg.repository';
+import { CompaniesRepository } from '../../companies/repositories/companies.repository';
+import { CompanyStatesRepository } from '../../companies/repositories/company-states.repository';
 import { CurrencyExchangeClient } from '../datasources/currency-exchange.client';
-import { PortfoliosPgRepository } from '../repositories/portfolios.pg.repository';
-import { PositionsPgRepository } from '../repositories/positions.pg.repository';
+import { PortfoliosRepository } from '../repositories/portfolios.repository';
+import { PositionsRepository } from '../repositories/positions.repository';
 import { CreatePositionDto } from './dto/create-position.dto';
 import { PositionDetailDto } from './dto/position-detail.dto';
 import { UpdatePositionDto } from './dto/update-position.dto';
@@ -29,11 +29,11 @@ export class PositionsService {
   private readonly logger = new Logger(PositionsService.name);
 
   constructor(
-    private readonly repository: PositionsPgRepository,
-    private readonly portfoliosRepository: PortfoliosPgRepository,
+    private readonly repository: PositionsRepository,
+    private readonly portfoliosRepository: PortfoliosRepository,
     private readonly portfolioStatesService: PortfolioStatesService,
-    private readonly companiesRepository: CompaniesPgRepository,
-    private readonly companyStatesRepository: CompanyStatesPgRepository,
+    private readonly companiesRepository: CompaniesRepository,
+    private readonly companyStatesRepository: CompanyStatesRepository,
     private readonly exchangeClient: CurrencyExchangeClient,
   ) {}
 

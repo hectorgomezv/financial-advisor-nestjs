@@ -9,8 +9,8 @@ import { IFinancialDataClient } from './datasources/financial-data.client.interf
 import { YahooFinancialDataClient } from './datasources/yahoo-financial-data.client';
 import { CompaniesService } from './domain/companies.service';
 import { CompanyStatesService } from './domain/company-states.service';
-import { CompaniesPgRepository } from './repositories/companies.pg.repository';
-import { CompanyStatesPgRepository } from './repositories/company-states.pg.repository';
+import { CompaniesRepository } from './repositories/companies.repository';
+import { CompanyStatesRepository } from './repositories/company-states.repository';
 import { CompaniesController } from './routes/companies.controller';
 
 @Module({
@@ -23,13 +23,13 @@ import { CompaniesController } from './routes/companies.controller';
   controllers: [CompaniesController],
   providers: [
     AuthService,
-    CompaniesPgRepository,
+    CompaniesRepository,
     CompaniesService,
-    CompanyStatesPgRepository,
+    CompanyStatesRepository,
     CompanyStatesService,
     RedisClient,
     { provide: IFinancialDataClient, useClass: YahooFinancialDataClient },
   ],
-  exports: [CompaniesPgRepository, CompanyStatesPgRepository],
+  exports: [CompaniesRepository, CompanyStatesRepository],
 })
 export class CompaniesModule {}
