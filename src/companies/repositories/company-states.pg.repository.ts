@@ -85,8 +85,6 @@ export class CompanyStatesPgRepository {
     };
   }
 
-  // async deleteByCompanyUuid(companyUuid: string): Promise<void> {}
-
   async getLastByCompanyId(companyId: number): Promise<CompanyState | null> {
     const query = `
       SELECT DISTINCT ON (cs.company_id)

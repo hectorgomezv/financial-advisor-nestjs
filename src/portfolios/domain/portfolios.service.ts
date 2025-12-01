@@ -404,7 +404,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
       await Promise.all(
         portfolios.map((portfolio) => {
           this.logger.log(
-            `Refreshing portfolio ${portfolio.name} (uuid: ${portfolio.id})`,
+            `Refreshing portfolio ${portfolio.name} (id: ${portfolio.id})`,
           );
           return this.positionService.updatePortfolioState(portfolio);
         }),

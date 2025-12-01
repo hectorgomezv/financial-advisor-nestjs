@@ -272,7 +272,7 @@ export class PortfoliosController {
     @Param('id', ParseIntPipe) id: number,
     @Param('positionId') positionId: number,
   ) {
-    return this.positionsService.deleteByUuidAndPortfolioUuid(
+    return this.positionsService.deleteByIdAndPortfolioId(
       req.user as User,
       id,
       positionId,

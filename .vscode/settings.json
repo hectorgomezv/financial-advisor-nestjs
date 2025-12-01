@@ -7,7 +7,6 @@
     "hset",
     "nestjs",
     "pino",
-    "roic",
-    "uuidv"
+    "roic"
   ]
 }
