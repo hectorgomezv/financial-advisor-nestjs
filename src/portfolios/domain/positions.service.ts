@@ -74,7 +74,7 @@ export class PositionsService {
     user: User,
     portfolioId: number,
     upsertPositionDto: UpsertPositionDto,
-  ) {
+  ): Promise<Position> {
     const portfolio = await this.portfoliosRepository.findById(portfolioId);
     const company = await this.companiesRepository.findBySymbol(
       upsertPositionDto.symbol,
@@ -90,7 +90,7 @@ export class PositionsService {
       );
     if (!existentPosition) {
       throw new ConflictException(
-        `Position don't exists for ${company.symbol}`,
+        `Position doesn't exist for ${company.symbol}`,
       );
     }
     // TODO: store positions value in DB?
@@ -98,13 +98,15 @@ export class PositionsService {
       targetWeight: upsertPositionDto.targetWeight,
       shares: upsertPositionDto.shares,
       blocked: upsertPositionDto.blocked ?? false,
-      sharesUpdatedAt:
-        upsertPositionDto.shares !== existentPosition.shares
-          ? new Date()
-          : existentPosition.sharesUpdatedAt,
+      sharesUpdatedAt: !upsertPositionDto.shares.eq(existentPosition.shares)
+        ? new Date()
+        : existentPosition.sharesUpdatedAt,
       value: new Decimal(0),
     });
     const updated = await this.repository.findById(existentPosition.id);
+    if (!updated) {
+      throw new ConflictException(`Position doesn't exist`);
+    }
     await this.updatePortfolioState(portfolio);
     return updated;
   }
