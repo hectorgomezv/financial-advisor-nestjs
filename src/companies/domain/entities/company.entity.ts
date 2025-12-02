@@ -1,5 +1,5 @@
-import { CompanyStateResult } from '../company-states.service';
-import { CompanyMetricsResult } from './company-metrics-result.entity';
+import { CompanyMetrics } from './company-metrics.entity';
+import { CompanyState } from './company-state.entity';
 
 export class Company {
   id: number;
@@ -8,9 +8,9 @@ export class Company {
 }
 
 export class CompanyWithState extends Company {
-  state: CompanyStateResult | null;
+  state: CompanyState | null;
 }
 
 export class CompanyWithStateAndMetrics extends CompanyWithState {
-  metrics: CompanyMetricsResult | null;
+  metrics: CompanyMetrics | null;
 }

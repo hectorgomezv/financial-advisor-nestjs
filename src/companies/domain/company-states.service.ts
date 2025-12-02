@@ -5,9 +5,7 @@ import { CompanyState } from '../domain/entities/company-state.entity';
 import { Company } from '../domain/entities/company.entity';
 import { QuoteSummary } from '../domain/entities/quote-summary.entity';
 import { CompanyStatesRepository } from '../repositories/company-states.repository';
-import { CompanyMetricsResult } from './entities/company-metrics-result.entity';
 import { CompanyMetrics } from './entities/company-metrics.entity';
-import { Maths } from '../../common/domain/entities/maths.entity';
 
 export interface CreateCompanyStateDto {
   companyId: number;
@@ -42,20 +40,19 @@ export class CompanyStatesService {
     private readonly financialDataClient: IFinancialDataClient,
   ) {}
 
-  async getLastByCompanyId(companyId: number): Promise<CompanyStateResult> {
+  async getLastByCompanyId(companyId: number): Promise<CompanyState> {
     const state = await this.repository.getLastByCompanyId(companyId);
     if (state === null) throw new NotFoundException('State not found');
-    return this.mapToResult(state);
+    return state;
   }
 
   async getLastByCompanyIds(
     companyIds: Array<number>,
-  ): Promise<Array<CompanyStateResult>> {
-    const states = await this.repository.getLastByCompanyIds(companyIds);
-    return this.mapToResults(states);
+  ): Promise<Array<CompanyState>> {
+    return this.repository.getLastByCompanyIds(companyIds);
   }
 
-  async createCompanyState(company: Company): Promise<CompanyStateResult> {
+  async createCompanyState(company: Company): Promise<CompanyState> {
     const quoteSummary: QuoteSummary =
       await this.financialDataClient.getQuoteSummary(company.symbol);
 
@@ -71,43 +68,12 @@ export class CompanyStatesService {
       timestamp: new Date(),
     };
 
-    const created = await this.repository.create(dto);
-    return this.mapToResult(created);
+    return this.repository.create(dto);
   }
 
-  async getMetricsByCompanyId(
-    companyId: number,
-  ): Promise<CompanyMetricsResult> {
+  async getMetricsByCompanyId(companyId: number): Promise<CompanyMetrics> {
     const metrics = await this.repository.getMetricsByCompanyId(companyId);
     if (metrics === null) throw new NotFoundException('Company not found');
-    return this.mapMetricsToResult(metrics);
-  }
-
-  private mapMetricsToResult(metrics: CompanyMetrics): CompanyMetricsResult {
-    return {
-      avgEnterpriseToRevenue: Maths.round(metrics.avgEnterpriseToRevenue),
-      avgEnterpriseToEbitda: Maths.round(metrics.avgEnterpriseToEbitda),
-      avgForwardPE: Maths.round(metrics.avgForwardPE),
-      avgProfitMargins: Maths.round(metrics.avgProfitMargins),
-    };
-  }
-
-  private mapToResults(states: Array<CompanyState>): Array<CompanyStateResult> {
-    return states.map((state) => this.mapToResult(state));
-  }
-
-  private mapToResult(state: CompanyState): CompanyStateResult {
-    return {
-      id: state.id,
-      companyId: state.companyId,
-      currency: state.currency,
-      enterpriseToEbitda: Maths.round(state.enterpriseToEbitda),
-      enterpriseToRevenue: Maths.round(state.enterpriseToRevenue),
-      forwardPE: Maths.round(state.forwardPE),
-      price: Maths.round(state.price),
-      profitMargins: Maths.round(state.profitMargins),
-      shortPercentOfFloat: Maths.round(state.shortPercentOfFloat),
-      timestamp: state.timestamp,
-    };
+    return metrics;
   }
 }

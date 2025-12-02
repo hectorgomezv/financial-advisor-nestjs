@@ -1,10 +1,8 @@
 import { ApiExtraModels, ApiProperty } from '@nestjs/swagger';
 import { PortfolioContribution } from './portfolio-contribution.entity';
-import { PortfolioState } from './portfolio-state.entity';
-import { Position } from './position.entity';
 
-@ApiExtraModels(Position, PortfolioContribution)
-export class Portfolio {
+@ApiExtraModels(PortfolioContribution)
+export class PortfolioWithContributions {
   @ApiProperty()
   id: number;
   @ApiProperty()
@@ -17,8 +15,4 @@ export class Portfolio {
   name: string;
   @ApiProperty()
   ownerId: string;
-  @ApiProperty({ isArray: true, type: Position })
-  positions: Position[];
-  @ApiProperty()
-  state: PortfolioState | null;
 }

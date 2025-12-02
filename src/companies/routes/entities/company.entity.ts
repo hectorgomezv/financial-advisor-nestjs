@@ -1,7 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiExtraModels, ApiProperty } from '@nestjs/swagger';
 import { CompanyMetrics } from './company-metrics.entity';
 import { CompanyState } from './company-state.entity';
 
+@ApiExtraModels(CompanyState, CompanyMetrics)
 export class Company {
   @ApiProperty()
   id: number;
@@ -9,11 +10,16 @@ export class Company {
   name: string;
   @ApiProperty()
   symbol: string;
-  @ApiProperty()
-  metrics: CompanyMetrics;
 }
 
+@ApiExtraModels(CompanyState)
 export class CompanyWithState extends Company {
-  @ApiProperty()
-  state: CompanyState;
+  @ApiProperty({ type: CompanyState, nullable: true })
+  state: CompanyState | null;
+}
+
+@ApiExtraModels(CompanyMetrics)
+export class CompanyWithStateAndMetrics extends CompanyWithState {
+  @ApiProperty({ type: CompanyMetrics, nullable: true })
+  metrics: CompanyMetrics | null;
 }

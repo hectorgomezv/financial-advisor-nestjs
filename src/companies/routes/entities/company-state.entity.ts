@@ -12,13 +12,13 @@ export class CompanyState {
   @ApiProperty()
   currency: string;
   @ApiProperty()
-  enterpriseToRevenue: number;
+  enterpriseToRevenue: string;
   @ApiProperty()
-  enterpriseToEbitda: number;
+  enterpriseToEbitda: string;
   @ApiProperty()
-  forwardPE: number;
+  forwardPE: string;
   @ApiProperty()
-  profitMargins: number;
+  profitMargins: string;
   @ApiProperty()
-  shortPercentOfFloat: number;
+  shortPercentOfFloat: string;
 }

@@ -29,7 +29,6 @@ import { OkArrayResponse } from '../../common/routes/entities/ok-array-response.
 import { OkResponse } from '../../common/routes/entities/ok-response.entity';
 import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
 import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
-import { PortfolioDetailDto } from '../domain/dto/portfolio-detail.dto';
 import {
   getRangeStartTimestamp,
   timeRangeFromStr,
@@ -45,6 +44,9 @@ import { PortfolioAverageMetric as PortfolioAverageBalance } from './entities/po
 import { Portfolio } from './entities/portfolio.entity';
 import { Position } from './entities/position.entity';
 import Decimal from 'decimal.js';
+import { PortfolioRouteMapper } from './mappers/portfolio.route.mapper';
+import { PortfolioWithContributions } from './entities/portfolio-with-contributions.entity';
+import { PortfolioWithPositionsAndState } from './entities/portfolio-with-positions-and-state.entity copy';
 
 @UseInterceptors(DataInterceptor)
 @UseFilters(MainExceptionFilter)
@@ -63,21 +65,35 @@ export class PortfoliosController {
   @Post()
   @CreatedResponse(Portfolio)
   @ApiBadRequestResponse()
-  create(@Request() req, @Body() createPortfolioDto: CreatePortfolioDto) {
-    return this.portfoliosService.create(req.user as User, createPortfolioDto);
+  async create(
+    @Request() req,
+    @Body() createPortfolioDto: CreatePortfolioDto,
+  ): Promise<Portfolio> {
+    const result = await this.portfoliosService.create(
+      req.user as User,
+      createPortfolioDto,
+    );
+    return PortfolioRouteMapper.mapPortfolio(result);
   }
 
   @Get()
-  @OkArrayResponse(Portfolio)
-  findAll(@Request() req) {
-    return this.portfoliosService.findByOwnerId(req.user as User);
+  @OkArrayResponse(PortfolioWithContributions)
+  async findAll(@Request() req): Promise<Array<PortfolioWithContributions>> {
+    const result = await this.portfoliosService.findByOwnerId(req.user as User);
+    return result.map((p) =>
+      PortfolioRouteMapper.mapPortfolioWithContributions(p),
+    );
   }
 
   @Get(':id')
-  @OkResponse(PortfolioDetailDto)
+  @OkResponse(PortfolioWithPositionsAndState)
   @ApiNotFoundResponse()
-  findOne(@Request() req, @Param('id', ParseIntPipe) id: number) {
-    return this.portfoliosService.findById(req.user as User, id);
+  async findOne(
+    @Request() req,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<PortfolioWithPositionsAndState> {
+    const result = await this.portfoliosService.findById(req.user as User, id);
+    return PortfolioRouteMapper.mapPortfolioWithPositionsAndState(result);
   }
 
   @Delete(':id')
@@ -173,7 +189,7 @@ export class PortfoliosController {
   }
 
   @Put(':id/cash')
-  @OkResponse(Position)
+  @OkResponse(Portfolio)
   @ApiBadRequestResponse()
   @ApiNotFoundResponse()
   updatePortfolioCash(
@@ -226,11 +242,7 @@ export class PortfoliosController {
       sum: contributionsMetadata.sum.toString(),
       offset,
       limit,
-      items: contributions.map((c) => ({
-        id: c.id,
-        timestamp: c.timestamp,
-        amountEUR: c.amountEUR.toString(),
-      })),
+      items: contributions.map((c) => PortfolioRouteMapper.mapContribution(c)),
     };
   }
 

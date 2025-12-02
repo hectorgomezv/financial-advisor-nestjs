@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker';
-import { PositionDetailDto } from '../position-detail.dto';
+import { PositionWithCompanyState } from '../position-with-company-state.dto';
 import Decimal from 'decimal.js';
 
-export function positionDetailDtoFactory(
+export function positionWithCompanyStateFactory(
   id?: number,
   companyName?: string,
   symbol?: string,
@@ -12,8 +12,8 @@ export function positionDetailDtoFactory(
   currentWeight?: Decimal,
   deltaWeight?: Decimal,
   deltaShares?: Decimal,
-): PositionDetailDto {
-  return <PositionDetailDto>{
+): PositionWithCompanyState {
+  return <PositionWithCompanyState>{
     id: id ?? faker.number.int(),
     companyName: companyName ?? faker.word.words(),
     symbol: symbol ?? faker.word.sample(),

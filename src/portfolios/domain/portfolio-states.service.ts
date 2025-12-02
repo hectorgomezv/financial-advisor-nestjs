@@ -2,19 +2,21 @@ import { Injectable } from '@nestjs/common';
 import Decimal from 'decimal.js';
 import { TimePeriod } from '../../common/domain/entities/time-period.entity';
 import { PortfolioStatesRepository } from '../repositories/portfolio-states.repository';
+import { PositionWithCompanyState } from './dto/position-with-company-state.dto';
 import { PortfolioAverageBalance } from './entities/portfolio-average-balance.entity';
 import { PortfolioState } from './entities/portfolio-state.entity';
 import { Portfolio } from './entities/portfolio.entity';
 import { Position } from './entities/position.entity';
 import { TimeRange } from './entities/time-range.enum';
-import { PortfolioStateResult } from './entities/portfolio-state-result.entity';
-import { Maths } from '../../common/domain/entities/maths.entity';
 
 @Injectable()
 export class PortfolioStatesService {
   constructor(private readonly repository: PortfolioStatesRepository) {}
 
-  async createPortfolioState(portfolio: Portfolio, positions: Position[]) {
+  async createPortfolioState(
+    portfolio: Portfolio,
+    positions: Array<Position> | Array<PositionWithCompanyState>,
+  ): Promise<PortfolioState> {
     const sumWeights = positions.reduce(
       (acc, p) => acc.plus(p.targetWeight),
       new Decimal(0),
@@ -38,11 +40,8 @@ export class PortfolioStatesService {
     });
   }
 
-  async getLastByPortfolioId(
-    portfolioId: number,
-  ): Promise<PortfolioStateResult> {
-    const state = await this.repository.getLastByPortfolioId(portfolioId);
-    return this.mapResult(state);
+  getLastByPortfolioId(portfolioId: number): Promise<PortfolioState> {
+    return this.repository.getLastByPortfolioId(portfolioId);
   }
 
   getAverageBalancesForRange(
@@ -57,18 +56,5 @@ export class PortfolioStatesService {
     period: TimePeriod,
   ): Promise<Partial<PortfolioState>[]> {
     return this.repository.getPortfolioStatesInPeriod(portfolioId, period);
-  }
-
-  private mapResult(state: PortfolioState): PortfolioStateResult {
-    return {
-      id: state.id,
-      portfolioId: state.portfolioId,
-      cash: Maths.round(state.cash),
-      isValid: state.isValid,
-      roicEUR: Maths.round(state.roicEUR),
-      sumWeights: Maths.round(state.sumWeights),
-      timestamp: state.timestamp,
-      totalValueEUR: Maths.round(state.totalValueEUR),
-    };
   }
 }

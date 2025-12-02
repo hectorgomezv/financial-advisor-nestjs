@@ -4,19 +4,17 @@ import { random, range } from 'lodash';
 import { AuthService } from '../../common/auth/auth-service';
 import { User, UserRole } from '../../common/auth/entities/user.entity';
 import { dataPointFactory } from '../../common/domain/entities/__tests__/data-point.factory';
-import { Maths } from '../../common/domain/entities/maths.entity';
 import { TimePeriod } from '../../common/domain/entities/time-period.entity';
 import { indexFactory } from '../../indices/domain/entities/__tests__/index.factory';
 import { IndicesService } from '../../indices/domain/indices.service';
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
-import { PortfolioDetailResult } from './dto/portfolio-detail-result.dto';
+import { PortfolioWithPositionsAndState } from './dto/portfolio-with-positions-and-state.dto';
 import { addPortfolioContributionDtoFactory } from './dto/test/add-portfolio-contribution.dto.factory';
-import { positionDetailResultFactory } from './dto/test/position-detail-result.factory';
+import { positionWithCompanyStateFactory } from './dto/test/position-with-company-state.factory';
 import { updatePortfolioCashDtoFactory } from './dto/test/update-portfolio-cash.dto.factory';
 import { portfolioAverageBalanceFactory } from './entities/__tests__/portfolio-average-metric.factory';
 import { portfolioContributionFactory } from './entities/__tests__/portfolio-contribution.factory';
-import { portfolioStateResultFactory } from './entities/__tests__/portfolio-state-result.factory';
 import { portfolioStateFactory } from './entities/__tests__/portfolio-state.factory';
 import { portfolioFactory } from './entities/__tests__/portfolio.factory';
 import { ContributionsMetadata } from './entities/contributions-metadata';
@@ -48,7 +46,7 @@ describe('PortfoliosService', () => {
   } as unknown as PortfolioStatesService);
 
   const positionsService = jest.mocked({
-    getPositionDetailsByPortfolioId: jest.fn(),
+    getPositionsWithCompanyStateByPortfolioId: jest.fn(),
     deleteByPortfolioId: jest.fn(),
     updatePortfolioState: jest.fn(),
   } as unknown as PositionsService);
@@ -140,12 +138,12 @@ describe('PortfoliosService', () => {
 
     it('should call repository for retrieving one portfolio with its positions', async () => {
       const positions = [
-        positionDetailResultFactory(),
-        positionDetailResultFactory(),
+        positionWithCompanyStateFactory(),
+        positionWithCompanyStateFactory(),
       ];
-      const state = portfolioStateResultFactory();
+      const state = portfolioStateFactory();
       portfoliosRepository.findById.mockResolvedValueOnce(adminUserPortfolio);
-      positionsService.getPositionDetailsByPortfolioId.mockResolvedValueOnce(
+      positionsService.getPositionsWithCompanyStateByPortfolioId.mockResolvedValueOnce(
         positions,
       );
       portfolioStatesService.getLastByPortfolioId.mockResolvedValueOnce(state);
@@ -155,11 +153,11 @@ describe('PortfoliosService', () => {
         adminUserPortfolio.id,
       );
 
-      expect(retrieved).toEqual(<PortfolioDetailResult>{
+      expect(retrieved).toEqual(<PortfolioWithPositionsAndState>{
         id: adminUserPortfolio.id,
-        name: adminUserPortfolio.name,
-        cash: Maths.round(adminUserPortfolio.cash),
+        cash: adminUserPortfolio.cash,
         created: adminUserPortfolio.created,
+        name: adminUserPortfolio.name,
         positions,
         state,
       });
@@ -614,15 +612,13 @@ describe('PortfoliosService', () => {
       const portfolio: Portfolio = {
         ...portfolioFactory(),
         ownerId: adminUser.id,
-        contributions: [
-          new Date(2022, 5, 5),
-          new Date(2022, 7, 5),
-          // new Date(2022, 9, 5),
-        ].map((date) => ({
-          ...portfolioContributionFactory(),
-          timestamp: new Date(date),
-          amountEUR: new Decimal(100),
-        })),
+        contributions: [new Date(2022, 5, 5), new Date(2022, 7, 5)].map(
+          (date) => ({
+            ...portfolioContributionFactory(),
+            timestamp: new Date(date),
+            amountEUR: new Decimal(100),
+          }),
+        ),
       };
 
       const portfolioStates = [

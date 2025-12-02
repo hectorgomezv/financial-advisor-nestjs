@@ -15,4 +15,6 @@ export class Position {
   sharesUpdatedAt: Date;
   @ApiProperty()
   targetWeight: string;
+  @ApiProperty()
+  value: string;
 }

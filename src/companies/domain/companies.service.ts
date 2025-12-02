@@ -45,7 +45,7 @@ export class CompaniesService implements OnApplicationBootstrap {
     return <CompanyWithState>{ ...company, state };
   }
 
-  async getCompaniesWithMetricsAndState(): Promise<
+  async getCompaniesWithStateAndMetrics(): Promise<
     Array<CompanyWithStateAndMetrics>
   > {
     const companies = await this.repository.findAll();

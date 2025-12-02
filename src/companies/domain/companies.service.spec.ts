@@ -7,9 +7,10 @@ import { CompaniesRepository } from '../repositories/companies.repository';
 import { CreateCompanyDto } from '../routes/dto/create-company.dto';
 import { CompaniesService } from './companies.service';
 import { CompanyStatesService } from './company-states.service';
-import { companyMetricsResultFactory } from './entities/__tests__/company-metrics-result.factory';
-import { companyStateResultFactory } from './entities/__tests__/company-state-result.factory';
+import { companyMetricsFactory } from './entities/__tests__/company-metrics.factory';
 import { companyFactory } from './entities/__tests__/company.factory';
+import { companyStateFactory } from './entities/__tests__/company-state.factory';
+import Decimal from 'decimal.js';
 
 describe('CompaniesService', () => {
   const mockedCompaniesRepository = jest.mocked({
@@ -73,7 +74,7 @@ describe('CompaniesService', () => {
 
     it('should create a CompanyState when creating a company', async () => {
       const company = companyFactory();
-      const state = companyStateResultFactory();
+      const state = companyStateFactory();
       const dto = <CreateCompanyDto>{
         symbol: faker.finance.currencyCode(),
         name: faker.company.name(),
@@ -98,33 +99,33 @@ describe('CompaniesService', () => {
     it('should retrieve all the companies and merge their states', async () => {
       const companies = [companyFactory(), companyFactory()];
       const states = [
-        companyStateResultFactory(
+        companyStateFactory(
           faker.number.int(),
-          Date.now(),
-          faker.number.int(),
-          faker.number.int(),
-          faker.number.int(),
+          new Date(),
+          new Decimal(faker.number.int()),
+          new Decimal(faker.number.int()),
+          new Decimal(faker.number.int()),
           faker.finance.currencyCode(),
           companies[1].id,
         ),
-        companyStateResultFactory(
+        companyStateFactory(
           faker.number.int(),
-          Date.now(),
-          faker.number.int(),
-          faker.number.int(),
-          faker.number.int(),
+          new Date(),
+          new Decimal(faker.number.int()),
+          new Decimal(faker.number.int()),
+          new Decimal(faker.number.int()),
           faker.finance.currencyCode(),
           companies[0].id,
         ),
       ];
-      const metrics = companyMetricsResultFactory();
+      const metrics = companyMetricsFactory();
       mockedCompaniesRepository.findAll.mockResolvedValue(companies);
       mockedCompanyStateService.getLastByCompanyIds.mockResolvedValue(states);
       mockedCompanyStateService.getMetricsByCompanyId.mockResolvedValue(
         metrics,
       );
 
-      const actual = await service.getCompaniesWithMetricsAndState();
+      const actual = await service.getCompaniesWithStateAndMetrics();
 
       const expected = sortBy(
         [
@@ -150,8 +151,8 @@ describe('CompaniesService', () => {
 
     it('should call repository for retrieving a company', async () => {
       const company = companyFactory();
-      const state = companyStateResultFactory();
-      const metrics = companyMetricsResultFactory();
+      const state = companyStateFactory();
+      const metrics = companyMetricsFactory();
       mockedCompaniesRepository.findById.mockResolvedValue(company);
       mockedCompanyStateService.getLastByCompanyId.mockResolvedValue(state);
       mockedCompanyStateService.getMetricsByCompanyId.mockResolvedValue(
