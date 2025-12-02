@@ -29,7 +29,6 @@ import { OkArrayResponse } from '../../common/routes/entities/ok-array-response.
 import { OkResponse } from '../../common/routes/entities/ok-response.entity';
 import { MainExceptionFilter } from '../../common/routes/filters/main-exception.filter';
 import { DataInterceptor } from '../../common/routes/interceptors/data.interceptor';
-import { PortfolioDetailDto } from '../domain/dto/portfolio-detail.dto';
 import {
   getRangeStartTimestamp,
   timeRangeFromStr,
@@ -47,6 +46,7 @@ import { Position } from './entities/position.entity';
 import Decimal from 'decimal.js';
 import { PortfolioRouteMapper } from './mappers/portfolio.route.mapper';
 import { PortfolioWithContributions } from './entities/portfolio-with-contributions.entity';
+import { PortfolioWithPositionsAndState } from './entities/portfolio-with-positions-and-state.entity copy';
 
 @UseInterceptors(DataInterceptor)
 @UseFilters(MainExceptionFilter)
@@ -86,10 +86,14 @@ export class PortfoliosController {
   }
 
   @Get(':id')
-  @OkResponse(PortfolioDetailDto) // TODO: PortfolioWithPositionsAndState entity
+  @OkResponse(PortfolioWithPositionsAndState)
   @ApiNotFoundResponse()
-  findOne(@Request() req, @Param('id', ParseIntPipe) id: number) {
-    return this.portfoliosService.findById(req.user as User, id);
+  async findOne(
+    @Request() req,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<PortfolioWithPositionsAndState> {
+    const result = await this.portfoliosService.findById(req.user as User, id);
+    return PortfolioRouteMapper.mapPortfolioWithPositionsAndState(result);
   }
 
   @Delete(':id')

@@ -27,8 +27,7 @@ export class CurrencyExchangeClient {
     return this.fx;
   }
 
-  // public for testing purposes
-  public async getRatesFromDb(): Promise<Record<string, number>> {
+  async getRatesFromDb(): Promise<Record<string, number>> {
     const ratesFromDb = await this.currenciesRepository.getRates();
     if (ratesFromDb.length === 0) {
       return this.refreshFx();
@@ -40,8 +39,7 @@ export class CurrencyExchangeClient {
     return rates;
   }
 
-  // public for testing purposes
-  public async refreshFx(): Promise<Record<string, number>> {
+  async refreshFx(): Promise<Record<string, number>> {
     const rates = await this.openExchangeRatesClient.getRates();
     for (const [symbol, rate] of Object.entries(rates || {})) {
       await this.currenciesRepository.upsertRate(symbol, new Decimal(rate));

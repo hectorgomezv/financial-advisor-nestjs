@@ -12,14 +12,13 @@ import { first, head, last, orderBy, sortBy } from 'lodash';
 import { AuthService } from '../../common/auth/auth-service';
 import { User } from '../../common/auth/entities/user.entity';
 import { DataPoint } from '../../common/domain/entities/data-point.entity';
-import { Maths } from '../../common/domain/entities/maths.entity';
 import { TimePeriod } from '../../common/domain/entities/time-period.entity';
 import { Index } from '../../indices/domain/entities/index.entity';
 import { IndicesService } from '../../indices/domain/indices.service';
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { AddPortfolioContributionDto } from './dto/add-portfolio-contribution.dto';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
-import { PortfolioDetailResult } from './dto/portfolio-detail-result.dto';
+import { PortfolioWithPositionsAndState } from './dto/portfolio-with-positions-and-state.dto';
 import { UpdatePortfolioCashDto } from './dto/update-portfolio-cash.dto';
 import { ContributionsMetadata } from './entities/contributions-metadata';
 import { PortfolioAverageBalance } from './entities/portfolio-average-balance.entity';
@@ -57,14 +56,19 @@ export class PortfoliosService implements OnApplicationBootstrap {
       : this.repository.findByOwnerId(user.id);
   }
 
-  async findById(user: User, id: number): Promise<PortfolioDetailResult> {
+  async findById(
+    user: User,
+    id: number,
+  ): Promise<PortfolioWithPositionsAndState> {
     const portfolio = await this.repository.findById(id);
     if (!portfolio) {
       throw new NotFoundException('Portfolio not found');
     }
     this.checkOwner(user, portfolio);
     const positions =
-      await this.positionService.getPositionDetailsByPortfolioId(portfolio.id);
+      await this.positionService.getPositionsWithCompanyStateByPortfolioId(
+        portfolio.id,
+      );
     const state = await this.portfolioStatesService.getLastByPortfolioId(
       portfolio.id,
     );
@@ -72,7 +76,7 @@ export class PortfoliosService implements OnApplicationBootstrap {
       id: portfolio.id,
       name: portfolio.name,
       created: portfolio.created,
-      cash: Maths.round(portfolio.cash),
+      cash: portfolio.cash,
       positions,
       state,
     };

@@ -5,24 +5,22 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import Decimal from 'decimal.js';
 import { User } from '../../common/auth/entities/user.entity';
 import { CompanyState } from '../../companies/domain/entities/company-state.entity';
+import { Company } from '../../companies/domain/entities/company.entity';
 import { CompaniesRepository } from '../../companies/repositories/companies.repository';
 import { CompanyStatesRepository } from '../../companies/repositories/company-states.repository';
 import { CurrencyExchangeClient } from '../datasources/currency-exchange.client';
 import { PortfoliosRepository } from '../repositories/portfolios.repository';
 import { PositionsRepository } from '../repositories/positions.repository';
 import { CreatePositionDto } from './dto/create-position.dto';
-import { PositionDetailDto } from './dto/position-detail.dto';
+import { PositionWithCompanyState } from './dto/position-with-company-state.dto';
 import { UpdatePositionDto } from './dto/update-position.dto';
 import { UpsertPositionDto } from './dto/upsert-position.dto';
 import { Portfolio } from './entities/portfolio.entity';
 import { Position } from './entities/position.entity';
 import { PortfolioStatesService } from './portfolio-states.service';
-import { Company } from '../../companies/domain/entities/company.entity';
-import Decimal from 'decimal.js';
-import { PositionDetailResult } from './dto/position-detail-result';
-import { Maths } from '../../common/domain/entities/maths.entity';
 
 @Injectable()
 export class PositionsService {
@@ -111,15 +109,15 @@ export class PositionsService {
     return updated;
   }
 
-  async getPositionDetailsByPortfolioId(
+  async getPositionsWithCompanyStateByPortfolioId(
     portfolioId: number,
-  ): Promise<Array<PositionDetailResult>> {
+  ): Promise<Array<PositionWithCompanyState>> {
     const positions = await this.repository.findByPortfolioId(portfolioId);
     const companies = await this.companiesRepository.findByIdIn(
       positions.map((p) => p.companyId),
     );
     const fx = await this.exchangeClient.getFx();
-    const positionStates: Array<PositionDetailDto> = [];
+    const positionStates: Array<PositionWithCompanyState> = [];
     for (const position of positions) {
       const company = companies.find((c) => c.id === position.companyId);
       const companyState =
@@ -133,10 +131,9 @@ export class PositionsService {
       );
       positionStates.push(state);
     }
-    const states = this.addWeightsAndDeltas(positionStates)
+    return this.addWeightsAndDeltas(positionStates)
       .sort((a, b) => a.value.toNumber() - b.value.toNumber())
       .reverse();
-    return states.map((ps) => this.mapToResult(ps));
   }
 
   async deleteByIdAndPortfolioId(user: User, portfolioId: number, id: number) {
@@ -154,12 +151,12 @@ export class PositionsService {
     company: Company,
     companyState: CompanyState,
     fx: any,
-  ): Promise<PositionDetailDto> {
+  ): Promise<PositionWithCompanyState> {
     let value = companyState.price.mul(position.shares);
     if (companyState.currency !== 'EUR') {
       value = await fx(value.toNumber()).from(companyState.currency).to('EUR');
     }
-    return <PositionDetailDto>{
+    return <PositionWithCompanyState>{
       id: position.id,
       companyName: company.name,
       symbol: company.symbol,
@@ -173,8 +170,8 @@ export class PositionsService {
   }
 
   private addWeightsAndDeltas(
-    positionsStates: Array<PositionDetailDto>,
-  ): Array<PositionDetailDto> {
+    positionsStates: Array<PositionWithCompanyState>,
+  ): Array<PositionWithCompanyState> {
     const totalValue = positionsStates.reduce(
       (sum, it) => sum.plus(it.value),
       new Decimal(0),
@@ -191,7 +188,7 @@ export class PositionsService {
         .dividedBy(currentWeight)
         .minus(shares);
 
-      return <PositionDetailDto>{
+      return <PositionWithCompanyState>{
         ...positionState,
         currentWeight,
         deltaWeight,
@@ -201,14 +198,12 @@ export class PositionsService {
   }
 
   async updatePortfolioState(portfolio: Portfolio) {
-    const positionDetailDTOs = await this.getPositionDetailsByPortfolioId(
-      portfolio.id,
-    );
-    const positions = this.mapToPositions(positionDetailDTOs, portfolio.id);
+    const positionsWithCompanyState =
+      await this.getPositionsWithCompanyStateByPortfolioId(portfolio.id);
     const portfolioState =
       await this.portfolioStatesService.createPortfolioState(
         portfolio,
-        positions,
+        positionsWithCompanyState,
       );
     this.logger.log(
       `Updated portfolio ${portfolio.name} state. Total value: ${portfolioState.totalValueEUR}€, ROIC: ${portfolioState.roicEUR}€`,
@@ -220,51 +215,5 @@ export class PositionsService {
     if (portfolio.ownerId !== user.id) {
       throw new UnauthorizedException('Access denied');
     }
-  }
-
-  private mapToPositions(
-    positionDetailDTOs: Array<PositionDetailResult>,
-    portfolioId: number,
-  ): Position[] {
-    return positionDetailDTOs.map((pdd) => {
-      return <Position>{
-        id: pdd.id,
-        portfolioId,
-        blocked: pdd.blocked,
-        companyId: pdd.companyState.companyId,
-        shares: new Decimal(pdd.shares),
-        sharesUpdatedAt: pdd.sharesUpdatedAt,
-        targetWeight: new Decimal(pdd.targetWeight),
-        value: new Decimal(pdd.value),
-      };
-    });
-  }
-
-  private mapToResult(ps: PositionDetailDto): PositionDetailResult {
-    return {
-      id: ps.id,
-      companyName: ps.companyName,
-      symbol: ps.symbol,
-      shares: Maths.round(ps.shares),
-      value: Maths.round(ps.value),
-      targetWeight: Maths.round(ps.targetWeight),
-      currentWeight: Maths.round(ps.currentWeight),
-      deltaWeight: Maths.round(ps.deltaWeight),
-      deltaShares: Maths.round(ps.deltaShares),
-      companyState: {
-        id: ps.companyState.id,
-        companyId: ps.companyState.companyId,
-        currency: ps.companyState.currency,
-        enterpriseToEbitda: Maths.round(ps.companyState.enterpriseToEbitda),
-        enterpriseToRevenue: Maths.round(ps.companyState.enterpriseToRevenue),
-        forwardPE: Maths.round(ps.companyState.forwardPE),
-        price: Maths.round(ps.companyState.price),
-        profitMargins: Maths.round(ps.companyState.profitMargins),
-        shortPercentOfFloat: Maths.round(ps.companyState.shortPercentOfFloat),
-        timestamp: ps.companyState.timestamp,
-      },
-      blocked: ps.blocked,
-      sharesUpdatedAt: ps.sharesUpdatedAt,
-    };
   }
 }

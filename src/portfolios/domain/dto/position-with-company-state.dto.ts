@@ -1,17 +1,17 @@
 import Decimal from 'decimal.js';
 import { CompanyState } from '../../../companies/domain/entities/company-state.entity';
 
-export class PositionDetailDto {
+export class PositionWithCompanyState {
   id: number;
-  companyName: string;
-  symbol: string;
-  shares: Decimal;
-  value: Decimal;
-  targetWeight: Decimal;
-  currentWeight: Decimal;
-  deltaWeight: Decimal;
-  deltaShares: Decimal;
-  companyState: CompanyState;
   blocked: boolean;
+  companyName: string;
+  companyState: CompanyState;
+  currentWeight: Decimal;
+  deltaShares: Decimal;
+  deltaWeight: Decimal;
+  shares: Decimal;
   sharesUpdatedAt: Date | null;
+  symbol: string;
+  targetWeight: Decimal;
+  value: Decimal;
 }
