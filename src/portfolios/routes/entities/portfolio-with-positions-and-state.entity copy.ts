@@ -14,6 +14,6 @@ export class PortfolioWithPositionsAndState {
   name: string;
   @ApiProperty({ isArray: true, type: PositionWithCompanyState })
   positions: PositionWithCompanyState[];
-  @ApiProperty()
+  @ApiProperty({ type: PortfolioState, nullable: true })
   state: PortfolioState | null;
 }
