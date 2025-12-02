@@ -137,16 +137,34 @@ export class PortfoliosRepository {
   }
 
   async findById(id: number): Promise<Portfolio | null> {
-    const { rows } = await this.db.query<DbPortfolio>(
-      'SELECT * FROM portfolios WHERE id = $1;',
-      [id],
-    );
+    const query = `
+      SELECT
+        p.id,
+        p.name,
+        p.owner_id,
+        p.created,
+        p.cash,
+        COALESCE(
+          json_agg(
+            json_build_object('id', pc.id, 'portfolio_id', pc.portfolio_id, 'timestamp', pc.timestamp, 'amount_eur', pc.amount_eur)
+            ORDER BY pc.timestamp DESC
+          ) FILTER (WHERE pc.id IS NOT NULL),
+        '[]') AS contributions
+      FROM portfolios p LEFT JOIN portfolio_contributions pc ON p.id = pc.portfolio_id
+      WHERE p.id = $1
+      GROUP BY p.id;`;
+    const { rows } = await this.db.query<DbPortfolio>(query, [id]);
     if (rows.length === 0) return null;
     const row = rows[0];
     return {
       id: row.id,
       cash: new Decimal(row.cash),
-      contributions: [],
+      contributions: row.contributions.map((pc) => ({
+        id: pc.id,
+        portfolioId: pc.portfolio_id,
+        timestamp: pc.timestamp,
+        amountEUR: new Decimal(pc.amount_eur),
+      })),
       created: row.created,
       name: row.name,
       ownerId: row.owner_id,
