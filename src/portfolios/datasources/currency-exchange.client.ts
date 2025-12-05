@@ -47,10 +47,10 @@ export class CurrencyExchangeClient {
     return rates ?? {};
   }
 
-  private initDaemon() {
+  private initDaemon(): void {
     if (process.env.NODE_ENV !== 'test') {
       const daemon = new CronJob(EVERY_SIX_HOURS_CRON_EXP, async () => {
-        this.fx = await this.refreshFx();
+        await this.refreshFx();
       });
 
       daemon.start();
